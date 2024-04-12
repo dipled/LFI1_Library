@@ -1,0 +1,12 @@
+Lógica de Belnap-Dunn:
+	Não é tri-valorada, porém é um exemplo interessante de lógica multivalorada cujo enfoque é computação, é bastante estudada
+	https://link.springer.com/chapter/10.1007/978-94-010-1161-7_2 <-- Publicação original, pdf anexo, não tenho tempo de procurar mais sobre
+Lógica(s) de Łukasiewicz:
+	Há tanto lógicas tri-valoradas quanto n-valoradas, talvez seja interessante mais como uma referência para pontuar o início da pesquisa nesse tópico do que como um referêncial teórico de fato
+	http://library.lol/main/F4E753F87CD6BD2181937069E8B41EA9 <-- Selected Works dele, pdf anexo, contém o primeiro artigo dele sobre lógicas tri-valoradas
+LFI1:
+	Proposta por João Marcos e Carnielli como uma lógica de inconsistência formal trivalorada que seria capaz de lidar com informações contraditórias dentro de bancos de dados, creio ser interessante para o contexto da computação;
+	Tem o pdf no Scholar mas estou mandando anexo, talvez seja interessante dar uma olhada também no Logics of Formal Inconsistency, 2007, de Marcos, Carnielli e Coniglio.
+Lógicas P¹ e I¹:
+	A lógica P¹ foi proposta por A. M. Sette como uma lógica paraconsistente tri-valorada, que pretende ser a lógica paraconsistente mais simples possível (num sentido formal de próximidade a lógica clássica, onde paraconsistência pode ser atingida apenas em um nível atômico), já a lógica I¹ é uma variante intuicionista de P¹ que tbm é um tipo de lógica intuicionista paraconsistente (e paracompleta) mais simples possível, no mesmo sentido.
+	O pdf do artigo da I¹ está anexo, da P¹ eu não consegui encontrar, mas creio que vc não terá dificuldade em achar.

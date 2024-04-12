@@ -1,0 +1,42 @@
+@book{łukasiewicz1970selected,
+	title={Selected Works},
+	author={{\L}ukasiewicz, J. and Borkowski, L.},
+	series={Studies in Logic},
+	year={1970},
+	publisher={North-Holland Publishing Company}
+}
+
+@article{carnielli2000formal,
+	title={Formal inconsistency and evolutionary databases},
+	author={Carnielli, Walter and Marcos, Jo{\~a}o and De Amo, Sandra},
+	journal={Logic and logical philosophy},
+	number={8},
+	pages={115--152},
+	year={2000}
+}
+
+@article{sette1995maximal,
+	title={Maximal weakly-intuitionistic logics},
+	author={Sette, Antonio Mario and Carnielli, Walter A},
+	journal={Studia Logica},
+	volume={55},
+	pages={181--203},
+	year={1995},
+	publisher={Springer}
+}
+
+@Inbook{belnap1977useful,
+	author="Belnap, Nuel D.",
+	editor="Dunn, J. Michael
+	and Epstein, George",
+	title="A Useful Four-Valued Logic",
+	bookTitle="Modern Uses of Multiple-Valued Logic",
+	year="1977",
+	publisher="Springer Netherlands",
+	address="Dordrecht",
+	pages="5--37",
+	isbn="978-94-010-1161-7",
+	doi="10.1007/978-94-010-1161-7_2",
+	url="https://doi.org/10.1007/978-94-010-1161-7_2"
+}
+
