@@ -52,7 +52,7 @@ Example weakening_not_valid:
 Proof.
     unfold not.
     intro.
-    specialize (H U T).
+    specialize H with (a := U) (b := T).
     simpl in H.
     discriminate H.
 Qed.

@@ -61,7 +61,7 @@ Definition bimpht (p q : HTProp) : HTProp :=
 Notation "x ⇒ y" := (impht x y) (at level 80, right associativity).
 Notation "x ⇔ y" := (bimpht x y) (at level 50, left associativity).
 Notation "x & y" := (andht x y) (at level 20, left associativity).
-Notation "x | y" := (impht x y) (at level 31, left associativity).
+Notation "x | y" := (orht x y) (at level 31, left associativity).
 Notation " ! x " := (notht x) (at level 10, left associativity).
 
 Theorem bimp_eq : ∀ a b : HTProp,
@@ -71,6 +71,18 @@ Proof.
   destruct a; destruct b; reflexivity.
 Qed.
 
+Theorem lem_not_valid :
+  ~(∀ a : HTProp, a | !a = T).
+Proof.
+  intro lem. specialize lem with (a := NF). simpl in lem.
+  discriminate lem.
+Qed.
 
-
-
+Theorem extended_lem :
+  ∀ a : HTProp, (a | !a = T) \/ a = NF.
+Proof.
+  intro a. destruct a.
+  - left. simpl. reflexivity.
+  - left. simpl. reflexivity.
+  - right. reflexivity.
+Qed.
