@@ -1,7 +1,7 @@
 From Coq Require Export String.
 
 
-Inductive KProp : Type :=
+Inductive KProp : Set :=
     |T
     |F
     |U.

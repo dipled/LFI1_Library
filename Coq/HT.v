@@ -1,7 +1,7 @@
 From Coq Require Export String.
 Require Export Coq.Unicode.Utf8_core.
 
-Inductive HTProp : Type :=
+Inductive HTProp : Set :=
     |T
     |F
     |NF.
