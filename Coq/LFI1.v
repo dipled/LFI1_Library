@@ -52,5 +52,5 @@ Notation "x ↔ y" := (bimplf x y) (at level 50, left associativity).
 Notation "x ∧ y" := (andlf x y) (at level 20, left associativity).
 Notation "x ∨ y" := (orlf x y) (at level 31, left associativity).
 Notation "¬ x" := (notlf x) (at level 10, left associativity).
-Notation "• x" := (inconslf x) (at level 11, left associativity).
+Notation "• x" := (inconslf x) (at level 10, left associativity).
 
