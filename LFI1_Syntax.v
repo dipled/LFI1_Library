@@ -33,22 +33,22 @@ Notation " # x " :=
 
 Fixpoint size (f : Formula) : nat :=
     match f with
-    | Lit x => 1
-    | Neg a => 1 + size a
-    | And a b => 1 + size a + size b
-    | Or a b => 1 + size a + size b
-    | Imp a b => 1 + size a + size b
+    | Lit x    => 1
+    | Neg a    => 1 + size a
+    | And a b  => 1 + size a + size b
+    | Or a b   => 1 + size a + size b
+    | Imp a b  => 1 + size a + size b
     | Incons a => 1 + size a
     end.
 
 Fixpoint literals (f : Formula) : set nat :=
     match f with
-    | Lit x => set_add eq_nat_dec x (empty_set nat)
-    | Neg a => literals a
-    | And a b => set_union eq_nat_dec (literals a) (literals b)
-    | Or a b => set_union eq_nat_dec (literals a) (literals b)
-    | Imp a b => set_union eq_nat_dec (literals a) (literals b)
+    | Lit x    => set_add eq_nat_dec x (empty_set nat)
+    | Neg a    => literals a
+    | And a b  => set_union eq_nat_dec (literals a) (literals b)
+    | Or a b   => set_union eq_nat_dec (literals a) (literals b)
+    | Imp a b  => set_union eq_nat_dec (literals a) (literals b)
     | Incons a => literals a
     end.
 
-    
+

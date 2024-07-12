@@ -8,31 +8,31 @@ Inductive TruthValue : Set :=
 
 Definition andlf (a b : TruthValue) : TruthValue :=
     match a, b with
-    | Zero, _ => Zero
-    | _, Zero => Zero
+    | Zero, _  => Zero
+    | _, Zero  => Zero
     | One, One => One
-    | _, _ => Half
+    | _, _     => Half
     end.
 
 Definition orlf (a b : TruthValue) : TruthValue :=
     match a, b with
-    | One, _ => One
-    | _, One => One
+    | One, _     => One
+    | _, One     => One
     | Zero, Zero => Zero
-    | _, _ => Half
+    | _, _       => Half
     end.
 
 Definition implf (a b : TruthValue) : TruthValue :=
     match a, b with
     | Zero, _ => One
-    | _, One => One
+    | _, One  => One
     | _, Half => Half
     | _, Zero => Zero
     end.
 
 Definition neglf (a : TruthValue) : TruthValue :=
     match a with
-    | One => Zero
+    | One  => Zero
     | Half => Half
     | Zero => One
     end.
@@ -41,7 +41,7 @@ Definition neglf (a : TruthValue) : TruthValue :=
 Definition inconslf (a : TruthValue) : TruthValue :=
     match a with
     | Half => One
-    | _ => Zero
+    | _    => Zero
     end.
 
 Definition bimplf (a b : TruthValue) : TruthValue := 
