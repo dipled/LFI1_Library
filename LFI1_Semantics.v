@@ -55,15 +55,15 @@ Fixpoint evenP (n : nat) : Prop :=
   | O => True
   | S O => False
   end.
-
+(* 
 Fixpoint formulaSAT (v : nat -> Prop) (f : Formula) : Prop :=
   match f with
   | #x    => v x
   | a ∧ b => (formulaSAT v a) /\ (formulaSAT v b)
   | a ∨ b => (formulaSAT v a) \/ (formulaSAT v b)
   | a → b => ~(formulaSAT v a) \/ (formulaSAT v b)
-  | ¬a    => ~(formulaSAT v a) \/ (formulaSAT v ∙a)
-  | ∙a    => (formulaSAT v a) /\ (formulaSAT v ¬a)
+  | ¬a    => ~(formulaSAT v a) \/ (formulaSAT v a)
+  | ∙a    => (formulaSAT v a) 
   | .~a   => (formulaSAT v a)
   end.
 
@@ -89,4 +89,4 @@ Proof.
   unfold entails. intros. apply H. 
 Qed. 
 
-Compute (inconslf Half).
+Compute (inconslf Half). *) 
