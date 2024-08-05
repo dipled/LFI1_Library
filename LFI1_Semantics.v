@@ -1,6 +1,5 @@
 From Coq Require Export String.
 Require Import Arith List ListSet.
-Require Import LFI1_Syntax.
 
 Inductive TruthValue : Set :=
   | One
