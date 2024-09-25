@@ -1,4 +1,3 @@
 -R . LFI1
-
-LFI1_Semantics.v
-LFI1_Syntax.v
+./LFI1_Syntax.v
+./LFI1_Semantics.v

@@ -9,7 +9,7 @@ Inductive Formula : Set :=
   | And    : Formula -> Formula -> Formula
   | Or     : Formula -> Formula -> Formula
   | Imp    : Formula -> Formula -> Formula
-  | Incons : Formula -> Formula.
+  | Cons : Formula -> Formula.
 
 
 Notation " x → y " := 
@@ -27,11 +27,9 @@ Notation " x ∨ y " :=
 Notation " ¬ x " := 
 (Neg x) (at level 9, right associativity, format "¬ x").
 
-Notation " .~ x " :=
-(StrNeg x) (at level 9, right associativity, format ".~ x").
 
-Notation " ∙ x " := 
-(Incons x) (at level 9, right associativity, format "∙ x").
+Notation " ◦ x " := 
+(Cons x) (at level 9, right associativity, format "◦ x").
 
 Notation " # x " :=
 (Lit x) (at level 2, no associativity, x constr at level 1, format "# x").
@@ -44,7 +42,7 @@ Fixpoint size (f : Formula) : nat :=
  | And a b  => 1 + size a + size b
  | Or a b   => 1 + size a + size b
  | Imp a b  => 1 + size a + size b
- | Incons a => 1 + size a
+ | Cons a => 2 + size a
  end.
 
 Fixpoint literals (f : Formula) : set nat :=
@@ -55,7 +53,7 @@ Fixpoint literals (f : Formula) : set nat :=
   | And a b  => set_union eq_nat_dec (literals a) (literals b)
   | Or a b   => set_union eq_nat_dec (literals a) (literals b)
   | Imp a b  => set_union eq_nat_dec (literals a) (literals b)
-  | Incons a => literals a
+  | Cons a => literals a
   end.
 
 
