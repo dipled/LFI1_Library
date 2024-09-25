@@ -37,10 +37,10 @@ Definition neglf (a : TruthValue) : TruthValue :=
   | Zero => One
   end.
 
-Definition inconslf (a : TruthValue) : TruthValue :=
+Definition conslf (a : TruthValue) : TruthValue :=
   match a with
-  | Half => One
-  | _    => Zero
+  | Half => Zero
+  | _    => One
   end.
 
 Definition bimplf (a b : TruthValue) : TruthValue := 
