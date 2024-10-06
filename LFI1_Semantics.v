@@ -1,12 +1,12 @@
 From Coq Require Export String.
 Require Import Arith List ListSet.
 From LFI1 Require Import LFI1_Syntax.
-Inductive TruthValue : Set :=
+Inductive Matrix_Domain : Set :=
   | One
   | Half
   | Zero.
 
-Definition andlf (a b : TruthValue) : TruthValue :=
+Definition andM (a b : Matrix_Domain) : Matrix_Domain :=
   match a, b with
   | Zero, _  => Zero
   | _, Zero  => Zero
@@ -14,7 +14,7 @@ Definition andlf (a b : TruthValue) : TruthValue :=
   | _, _     => Half
   end.
 
-Definition orlf (a b : TruthValue) : TruthValue :=
+Definition orM (a b : Matrix_Domain) : Matrix_Domain :=
   match a, b with
   | One, _     => One
   | _, One     => One
@@ -22,7 +22,7 @@ Definition orlf (a b : TruthValue) : TruthValue :=
   | _, _       => Half
   end.
 
-Definition implf (a b : TruthValue) : TruthValue :=
+Definition impM (a b : Matrix_Domain) : Matrix_Domain :=
   match a, b with
   | Zero, _ => One
   | _, One  => One
@@ -30,21 +30,21 @@ Definition implf (a b : TruthValue) : TruthValue :=
   | _, Zero => Zero
   end.
 
-Definition neglf (a : TruthValue) : TruthValue :=
+Definition negM (a : Matrix_Domain) : Matrix_Domain :=
   match a with
   | One  => Zero
   | Half => Half
   | Zero => One
   end.
 
-Definition conslf (a : TruthValue) : TruthValue :=
+Definition consM (a : Matrix_Domain) : Matrix_Domain :=
   match a with
   | Half => Zero
   | _    => One
   end.
 
-Definition bimplf (a b : TruthValue) : TruthValue := 
-andlf (implf a b) (implf b a). 
+Definition bimpM (a b : Matrix_Domain) : Matrix_Domain := 
+andM (impM a b) (impM b a). 
 
 
 
