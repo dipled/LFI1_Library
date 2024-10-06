@@ -1,6 +1,7 @@
 From Coq Require Export String.
 Require Import Arith List ListSet.
 From LFI1 Require Import LFI1_Syntax.
+
 Inductive Matrix_Domain : Set :=
   | One
   | Half
@@ -44,8 +45,7 @@ Definition consM (a : Matrix_Domain) : Matrix_Domain :=
   end.
 
 Definition bimpM (a b : Matrix_Domain) : Matrix_Domain := 
-andM (impM a b) (impM b a). 
-
+andM (impM a b) (impM b a).
 
 
 Fixpoint evenP (n : nat) : Prop :=
@@ -54,7 +54,7 @@ Fixpoint evenP (n : nat) : Prop :=
   | O => True
   | S O => False
   end.
-
+(* 
 Fixpoint formulaSAT (v : nat -> Prop) (f : Formula) : Prop :=
   match f with
   | #x    => v x
@@ -87,4 +87,4 @@ Proof.
   unfold entails. intros. apply H. 
 Qed. 
 
-Compute (inconslf Half).
+Compute (inconslf Half). *)
