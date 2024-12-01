@@ -1,11 +1,20 @@
 From Coq Require Export String.
 Require Import Arith List ListSet.
-From LFI1 Require Import LFI1_Syntax.
+From LFI1 Require Import Language.
 
 Inductive Matrix_Domain : Set :=
   | One
   | Half
   | Zero.
+
+Definition Trivaluation := list (atom * Matrix_Domain). Search list.
+
+
+Fixpoint lookup_prod (l : list (atom * Matrix_Domain)) (a : atom) : option Matrix_Domain :=
+match l with
+  | nil => None
+  | (x, y) :: t => if x =? a then Some y else lookup_prod t a
+end.
 
 Definition andM (a b : Matrix_Domain) : Matrix_Domain :=
   match a, b with
@@ -28,6 +37,7 @@ Definition impM (a b : Matrix_Domain) : Matrix_Domain :=
   | Zero, _ => One
   | _, One  => One
   | _, Half => Half
+
   | _, Zero => Zero
   end.
 
@@ -46,6 +56,20 @@ Definition consM (a : Matrix_Domain) : Matrix_Domain :=
 
 Definition bimpM (a b : Matrix_Domain) : Matrix_Domain := 
 andM (impM a b) (impM b a).
+
+
+Fixpoint Matrix_Valuation (φ : Formula) (v : Trivaluation) : Matrix_Domain :=
+  match φ with
+  | a ∧ b => andM (Matrix_Valuation a v) (Matrix_Valuation b v)
+  | a ∨ b => orM (Matrix_Valuation a v) (Matrix_Valuation b v)
+  | a → b => impM (Matrix_Valuation a v) (Matrix_Valuation b v)
+  | ¬a    => negM (Matrix_Valuation a v)
+  | ◦a    => consM (Matrix_Valuation a v)
+  | #a    => match lookup_prod v a with
+              | Some x => x
+              | None => Zero
+              end
+  end.
 
 
 Fixpoint evenP (n : nat) : Prop :=
