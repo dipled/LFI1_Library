@@ -9,7 +9,6 @@ Inductive Matrix_Domain : Set :=
 
 (* Definition Trivaluation := list (literal * Matrix_Domain). Search list.
 
-
 Fixpoint lookup_prod (l : list (literal * Matrix_Domain)) (a : literal) : option Matrix_Domain :=
 match l with
   | nil => None
@@ -111,6 +110,13 @@ Proof.
     -- simpl in H. destruct H.
     -- reflexivity.
     -- simpl in H. destruct H.
+Qed. 
+
+Example teste2 : forall (Γ : set Formula) (α : Formula), 
+  Γ |= ∘∘α.
+Proof.
+  intros. unfold entails. intros. unfold formulaSAT. left. simpl.
+  destruct Matrix_Evaluation; reflexivity.
 Qed. 
 
 (*

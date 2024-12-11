@@ -27,7 +27,6 @@ Notation " x ∨ y " :=
 Notation " ¬ x " := 
 (Neg x) (at level 9, right associativity, format "¬ x").
 
-
 Notation " ∘ x " := 
 (Cons x) (at level 9, right associativity, format "∘ x").
 
