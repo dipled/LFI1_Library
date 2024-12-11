@@ -1,10 +1,10 @@
 From Coq Require Export String.
 Require Import Arith List ListSet.
 
-Definition atom := nat.
+Definition literal := nat.
 
 Inductive Formula : Set :=
-  | Lit    : atom -> Formula
+  | Lit    : literal -> Formula
   | Neg    : Formula -> Formula
   | And    : Formula -> Formula -> Formula
   | Or     : Formula -> Formula -> Formula
@@ -28,8 +28,8 @@ Notation " ¬ x " :=
 (Neg x) (at level 9, right associativity, format "¬ x").
 
 
-Notation " ◦ x " := 
-(Cons x) (at level 9, right associativity, format "◦ x").
+Notation " ∘ x " := 
+(Cons x) (at level 9, right associativity, format "∘ x").
 
 Notation " # x " :=
 (Lit x) (at level 2, no associativity, x constr at level 1, format "# x").

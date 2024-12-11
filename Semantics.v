@@ -1,5 +1,5 @@
-From Coq Require Export String.
 Require Import Arith List ListSet.
+From Coq Require Export String.
 From LFI1 Require Import Language.
 
 Inductive Matrix_Domain : Set :=
@@ -7,14 +7,14 @@ Inductive Matrix_Domain : Set :=
   | Half
   | Zero.
 
-Definition Trivaluation := list (atom * Matrix_Domain). Search list.
+(* Definition Trivaluation := list (literal * Matrix_Domain). Search list.
 
 
-Fixpoint lookup_prod (l : list (atom * Matrix_Domain)) (a : atom) : option Matrix_Domain :=
+Fixpoint lookup_prod (l : list (literal * Matrix_Domain)) (a : literal) : option Matrix_Domain :=
 match l with
   | nil => None
   | (x, y) :: t => if x =? a then Some y else lookup_prod t a
-end.
+end. *)
 
 Definition andM (a b : Matrix_Domain) : Matrix_Domain :=
   match a, b with
@@ -58,57 +58,60 @@ Definition bimpM (a b : Matrix_Domain) : Matrix_Domain :=
 andM (impM a b) (impM b a).
 
 
-Fixpoint Matrix_Valuation (φ : Formula) (v : Trivaluation) : Matrix_Domain :=
+Fixpoint Matrix_Evaluation (v : literal -> Matrix_Domain) (φ : Formula) : Matrix_Domain :=
   match φ with
-  | a ∧ b => andM (Matrix_Valuation a v) (Matrix_Valuation b v)
-  | a ∨ b => orM (Matrix_Valuation a v) (Matrix_Valuation b v)
-  | a → b => impM (Matrix_Valuation a v) (Matrix_Valuation b v)
-  | ¬a    => negM (Matrix_Valuation a v)
-  | ◦a    => consM (Matrix_Valuation a v)
-  | #a    => match lookup_prod v a with
-              | Some x => x
-              | None => Zero
-              end
+  | a ∧ b => andM (Matrix_Evaluation v a) (Matrix_Evaluation v b)
+  | a ∨ b => orM (Matrix_Evaluation v a) (Matrix_Evaluation v b)
+  | a → b => impM (Matrix_Evaluation v a) (Matrix_Evaluation v b)
+  | ¬a    => negM (Matrix_Evaluation v a)
+  | ∘a    => consM (Matrix_Evaluation v a)
+  | #a    => v a
   end.
 
-
-Fixpoint evenP (n : nat) : Prop :=
+Definition example_valuation (n : literal) : Matrix_Domain :=
   match n with
-  | S (S n) => evenP n
-  | O => True
-  | S O => False
-  end.
-(* 
-Fixpoint formulaSAT (v : nat -> Prop) (f : Formula) : Prop :=
-  match f with
-  | #x    => v x
-  | a ∧ b => (formulaSAT v a) /\ (formulaSAT v b)
-  | a ∨ b => (formulaSAT v a) \/ (formulaSAT v b)
-  | a → b => ~(formulaSAT v a) \/ (formulaSAT v b)
-  | ¬a    => ~(formulaSAT v a) \/ (formulaSAT v a)
-  | ◦a    => (formulaSAT v a) 
+  | O => One
+  | 1 => Half
+  | _ => Zero
   end.
 
-Definition theory := set Formula.
+Definition eqmat (a b : Matrix_Domain) : Prop :=
+  match a, b with
+  | One, One => True
+  | Zero, Zero => True
+  | Half, Half => True
+  | _, _ => False
+  end.
+
+Definition formulaSAT (v : literal -> Matrix_Domain) (f : Formula) : Prop := eqmat (Matrix_Evaluation v f) One \/ eqmat (Matrix_Evaluation v f) Half.
 
 
-Fixpoint theorySAT (v : nat -> Prop) (Γ : theory) : Prop :=
+Fixpoint formulaSetSAT (v : literal -> Matrix_Domain) (Γ : set Formula) : Prop :=
   match Γ with
   | nil => True
-  | h :: t => (formulaSAT v h) /\ (theorySAT v t)
+  | h :: t => (formulaSAT v h) /\ (formulaSetSAT v t)
   end.
 
-Definition entails (Γ : theory) (f : Formula) : Prop :=
-forall (v : nat -> Prop), theorySAT v Γ -> formulaSAT v f.
+Definition entails (Γ : set Formula) (f : Formula) : Prop :=
+forall (v : literal -> Matrix_Domain), formulaSetSAT v Γ -> formulaSAT v f.
 
 Notation " A |= B " :=
 (entails A B) (at level 110, no associativity).
 
-Example teste : forall (Γ : theory) (A B : Formula), 
-  ((∙A) :: Γ) |= A ∧ ¬A.
+Example teste : forall (Γ : set Formula) (α : Formula), 
+  ((¬∘α) :: Γ) |= α ∧ ¬α.
 Proof.
-  intros.
-  unfold entails. intros. apply H. 
+  intros. unfold entails. intros. destruct H. unfold formulaSAT.
+  right. destruct H.
+  - simpl. simpl in H. destruct (Matrix_Evaluation v α).
+    -- simpl in H. destruct H.
+    -- reflexivity.
+    -- simpl in H. destruct H.
+  - simpl. simpl in H. destruct (Matrix_Evaluation v α).
+    -- simpl in H. destruct H.
+    -- reflexivity.
+    -- simpl in H. destruct H.
 Qed. 
 
+(*
 Compute (inconslf Half). *)
