@@ -2,20 +2,14 @@ Require Import Arith List ListSet.
 From Coq Require Export String.
 From LFI1 Require Import Language.
 
-Inductive Matrix_Domain : Set :=
+(* Semantic System: Matrix *)
+
+Inductive MatrixDomain : Set :=
   | One
   | Half
   | Zero.
 
-(* Definition Trivaluation := list (literal * Matrix_Domain). Search list.
-
-Fixpoint lookup_prod (l : list (literal * Matrix_Domain)) (a : literal) : option Matrix_Domain :=
-match l with
-  | nil => None
-  | (x, y) :: t => if x =? a then Some y else lookup_prod t a
-end. *)
-
-Definition andM (a b : Matrix_Domain) : Matrix_Domain :=
+Definition andM (a b : MatrixDomain) : MatrixDomain :=
   match a, b with
   | Zero, _  => Zero
   | _, Zero  => Zero
@@ -23,7 +17,7 @@ Definition andM (a b : Matrix_Domain) : Matrix_Domain :=
   | _, _     => Half
   end.
 
-Definition orM (a b : Matrix_Domain) : Matrix_Domain :=
+Definition orM (a b : MatrixDomain) : MatrixDomain :=
   match a, b with
   | One, _     => One
   | _, One     => One
@@ -31,7 +25,7 @@ Definition orM (a b : Matrix_Domain) : Matrix_Domain :=
   | _, _       => Half
   end.
 
-Definition impM (a b : Matrix_Domain) : Matrix_Domain :=
+Definition impM (a b : MatrixDomain) : MatrixDomain :=
   match a, b with
   | Zero, _ => One
   | _, One  => One
@@ -40,84 +34,60 @@ Definition impM (a b : Matrix_Domain) : Matrix_Domain :=
   | _, Zero => Zero
   end.
 
-Definition negM (a : Matrix_Domain) : Matrix_Domain :=
+Definition negM (a : MatrixDomain) : MatrixDomain :=
   match a with
   | One  => Zero
   | Half => Half
   | Zero => One
   end.
 
-Definition consM (a : Matrix_Domain) : Matrix_Domain :=
+Definition consM (a : MatrixDomain) : MatrixDomain :=
   match a with
   | Half => Zero
   | _    => One
   end.
 
-Definition bimpM (a b : Matrix_Domain) : Matrix_Domain := 
+Definition bimpM (a b : MatrixDomain) : MatrixDomain := 
 andM (impM a b) (impM b a).
 
-
-Fixpoint Matrix_Evaluation (v : literal -> Matrix_Domain) (φ : Formula) : Matrix_Domain :=
+Fixpoint matrixEvaluation (v : Atom -> MatrixDomain) (φ : Formula) : MatrixDomain :=
   match φ with
-  | a ∧ b => andM (Matrix_Evaluation v a) (Matrix_Evaluation v b)
-  | a ∨ b => orM (Matrix_Evaluation v a) (Matrix_Evaluation v b)
-  | a → b => impM (Matrix_Evaluation v a) (Matrix_Evaluation v b)
-  | ¬a    => negM (Matrix_Evaluation v a)
-  | ∘a    => consM (Matrix_Evaluation v a)
+  | a ∧ b => andM (matrixEvaluation v a) (matrixEvaluation v b)
+  | a ∨ b => orM (matrixEvaluation v a) (matrixEvaluation v b)
+  | a → b => impM (matrixEvaluation v a) (matrixEvaluation v b)
+  | ¬a    => negM (matrixEvaluation v a)
+  | ∘a    => consM (matrixEvaluation v a)
   | #a    => v a
   end.
 
-Definition example_valuation (n : literal) : Matrix_Domain :=
-  match n with
-  | O => One
-  | 1 => Half
-  | _ => Zero
+Definition designatedValue (a : MatrixDomain) : Prop :=
+  match a with
+  | Zero => False
+  | _ => True
   end.
 
-Definition eqmat (a b : Matrix_Domain) : Prop :=
-  match a, b with
-  | One, One => True
-  | Zero, Zero => True
-  | Half, Half => True
-  | _, _ => False
-  end.
+Definition matrixFormulaSAT (v : Atom -> MatrixDomain) (φ : Formula) : Prop := designatedValue (matrixEvaluation v φ).
 
-Definition formulaSAT (v : literal -> Matrix_Domain) (f : Formula) : Prop := eqmat (Matrix_Evaluation v f) One \/ eqmat (Matrix_Evaluation v f) Half.
-
-
-Fixpoint formulaSetSAT (v : literal -> Matrix_Domain) (Γ : set Formula) : Prop :=
+Fixpoint matrixFormulaSetSAT (v : Atom -> MatrixDomain) (Γ : set Formula) : Prop :=
   match Γ with
   | nil => True
-  | h :: t => (formulaSAT v h) /\ (formulaSetSAT v t)
+  | h :: t => (matrixFormulaSAT v h) /\ (matrixFormulaSetSAT v t)
   end.
 
-Definition entails (Γ : set Formula) (f : Formula) : Prop :=
-forall (v : literal -> Matrix_Domain), formulaSetSAT v Γ -> formulaSAT v f.
+Definition matrixEntails (Γ : set Formula) (φ : Formula) : Prop :=
+forall (v : Atom -> MatrixDomain), matrixFormulaSetSAT v Γ -> matrixFormulaSAT v φ.
 
-Notation " A |= B " :=
-(entails A B) (at level 110, no associativity).
+Notation " A ⊨ B " := (matrixEntails A B) (at level 110, no associativity).
 
 Example teste : forall (Γ : set Formula) (α : Formula), 
-  ((¬∘α) :: Γ) |= α ∧ ¬α.
+  ¬∘α::Γ ⊨ α ∧ ¬α.
 Proof.
-  intros. unfold entails. intros. destruct H. unfold formulaSAT.
-  right. destruct H.
-  - simpl. simpl in H. destruct (Matrix_Evaluation v α).
-    -- simpl in H. destruct H.
-    -- reflexivity.
-    -- simpl in H. destruct H.
-  - simpl. simpl in H. destruct (Matrix_Evaluation v α).
-    -- simpl in H. destruct H.
-    -- reflexivity.
-    -- simpl in H. destruct H.
-Qed. 
+  intros. unfold matrixEntails. intros.
+  destruct H. unfold matrixFormulaSAT. unfold matrixFormulaSAT in H.
+  simpl. simpl in H. destruct ((matrixEvaluation v α)).
+  - simpl in H. exfalso; apply H.
+  - reflexivity.
+  - simpl in H. exfalso; apply H.
+Qed.
 
-Example teste2 : forall (Γ : set Formula) (α : Formula), 
-  Γ |= ∘∘α.
-Proof.
-  intros. unfold entails. intros. unfold formulaSAT. left. simpl.
-  destruct Matrix_Evaluation; reflexivity.
-Qed. 
-
-(*
-Compute (inconslf Half). *)
+(* Semantic System: Valuations *)

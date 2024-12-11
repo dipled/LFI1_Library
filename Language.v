@@ -1,15 +1,16 @@
-From Coq Require Export String.
 Require Import Arith List ListSet.
+From Coq Require Export String.
 
-Definition literal := nat.
+
+Definition Atom := nat.
 
 Inductive Formula : Set :=
-  | Lit    : literal -> Formula
+  | Lit    : Atom -> Formula
   | Neg    : Formula -> Formula
   | And    : Formula -> Formula -> Formula
   | Or     : Formula -> Formula -> Formula
   | Imp    : Formula -> Formula -> Formula
-  | Cons : Formula -> Formula.
+  | Cons   : Formula -> Formula.
 
 
 Notation " x → y " := 
@@ -43,12 +44,12 @@ Fixpoint size (f : Formula) : nat :=
  | Cons a => 2 + size a
  end.
 
-Fixpoint literals (f : Formula) : set nat :=
+Fixpoint atoms (f : Formula) : set nat :=
   match f with
   | Lit x    => set_add eq_nat_dec x (empty_set nat)
-  | Neg a    => literals a
-  | And a b  => set_union eq_nat_dec (literals a) (literals b)
-  | Or a b   => set_union eq_nat_dec (literals a) (literals b)
-  | Imp a b  => set_union eq_nat_dec (literals a) (literals b)
-  | Cons a => literals a
+  | Neg a    => atoms a
+  | And a b  => set_union eq_nat_dec (atoms a) (atoms b)
+  | Or a b   => set_union eq_nat_dec (atoms a) (atoms b)
+  | Imp a b  => set_union eq_nat_dec (atoms a) (atoms b)
+  | Cons a => atoms a
   end.
