@@ -1,0 +1,119 @@
+DIGEST 8aaa84dc4157156ef31d5fbfe9216c5b
+FLFI1.LFI1_Syntax
+R24:29 Coq.Strings.String <> <> lib
+R47:51 Coq.Arith.Arith <> <> lib
+R53:56 Coq.Lists.List <> <> lib
+R58:64 Coq.Lists.ListSet <> <> lib
+ind 79:85 <> Formula
+constr 100:102 <> Lit
+constr 128:130 <> Neg
+constr 160:165 <> StrNeg
+constr 192:194 <> And
+constr 235:236 <> Or
+constr 278:280 <> Imp
+constr 321:324 <> Cons
+R112:115 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R109:111 Coq.Init.Datatypes <> nat ind
+R116:122 LFI1.LFI1_Syntax <> Formula:1 ind
+R144:147 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R137:143 LFI1.LFI1_Syntax <> Formula:1 ind
+R148:154 LFI1.LFI1_Syntax <> Formula:1 ind
+R176:179 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R169:175 LFI1.LFI1_Syntax <> Formula:1 ind
+R180:186 LFI1.LFI1_Syntax <> Formula:1 ind
+R208:211 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R201:207 LFI1.LFI1_Syntax <> Formula:1 ind
+R219:222 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R212:218 LFI1.LFI1_Syntax <> Formula:1 ind
+R223:229 LFI1.LFI1_Syntax <> Formula:1 ind
+R251:254 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R244:250 LFI1.LFI1_Syntax <> Formula:1 ind
+R262:265 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R255:261 LFI1.LFI1_Syntax <> Formula:1 ind
+R266:272 LFI1.LFI1_Syntax <> Formula:1 ind
+R294:297 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R287:293 LFI1.LFI1_Syntax <> Formula:1 ind
+R305:308 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R298:304 LFI1.LFI1_Syntax <> Formula:1 ind
+R309:315 LFI1.LFI1_Syntax <> Formula:1 ind
+R335:338 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R328:334 LFI1.LFI1_Syntax <> Formula:1 ind
+R339:345 LFI1.LFI1_Syntax <> Formula:1 ind
+scheme 79:85 <> Formula_rect
+scheme 79:85 <> Formula_ind
+scheme 79:85 <> Formula_rec
+scheme 79:85 <> Formula_sind
+R376:378 LFI1.LFI1_Syntax <> Imp constr
+not 359:359 <> :::x_'→'_x
+R528:530 LFI1.LFI1_Syntax <> And constr
+not 511:511 <> :::x_'∧'_x
+R599:600 LFI1.LFI1_Syntax <> Or constr
+not 582:582 <> :::x_'∨'_x
+R666:668 LFI1.LFI1_Syntax <> Neg constr
+not 652:652 <> :::'¬'_x
+R749:752 LFI1.LFI1_Syntax <> Cons constr
+not 734:734 <> :::'◦'_x
+R830:832 LFI1.LFI1_Syntax <> Lit constr
+not 818:818 <> :::'#'_x
+def 914:917 <> size
+R924:930 LFI1.LFI1_Syntax <> Formula ind
+binder 920:920 <> f:3
+R935:937 Coq.Init.Datatypes <> nat ind
+R949:949 LFI1.LFI1_Syntax <> f:3 var
+R959:961 LFI1.LFI1_Syntax <> Lit constr
+R976:981 LFI1.LFI1_Syntax <> StrNeg constr
+R989:991 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R992:995 LFI1.LFI1_Syntax <> size:4 def
+R1002:1004 LFI1.LFI1_Syntax <> Neg constr
+R1015:1017 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1018:1021 LFI1.LFI1_Syntax <> size:4 def
+R1028:1030 LFI1.LFI1_Syntax <> And constr
+R1050:1052 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1041:1043 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1044:1047 LFI1.LFI1_Syntax <> size:4 def
+R1053:1056 LFI1.LFI1_Syntax <> size:4 def
+R1063:1064 LFI1.LFI1_Syntax <> Or constr
+R1085:1087 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1076:1078 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1079:1082 LFI1.LFI1_Syntax <> size:4 def
+R1088:1091 LFI1.LFI1_Syntax <> size:4 def
+R1098:1100 LFI1.LFI1_Syntax <> Imp constr
+R1120:1122 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1111:1113 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1114:1117 LFI1.LFI1_Syntax <> size:4 def
+R1123:1126 LFI1.LFI1_Syntax <> size:4 def
+R1133:1136 LFI1.LFI1_Syntax <> Cons constr
+R1144:1146 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1147:1150 LFI1.LFI1_Syntax <> size:4 def
+def 1170:1177 <> literals
+R1184:1190 LFI1.LFI1_Syntax <> Formula ind
+binder 1180:1180 <> f:6
+R1195:1197 Coq.Lists.ListSet <> set def
+R1199:1201 Coq.Init.Datatypes <> nat ind
+R1214:1214 LFI1.LFI1_Syntax <> f:6 var
+R1225:1227 LFI1.LFI1_Syntax <> Lit constr
+R1237:1243 Coq.Lists.ListSet <> set_add def
+R1259:1267 Coq.Lists.ListSet <> empty_set def
+R1269:1271 Coq.Init.Datatypes <> nat ind
+R1245:1254 Coq.Arith.Peano_dec <> eq_nat_dec abbrev
+R1278:1283 LFI1.LFI1_Syntax <> StrNeg constr
+R1290:1297 LFI1.LFI1_Syntax <> literals:7 def
+R1305:1307 LFI1.LFI1_Syntax <> Neg constr
+R1317:1324 LFI1.LFI1_Syntax <> literals:7 def
+R1332:1334 LFI1.LFI1_Syntax <> And constr
+R1344:1352 Coq.Lists.ListSet <> set_union def
+R1379:1386 LFI1.LFI1_Syntax <> literals:7 def
+R1366:1373 LFI1.LFI1_Syntax <> literals:7 def
+R1354:1363 Coq.Arith.Peano_dec <> eq_nat_dec abbrev
+R1395:1396 LFI1.LFI1_Syntax <> Or constr
+R1407:1415 Coq.Lists.ListSet <> set_union def
+R1442:1449 LFI1.LFI1_Syntax <> literals:7 def
+R1429:1436 LFI1.LFI1_Syntax <> literals:7 def
+R1417:1426 Coq.Arith.Peano_dec <> eq_nat_dec abbrev
+R1458:1460 LFI1.LFI1_Syntax <> Imp constr
+R1470:1478 Coq.Lists.ListSet <> set_union def
+R1505:1512 LFI1.LFI1_Syntax <> literals:7 def
+R1492:1499 LFI1.LFI1_Syntax <> literals:7 def
+R1480:1489 Coq.Arith.Peano_dec <> eq_nat_dec abbrev
+R1521:1524 LFI1.LFI1_Syntax <> Cons constr
+R1531:1538 LFI1.LFI1_Syntax <> literals:7 def

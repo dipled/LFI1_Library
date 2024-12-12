@@ -54,6 +54,7 @@ Definition instantiate (a : Ax) : Formula :=
 Inductive deduction : set Formula -> Formula -> Prop :=
   | Premisse : forall (Γ : set Formula) (φ : Formula), set_In φ Γ -> deduction Γ φ
   | AxiomInstance : forall (Γ : set Formula) (a : Ax), deduction Γ (instantiate a)
-  | MP : forall (Γ : set Formula) (φ ψ : Formula), (deduction Γ (φ → ψ)) -> (deduction Γ φ) -> deduction Γ ψ.
+  | MP : forall (Γ : set Formula) (φ ψ : Formula), (deduction Γ (φ → ψ)) -> 
+    (deduction Γ φ) -> deduction Γ ψ.
 
 Notation " Γ ⊢ φ " := (deduction Γ φ) (at level 110, no associativity).

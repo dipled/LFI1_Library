@@ -1,6 +1,11 @@
-Require Import Arith List ListSet.
+Require Import Arith List Infinite_sets.
 From Coq Require Export String.
 From LFI1 Require Import Language.
+Arguments In {U}.
+Arguments Add {U}.
+Arguments Empty_set {U}.
+Arguments Union {U}.
+Arguments Singleton {U}.
 
 (* Semantic System: Matrix *)
 
@@ -69,45 +74,26 @@ Definition designatedValue (a : MatrixDomain) : Prop :=
 Definition matrixFormulaSAT (v : Atom -> MatrixDomain) (φ : Formula) : Prop := 
 designatedValue (matrixEvaluation v φ).
 
-Fixpoint matrixFormulaSetSAT (v : Atom -> MatrixDomain) (Γ : set Formula) : Prop :=
+Fixpoint matrixFormulaSetSAT (v : Atom -> MatrixDomain) (Γ : Ensemble Formula) : Prop :=
   match Γ with
-  | nil => True
-  | h :: t => (matrixFormulaSAT v h) /\ (matrixFormulaSetSAT v t)
+  | Empty_set => True
+  | Full_set => False
+  | Union a b => (matrixFormulaSAT v a) /\ (matrixFormulaSetSAT v b)
   end.
 
-Definition matrixEntails (Γ : set Formula) (φ : Formula) : Prop :=
+Definition matrixEntails (Γ : list Formula) (φ : Formula) : Prop :=
 forall (v : Atom -> MatrixDomain), matrixFormulaSetSAT v Γ -> matrixFormulaSAT v φ.
 
 Notation " A ⊨ B " := (matrixEntails A B) (at level 110, no associativity).
 
-Example formula_sat_app : forall (v : Atom -> MatrixDomain) (Γ : set Formula) 
-(α : Formula), matrixFormulaSetSAT v (set_add eq_formula_dec (¬∘α) Γ) -> 
-matrixFormulaSAT v (¬∘α) /\ matrixFormulaSetSAT v Γ.
+Example teste : forall (Γ : list Formula) (α : Formula), 
+ ¬∘α :: Γ ⊨ α ∧ ¬α.
 Proof.
-  intros. induction Γ.
-  - simpl in H. destruct H. split.
-    + apply H.
-    + reflexivity.
-  - simpl in H. destruct eq_formula_dec in H.
-    + split.
-      * simpl in H. destruct H. rewrite e. apply H.
-      * apply H.
-    + split.
-      * simpl in H. destruct H. apply IHΓ in H0. apply H0.
-      * simpl in H. destruct H. apply IHΓ in H0. split.
-        -- apply H.
-        -- apply H0.
-Qed.
-
-Example teste : forall (Γ : set Formula) (α : Formula), 
- set_add eq_formula_dec (¬∘α) Γ ⊨ α ∧ ¬α.
-Proof.
-  intros. unfold matrixEntails. intros. apply formula_sat_app in H. destruct H.
-  unfold matrixFormulaSAT in H. unfold matrixFormulaSAT. simpl in *.
-  destruct (matrixEvaluation v α).
-  - destruct H.
+  intros. unfold matrixEntails. intros. simpl in H. destruct H as [H0 H1].
+  unfold matrixFormulaSAT in *. simpl in *. destruct (matrixEvaluation v α).
+  - destruct H0.
   - reflexivity.
-  - destruct H.
+  - destruct H0.
 Qed.
 
 (* Semantic System: Valuations *)

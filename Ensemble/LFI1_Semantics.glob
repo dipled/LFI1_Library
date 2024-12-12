@@ -1,0 +1,104 @@
+DIGEST a030c15ddeff2e722e69716fee92fcc8
+FLFI1.LFI1_Semantics
+R24:29 Coq.Strings.String <> <> lib
+R47:51 Coq.Arith.Arith <> <> lib
+R53:56 Coq.Lists.List <> <> lib
+R58:64 Coq.Lists.ListSet <> <> lib
+R92:102 LFI1.LFI1_Syntax <> <> lib
+ind 115:127 <> Matrix_Domain
+constr 142:144 <> One
+constr 150:153 <> Half
+constr 159:162 <> Zero
+scheme 115:127 <> Matrix_Domain_rect
+scheme 115:127 <> Matrix_Domain_ind
+scheme 115:127 <> Matrix_Domain_rec
+scheme 115:127 <> Matrix_Domain_sind
+def 177:180 <> andM
+R189:201 LFI1.LFI1_Semantics <> Matrix_Domain ind
+binder 183:183 <> a:3
+binder 185:185 <> b:4
+R206:218 LFI1.LFI1_Semantics <> Matrix_Domain ind
+R234:234 LFI1.LFI1_Semantics <> b:4 var
+R231:231 LFI1.LFI1_Semantics <> a:3 var
+R245:248 LFI1.LFI1_Semantics <> Zero constr
+R257:260 LFI1.LFI1_Semantics <> Zero constr
+R269:272 LFI1.LFI1_Semantics <> Zero constr
+R278:281 LFI1.LFI1_Semantics <> Zero constr
+R287:289 LFI1.LFI1_Semantics <> One constr
+R292:294 LFI1.LFI1_Semantics <> One constr
+R299:301 LFI1.LFI1_Semantics <> One constr
+R319:322 LFI1.LFI1_Semantics <> Half constr
+def 343:345 <> orM
+R354:366 LFI1.LFI1_Semantics <> Matrix_Domain ind
+binder 348:348 <> a:7
+binder 350:350 <> b:8
+R371:383 LFI1.LFI1_Semantics <> Matrix_Domain ind
+R399:399 LFI1.LFI1_Semantics <> b:8 var
+R396:396 LFI1.LFI1_Semantics <> a:7 var
+R410:412 LFI1.LFI1_Semantics <> One constr
+R424:426 LFI1.LFI1_Semantics <> One constr
+R435:437 LFI1.LFI1_Semantics <> One constr
+R446:448 LFI1.LFI1_Semantics <> One constr
+R454:457 LFI1.LFI1_Semantics <> Zero constr
+R460:463 LFI1.LFI1_Semantics <> Zero constr
+R468:471 LFI1.LFI1_Semantics <> Zero constr
+R491:494 LFI1.LFI1_Semantics <> Half constr
+def 515:518 <> impM
+R527:539 LFI1.LFI1_Semantics <> Matrix_Domain ind
+binder 521:521 <> a:11
+binder 523:523 <> b:12
+R544:556 LFI1.LFI1_Semantics <> Matrix_Domain ind
+R572:572 LFI1.LFI1_Semantics <> b:12 var
+R569:569 LFI1.LFI1_Semantics <> a:11 var
+R583:586 LFI1.LFI1_Semantics <> Zero constr
+R594:596 LFI1.LFI1_Semantics <> One constr
+R605:607 LFI1.LFI1_Semantics <> One constr
+R613:615 LFI1.LFI1_Semantics <> One constr
+R624:627 LFI1.LFI1_Semantics <> Half constr
+R632:635 LFI1.LFI1_Semantics <> Half constr
+R644:647 LFI1.LFI1_Semantics <> Zero constr
+R652:655 LFI1.LFI1_Semantics <> Zero constr
+def 676:679 <> negM
+R686:698 LFI1.LFI1_Semantics <> Matrix_Domain ind
+binder 682:682 <> a:15
+R703:715 LFI1.LFI1_Semantics <> Matrix_Domain ind
+R728:728 LFI1.LFI1_Semantics <> a:15 var
+R739:741 LFI1.LFI1_Semantics <> One constr
+R747:750 LFI1.LFI1_Semantics <> Zero constr
+R756:759 LFI1.LFI1_Semantics <> Half constr
+R764:767 LFI1.LFI1_Semantics <> Half constr
+R773:776 LFI1.LFI1_Semantics <> Zero constr
+R781:783 LFI1.LFI1_Semantics <> One constr
+def 804:808 <> consM
+R815:827 LFI1.LFI1_Semantics <> Matrix_Domain ind
+binder 811:811 <> a:17
+R832:844 LFI1.LFI1_Semantics <> Matrix_Domain ind
+R857:857 LFI1.LFI1_Semantics <> a:17 var
+R868:871 LFI1.LFI1_Semantics <> Half constr
+R876:879 LFI1.LFI1_Semantics <> Zero constr
+R893:895 LFI1.LFI1_Semantics <> One constr
+def 916:920 <> bimpM
+R929:941 LFI1.LFI1_Semantics <> Matrix_Domain ind
+binder 923:923 <> a:19
+binder 925:925 <> b:20
+R946:958 LFI1.LFI1_Semantics <> Matrix_Domain ind
+R964:967 LFI1.LFI1_Semantics <> andM def
+R970:973 LFI1.LFI1_Semantics <> impM def
+R975:975 LFI1.LFI1_Semantics <> a:19 var
+R977:977 LFI1.LFI1_Semantics <> b:20 var
+R981:984 LFI1.LFI1_Semantics <> impM def
+R986:986 LFI1.LFI1_Semantics <> b:20 var
+R988:988 LFI1.LFI1_Semantics <> a:19 var
+def 1005:1009 <> evenP
+R1016:1018 Coq.Init.Datatypes <> nat ind
+binder 1012:1012 <> n:21
+R1039:1039 LFI1.LFI1_Semantics <> n:21 var
+R1050:1050 Coq.Init.Datatypes <> S constr
+R1053:1053 Coq.Init.Datatypes <> S constr
+R1061:1065 LFI1.LFI1_Semantics <> evenP:22 def
+R1067:1067 LFI1.LFI1_Semantics <> n:21 var
+R1073:1073 Coq.Init.Datatypes <> O constr
+R1078:1081 Coq.Init.Logic <> True ind
+R1087:1087 Coq.Init.Datatypes <> S constr
+R1089:1089 Coq.Init.Datatypes <> O constr
+R1094:1098 Coq.Init.Logic <> False ind

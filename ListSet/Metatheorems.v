@@ -19,7 +19,8 @@ Proof.
   - apply H0.
 Qed.
 
-Lemma quasi_monotonicity : forall (Γ : set Formula) (α β : Formula), (Γ ⊢ β) -> (set_add eq_formula_dec α Γ) ⊢ β.
+Lemma quasi_monotonicity : forall (Γ : set Formula) (α β : Formula), 
+(Γ ⊢ β) -> (set_add eq_formula_dec α Γ) ⊢ β.
 Proof.
   intros. induction H.
   - apply Premisse. apply set_add_intro. right. apply H.
@@ -29,7 +30,8 @@ Proof.
     + apply IHdeduction2.
 Qed.
 
-Theorem deduction_metatheorem : forall (Γ : set Formula) (α β : Formula), ((set_add eq_formula_dec α Γ) ⊢ β) <-> (Γ ⊢ α → β).
+Theorem deduction_metatheorem : forall (Γ : set Formula) (α β : Formula), 
+((set_add eq_formula_dec α Γ) ⊢ β) <-> (Γ ⊢ α → β).
 Proof. 
   intros. split.
   - intro. remember ((set_add eq_formula_dec α Γ)) as Δ eqn: Heq in H. induction H.
@@ -57,7 +59,9 @@ Proof.
       * apply H2.
 Qed.
 
-Corollary proof_by_cases : forall (Γ : set Formula) (α β φ : Formula), ((set_add eq_formula_dec α Γ) ⊢ φ) /\ ((set_add eq_formula_dec β Γ) ⊢ φ) -> ((set_add eq_formula_dec (α ∨ β) Γ) ⊢ φ).
+Corollary proof_by_cases : forall (Γ : set Formula) (α β φ : Formula), 
+((set_add eq_formula_dec α Γ) ⊢ φ) /\ ((set_add eq_formula_dec β Γ) ⊢ φ) -> 
+((set_add eq_formula_dec (α ∨ β) Γ) ⊢ φ).
 Proof.
   intros. destruct H. 
   pose proof deduction_metatheorem as DMT.
@@ -70,7 +74,8 @@ Proof.
   - apply H.
 Qed.
   
-Corollary proof_by_cases_neg : forall (Γ : set Formula) (α φ : Formula), ((set_add eq_formula_dec α Γ) ⊢ φ) /\ ((set_add eq_formula_dec (¬ α) Γ) ⊢ φ) -> (Γ ⊢ φ).
+Corollary proof_by_cases_neg : forall (Γ : set Formula) (α φ : Formula), 
+((set_add eq_formula_dec α Γ) ⊢ φ) /\ ((set_add eq_formula_dec (¬ α) Γ) ⊢ φ) -> (Γ ⊢ φ).
 Proof.
   intros. destruct H.
   pose proof deduction_metatheorem as DMT.
@@ -84,4 +89,41 @@ Proof.
       * apply H2.
     + apply H0.
   - apply H.
+Qed.
+
+(* Soundness *)
+
+Lemma in_set_sat : forall (Γ : set Formula) (α : Formula) (v : Atom -> MatrixDomain),
+set_In α Γ /\ matrixFormulaSetSAT v Γ -> matrixFormulaSAT v α.
+Proof.
+  intros. destruct H. induction Γ.
+  - simpl in H. destruct H.
+  - simpl in H0. destruct H0. simpl in H. destruct H.
+    + rewrite <- H. apply H0.
+    + apply IHΓ.
+      * apply H.
+      * apply H1.
+Qed.
+
+Theorem soundness_mat : forall (Γ : set Formula) (α : Formula), 
+(Γ ⊢ α) -> (Γ ⊨ α).
+Proof.
+  intros. induction H.
+  - unfold matrixEntails. intros. apply (in_set_sat Γ).
+    split.
+    + apply H.
+    + apply H0.
+  - destruct a; unfold matrixEntails; intros; unfold matrixFormulaSAT; simpl;
+    try (destruct (matrixEvaluation v f), (matrixEvaluation v f0); reflexivity);
+    try (destruct (matrixEvaluation v f), (matrixEvaluation v f0), (matrixEvaluation v f1);
+      reflexivity);
+    try (destruct (matrixEvaluation v f); reflexivity).
+  - unfold matrixEntails in *. intros. unfold matrixFormulaSAT in *.
+    specialize (IHdeduction1 v). specialize (IHdeduction2 v). 
+    apply IHdeduction1 in H1 as H2.
+    apply IHdeduction2 in H1 as H3.
+    simpl in H2, H3. destruct (matrixEvaluation v φ), (matrixEvaluation v ψ); 
+    try reflexivity;
+    try destruct H2;
+    try destruct H3.
 Qed.

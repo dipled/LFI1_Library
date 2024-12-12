@@ -33,19 +33,109 @@ Notation " ∘ x " :=
 Notation " # x " :=
 (Lit x) (at level 2, no associativity, x constr at level 1, format "# x").
 
+Lemma neg_discrim : forall φ : Formula, φ <> ¬φ.
+Proof.
+  intros. induction φ; try discriminate.
+  intro. injection H. intro. apply IHφ. apply H0.
+Qed.
+
+Lemma circ_discrim : forall φ : Formula, φ <> ∘φ.
+Proof.
+  intros. induction φ; try discriminate.
+  intro. inversion H. apply IHφ. apply H1.
+Qed.
+
+Lemma and_discrim_l : forall φ ψ: Formula, φ <> φ ∧ ψ.
+Proof.
+  intros. induction φ; try discriminate.
+  intro. inversion H. rewrite H2 in H1. apply IHφ1. apply H1.
+Qed.
+
+Lemma and_discrim_r : forall φ ψ: Formula, φ <> ψ ∧ φ.
+Proof.
+  intros. induction φ; try discriminate.
+  intro. inversion H. apply IHφ2. apply H2. 
+Qed.
+
+Lemma or_discrim_l : forall φ ψ: Formula, φ <> φ ∨ ψ.
+Proof.
+  intros. induction φ; try discriminate.
+  intro. inversion H. rewrite H2 in H1. apply IHφ1. apply H1.
+Qed.
+
+Lemma or_discrim_r : forall φ ψ: Formula, φ <> ψ ∨ φ.
+Proof.
+  intros. induction φ; try discriminate.
+  intro. inversion H. apply IHφ2. apply H2. 
+Qed.
+
+Lemma to_discrim_l : forall φ ψ: Formula, φ <> (φ → ψ).
+Proof.
+  intros. induction φ; try discriminate.
+  intro. inversion H. rewrite H2 in H1. apply IHφ1. apply H1.
+Qed.
+
+Lemma to_discrim_r : forall φ ψ: Formula, φ <> (ψ → φ).
+Proof.
+  intros. induction φ; try discriminate.
+  intro. inversion H. apply IHφ2. apply H2.
+Qed.
+
 Theorem eq_formula_dec : forall x y : Formula, {x = y} + {x <> y}.
 Proof.
-  intros. induction x, y.
-  - pose proof eq_nat_dec a a0. destruct H as [Heq | Hneq]. 
+  intro. induction x.
+  - intro. induction y; try (right; discriminate).
+    pose proof eq_nat_dec a a0. destruct H as [Heq | Hneq]. 
     + left. rewrite Heq. reflexivity.
     + right. intro. inversion H. apply Hneq. apply H1.
-  - right. discriminate.
-  - right. discriminate.
-  - right. discriminate.
-  - right. discriminate.
-  - right. discriminate.
-  - right. discriminate.
-Admitted.
+  - intro. induction y; try (right; discriminate). destruct IHy.
+    + right. intro. rewrite <- e in H. inversion H. apply neg_discrim in H1.
+      apply H1.
+    + specialize (IHx y). destruct IHx.
+      * left. rewrite e. reflexivity.
+      * right. intro. inversion H. apply n0. apply H1.
+  - intro. induction y; try (right; discriminate). intuition.
+    + right. intro. inversion H. rewrite H1 in a. apply (and_discrim_l y1 x2). 
+      symmetry. apply a.
+    + right. intro. inversion H. rewrite H1 in a. apply (and_discrim_l y1 x2). 
+      symmetry. apply a.
+    + right. intro. inversion H. rewrite H2 in a. apply (and_discrim_r y2 x1).
+      symmetry. apply a.
+    + specialize (IHx1 y1). specialize (IHx2 y2). destruct IHx1, IHx2.
+       * left. rewrite e. rewrite e0. reflexivity.
+       * right. intro. inversion H. apply f. apply H2.
+       * right. intro. inversion H. apply f. apply H1.
+       * right. intro. inversion H. apply f. apply H1.
+  - intro. induction y; try (right; discriminate). intuition.
+    + right. intro. inversion H. rewrite H1 in a. apply (or_discrim_l y1 x2). 
+      symmetry. apply a.
+    + right. intro. inversion H. rewrite H1 in a. apply (or_discrim_l y1 x2). 
+      symmetry. apply a.
+    + right. intro. inversion H. rewrite H2 in a. apply (or_discrim_r y2 x1). 
+      symmetry. apply a.
+    + specialize (IHx1 y1). specialize (IHx2 y2). destruct IHx1, IHx2.
+      * left. rewrite e. rewrite e0. reflexivity.
+      * right. intro. inversion H. apply f. apply H2.
+      * right. intro. inversion H. apply f. apply H1.
+      * right. intro. inversion H. apply f. apply H1.
+  - intro. induction y; try (right; discriminate). intuition.
+    + right. intro. inversion H. rewrite H1 in a. apply (to_discrim_l y1 x2). 
+      symmetry. apply a.
+    + right. intro. inversion H. rewrite H1 in a. apply (to_discrim_l y1 x2). 
+      symmetry. apply a.
+    + right. intro. inversion H. rewrite H2 in a. apply (to_discrim_r y2 x1). 
+      symmetry. apply a.
+    + specialize (IHx1 y1). specialize (IHx2 y2). destruct IHx1, IHx2.
+      * left. rewrite e. rewrite e0. reflexivity.
+      * right. intro. inversion H. apply f. apply H2.
+      * right. intro. inversion H. apply f. apply H1.
+      * right. intro. inversion H. apply f. apply H1.
+  - intro. induction y; try (right; discriminate). intuition.
+    + right. intro. rewrite a in H. apply (circ_discrim y). apply H.
+    + specialize (IHx y). destruct IHx.
+      * left. f_equal. apply e.
+      * right. intro. apply f. inversion H. reflexivity.
+Qed.
 
 Fixpoint size (f : Formula) : nat :=
  match f with
