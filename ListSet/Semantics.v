@@ -79,15 +79,33 @@ forall (v : Atom -> MatrixDomain), matrixFormulaSetSAT v Γ -> matrixFormulaSAT 
 
 Notation " A ⊨ B " := (matrixEntails A B) (at level 110, no associativity).
 
-Example teste : forall (Γ : set Formula) (α : Formula), 
-  ¬∘α::Γ ⊨ α ∧ ¬α.
+Example formula_sat_app : forall (v : Atom -> MatrixDomain) (Γ : set Formula) (α : Formula), matrixFormulaSetSAT v (set_add eq_formula_dec (¬∘α) Γ) -> matrixFormulaSAT v (¬∘α) /\ matrixFormulaSetSAT v Γ.
 Proof.
-  intros. unfold matrixEntails. intros.
-  destruct H. unfold matrixFormulaSAT. unfold matrixFormulaSAT in H.
-  simpl. simpl in H. destruct ((matrixEvaluation v α)).
-  - simpl in H. exfalso; apply H.
+  intros. induction Γ.
+  - simpl in H. destruct H. split.
+    + apply H.
+    + reflexivity.
+  - simpl in H. destruct eq_formula_dec in H.
+    + split.
+      * simpl in H. destruct H. rewrite e. apply H.
+      * apply H.
+    + split.
+      * simpl in H. destruct H. apply IHΓ in H0. apply H0.
+      * simpl in H. destruct H. apply IHΓ in H0. split.
+        -- apply H.
+        -- apply H0.
+Qed.
+
+
+Example teste : forall (Γ : set Formula) (α : Formula), 
+ set_add eq_formula_dec (¬∘α) Γ ⊨ α ∧ ¬α.
+Proof.
+  intros. unfold matrixEntails. intros. apply formula_sat_app in H. destruct H.
+  unfold matrixFormulaSAT in H. unfold matrixFormulaSAT. simpl in *.
+  destruct (matrixEvaluation v α).
+  - destruct H.
   - reflexivity.
-  - simpl in H. exfalso; apply H.
+  - destruct H.
 Qed.
 
 (* Semantic System: Valuations *)

@@ -48,8 +48,9 @@ Definition instantiate (a : Ax) : Formula :=
   | negland2 α β => (¬α ∨ ¬β) → ¬(α ∧ β)
   | negto1 α β   => ¬(α → β) → (α ∧ ¬β)
   | negto2 α β   => (α ∧ ¬β) → ¬(α → β)
-  end. 
+  end.
   
+
 Inductive deduction : set Formula -> Formula -> Prop :=
   | Premisse : forall (Γ : set Formula) (φ : Formula), set_In φ Γ -> deduction Γ φ
   | AxiomInstance : forall (Γ : set Formula) (a : Ax), deduction Γ (instantiate a)

@@ -12,7 +12,6 @@ Inductive Formula : Set :=
   | Imp    : Formula -> Formula -> Formula
   | Cons   : Formula -> Formula.
 
-
 Notation " x → y " := 
 (Imp x y) (at level 80, right associativity).
 
@@ -34,6 +33,20 @@ Notation " ∘ x " :=
 Notation " # x " :=
 (Lit x) (at level 2, no associativity, x constr at level 1, format "# x").
 
+Theorem eq_formula_dec : forall x y : Formula, {x = y} + {x <> y}.
+Proof.
+  intros. induction x, y.
+  - pose proof eq_nat_dec a a0. destruct H as [Heq | Hneq]. 
+    + left. rewrite Heq. reflexivity.
+    + right. intro. inversion H. apply Hneq. apply H1.
+  - right. discriminate.
+  - right. discriminate.
+  - right. discriminate.
+  - right. discriminate.
+  - right. discriminate.
+  - right. discriminate.
+Admitted.
+
 Fixpoint size (f : Formula) : nat :=
  match f with
  | Lit x    => 1
@@ -42,7 +55,7 @@ Fixpoint size (f : Formula) : nat :=
  | Or a b   => 1 + size a + size b
  | Imp a b  => 1 + size a + size b
  | Cons a => 2 + size a
- end.
+ end. 
 
 Fixpoint atoms (f : Formula) : set nat :=
   match f with

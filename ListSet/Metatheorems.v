@@ -19,21 +19,21 @@ Proof.
   - apply H0.
 Qed.
 
-Lemma quasi_monotonicity : forall (Γ : set Formula) (α β : Formula), (Γ ⊢ β) -> (α :: Γ) ⊢ β.
+Lemma quasi_monotonicity : forall (Γ : set Formula) (α β : Formula), (Γ ⊢ β) -> (set_add eq_formula_dec α Γ) ⊢ β.
 Proof.
   intros. induction H.
-  - apply Premisse. simpl. right. apply H.
+  - apply Premisse. apply set_add_intro. right. apply H.
   - apply AxiomInstance.
   - apply (MP _ φ ψ).
     + apply IHdeduction1.
     + apply IHdeduction2.
 Qed.
 
-Theorem deduction_metatheorem : forall (Γ : set Formula) (α β : Formula), (α :: Γ ⊢ β) <-> (Γ ⊢ α → β).
+Theorem deduction_metatheorem : forall (Γ : set Formula) (α β : Formula), ((set_add eq_formula_dec α Γ) ⊢ β) <-> (Γ ⊢ α → β).
 Proof. 
   intros. split.
-  - intro. remember (α :: Γ) as Δ eqn: Heq in H. induction H.
-    + rewrite Heq in H. simpl in H. destruct H.
+  - intro. remember ((set_add eq_formula_dec α Γ)) as Δ eqn: Heq in H. induction H.
+    + rewrite Heq in H. apply set_add_elim in H. destruct H.
       * rewrite H. apply id.
       * apply (MP Γ φ (α → φ)).
         -- apply (AxiomInstance Γ (Ax1 φ α)).
@@ -50,14 +50,14 @@ Proof.
       * apply H1.
   - intro. 
     pose proof quasi_monotonicity Γ α (α → β). apply H0 in H as H1.
-    assert (α :: Γ ⊢ α) as H2.
-    + apply Premisse. simpl. left. reflexivity.
-    + apply (MP (α :: Γ) α β).
+    assert ((set_add eq_formula_dec α Γ) ⊢ α) as H2.
+    + apply Premisse. apply set_add_intro. left. reflexivity.
+    + apply (MP (set_add eq_formula_dec α Γ) α β).
       * apply H1.
       * apply H2.
 Qed.
 
-Corollary proof_by_cases : forall (Γ : set Formula) (α β φ : Formula), (α :: Γ ⊢ φ) /\ (β :: Γ ⊢ φ) -> (α ∨ β :: Γ ⊢ φ).
+Corollary proof_by_cases : forall (Γ : set Formula) (α β φ : Formula), ((set_add eq_formula_dec α Γ) ⊢ φ) /\ ((set_add eq_formula_dec β Γ) ⊢ φ) -> ((set_add eq_formula_dec (α ∨ β) Γ) ⊢ φ).
 Proof.
   intros. destruct H. 
   pose proof deduction_metatheorem as DMT.
@@ -70,7 +70,7 @@ Proof.
   - apply H.
 Qed.
   
-Corollary proof_by_cases_neg : forall (Γ : set Formula) (α φ : Formula), (α :: Γ ⊢ φ) /\ (¬ α :: Γ ⊢ φ) -> (Γ ⊢ φ).
+Corollary proof_by_cases_neg : forall (Γ : set Formula) (α φ : Formula), ((set_add eq_formula_dec α Γ) ⊢ φ) /\ ((set_add eq_formula_dec (¬ α) Γ) ⊢ φ) -> (Γ ⊢ φ).
 Proof.
   intros. destruct H.
   pose proof deduction_metatheorem as DMT.
