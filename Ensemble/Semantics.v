@@ -92,9 +92,11 @@ Definition designatedValue (a : MatrixDomain) : Prop :=
 Definition matrixFormulaSAT (v : Atom -> MatrixDomain) (φ : Formula) : Prop := 
 designatedValue (matrixEvaluation v φ).
 
-Definition matrixEntails (Γ:Ensemble Formula) p := forall v,
-(forall q, q ∈ Γ -> designatedValue (matrixEvaluation v q)) -> 
-designatedValue ( matrixEvaluation v p).
+Definition matrixEntails (Γ:Ensemble Formula) (φ : Formula) := 
+forall v : (Atom -> MatrixDomain),
+(forall (ψ: Formula), 
+  ψ ∈ Γ -> designatedValue (matrixEvaluation v ψ)) -> 
+designatedValue ( matrixEvaluation v φ).
 
 Notation " A ⊨ B " := (matrixEntails A B) (at level 110, no associativity).
 
