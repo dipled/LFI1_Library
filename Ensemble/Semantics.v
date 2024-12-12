@@ -1,4 +1,4 @@
-Require Import Arith List Infinite_sets.
+Require Import Arith Infinite_sets.
 From Coq Require Export String.
 From LFI1 Require Import Language.
 Arguments In {U}.
@@ -6,6 +6,12 @@ Arguments Add {U}.
 Arguments Empty_set {U}.
 Arguments Union {U}.
 Arguments Singleton {U}.
+Arguments Included {U}.
+
+Notation " a ∈ A " := (In A a) (at level 10).
+Notation " B ∪ C " := (Union B C) (at level 65, left associativity).
+Notation " [ a ] " := (Singleton a) (at level 0, right associativity).
+Notation " A ⊆ B " := (Included A B) (at level 70).
 
 (* Semantic System: Matrix *)
 
@@ -52,8 +58,20 @@ Definition consM (a : MatrixDomain) : MatrixDomain :=
   | _    => One
   end.
 
-Definition bimpM (a b : MatrixDomain) : MatrixDomain := 
-andM (impM a b) (impM b a).
+Notation " x →' y " := 
+(impM x y) (at level 80, right associativity).
+
+Notation " x ∧' y " := 
+(andM x y) (at level 20, left associativity).
+
+Notation " x ∨' y " := 
+(orM x y) (at level 31, left associativity).
+
+Notation " ¬' x " := 
+(negM x) (at level 9, right associativity, format "¬' x").
+
+Notation " ∘' x " := 
+(consM x) (at level 9, right associativity, format "∘' x").
 
 Fixpoint matrixEvaluation (v : Atom -> MatrixDomain) (φ : Formula) : MatrixDomain :=
   match φ with
@@ -74,26 +92,17 @@ Definition designatedValue (a : MatrixDomain) : Prop :=
 Definition matrixFormulaSAT (v : Atom -> MatrixDomain) (φ : Formula) : Prop := 
 designatedValue (matrixEvaluation v φ).
 
-Fixpoint matrixFormulaSetSAT (v : Atom -> MatrixDomain) (Γ : Ensemble Formula) : Prop :=
-  match Γ with
-  | Empty_set => True
-  | Full_set => False
-  | Union a b => (matrixFormulaSAT v a) /\ (matrixFormulaSetSAT v b)
-  end.
-
-Definition matrixEntails (Γ : list Formula) (φ : Formula) : Prop :=
-forall (v : Atom -> MatrixDomain), matrixFormulaSetSAT v Γ -> matrixFormulaSAT v φ.
+Definition matrixEntails (Γ:Ensemble Formula) p := forall v,
+(forall q, q ∈ Γ -> designatedValue (matrixEvaluation v q)) -> 
+designatedValue ( matrixEvaluation v p).
 
 Notation " A ⊨ B " := (matrixEntails A B) (at level 110, no associativity).
 
-Example teste : forall (Γ : list Formula) (α : Formula), 
- ¬∘α :: Γ ⊨ α ∧ ¬α.
+Example teste : forall (Γ : Ensemble Formula) (α : Formula), 
+ Γ ⊨ ¬ (α ∧ ¬α).
 Proof.
-  intros. unfold matrixEntails. intros. simpl in H. destruct H as [H0 H1].
-  unfold matrixFormulaSAT in *. simpl in *. destruct (matrixEvaluation v α).
-  - destruct H0.
-  - reflexivity.
-  - destruct H0.
+  intros. unfold matrixEntails. intros.
+  unfold matrixFormulaSAT in *. simpl in *. destruct (matrixEvaluation v α); reflexivity.
 Qed.
 
 (* Semantic System: Valuations *)

@@ -1,6 +1,17 @@
-Require Import Arith List.
+Require Import Arith List Infinite_sets.
 From Coq Require Export String.
 From LFI1 Require Import Language.
+Arguments In {U}.
+Arguments Add {U}.
+Arguments Empty_set {U}.
+Arguments Union {U}.
+Arguments Singleton {U}.
+Arguments Included {U}.
+
+Notation " a ∈ A " := (In A a) (at level 10).
+Notation " B ∪ C " := (Union B C) (at level 65, left associativity).
+Notation " [ a ] " := (Singleton a) (at level 0, right associativity).
+Notation " A ⊆ B " := (Included A B) (at level 70).
 
 (* Deductive System: Hilbert Calculus *)
 
@@ -51,10 +62,10 @@ Definition instantiate (a : Ax) : Formula :=
   end.
   
 
-Inductive deduction : list Formula -> Formula -> Prop :=
-  | Premisse : forall (Γ : list Formula) (φ : Formula), In φ Γ -> deduction Γ φ
-  | AxiomInstance : forall (Γ : list Formula) (a : Ax), deduction Γ (instantiate a)
-  | MP : forall (Γ : list Formula) (φ ψ : Formula), (deduction Γ (φ → ψ)) -> 
+Inductive deduction : Ensemble Formula -> Formula -> Prop :=
+  | Premisse : forall (Γ : Ensemble Formula) (φ : Formula), φ ∈ Γ -> deduction Γ φ
+  | AxiomInstance : forall (Γ : Ensemble Formula) (a : Ax), deduction Γ (instantiate a)
+  | MP : forall (Γ : Ensemble Formula) (φ ψ : Formula), (deduction Γ (φ → ψ)) -> 
     (deduction Γ φ) -> deduction Γ ψ.
 
 Notation " Γ ⊢ φ " := (deduction Γ φ) (at level 110, no associativity).

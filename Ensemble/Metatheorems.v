@@ -1,10 +1,21 @@
-Require Import Arith List.
+Require Import Arith List Infinite_sets.
 From Coq Require Export String.
 From LFI1 Require Import Language Syntax Semantics.
+Arguments In {U}.
+Arguments Add {U}.
+Arguments Empty_set {U}.
+Arguments Union {U}.
+Arguments Singleton {U}.
+Arguments Included {U}.
+
+Notation " a ∈ A " := (In A a) (at level 10).
+Notation " B ∪ C " := (Union B C) (at level 65, left associativity).
+Notation " [ a ] " := (Singleton a) (at level 0, right associativity).
+Notation " A ⊆ B " := (Included A B) (at level 70).
 
 (* Deduction metatheorem for Hilbert calculus *)
 
-Lemma id : forall (Γ : list Formula) (φ : Formula), Γ ⊢ φ → φ.
+Lemma id : forall (Γ : Ensemble Formula) (φ : Formula), Γ ⊢ φ → φ.
 Proof.
   intros. 
   pose proof AxiomInstance Γ (Ax2 φ (φ → φ) φ). simpl in H.
@@ -19,27 +30,27 @@ Proof.
   - apply H0.
 Qed.
 
-Lemma quasi_monotonicity : forall (Γ : list Formula) (α β : Formula), (Γ ⊢ β) -> 
-(α :: Γ) ⊢ β.
+Lemma quasi_monotonicity : forall (Γ : Ensemble Formula) (α β : Formula), (Γ ⊢ β) -> 
+(Add Γ α) ⊢ β.
 Proof.
   intros. induction H.
-  - apply Premisse. simpl. right. apply H.
+  - apply Premisse. left. apply H.
   - apply AxiomInstance.
   - apply (MP _ φ ψ).
     + apply IHdeduction1.
     + apply IHdeduction2.
 Qed.
 
-Theorem deduction_metatheorem : forall (Γ : list Formula) (α β : Formula), 
-((α :: Γ) ⊢ β) <-> (Γ ⊢ α → β).
+Theorem deduction_metatheorem : forall (Γ : Ensemble Formula) (α β : Formula), 
+((Add Γ α) ⊢ β) <-> (Γ ⊢ α → β).
 Proof. 
   intros. split.
-  - intro. remember ((α :: Γ)) as Δ eqn: Heq in H. induction H.
+  - intro. remember (Add Γ α) as Δ eqn: Heq in H. induction H.
     + rewrite Heq in H. simpl in H. destruct H.
-      * rewrite H. apply id.
-      * apply (MP Γ φ (α → φ)).
-        -- apply (AxiomInstance Γ (Ax1 φ α)).
+      * apply (MP Γ x (α → x)).
+        -- apply (AxiomInstance Γ (Ax1 x α)).
         -- apply Premisse. apply H.
+      * rewrite H. apply id.
     + apply (MP Γ (instantiate a) (α → (instantiate a))).
       * apply (AxiomInstance Γ (Ax1 (instantiate a) α)).
       * apply AxiomInstance.
@@ -52,15 +63,15 @@ Proof.
       * apply H1.
   - intro. 
     pose proof quasi_monotonicity Γ α (α → β). apply H0 in H as H1.
-    assert ((α :: Γ) ⊢ α) as H2.
-    + apply Premisse. simpl. left. reflexivity.
-    + apply (MP (α :: Γ) α β).
+    assert ((Add Γ α) ⊢ α) as H2.
+    + apply Premisse. simpl. right. reflexivity.
+    + apply (MP (Add Γ α) α β).
       * apply H1.
       * apply H2.
 Qed.
 
-Corollary proof_by_cases : forall (Γ : list Formula) (α β φ : Formula), 
-((α :: Γ) ⊢ φ) /\ (β :: Γ ⊢ φ) -> ((α ∨ β :: Γ) ⊢ φ).
+Corollary proof_by_cases : forall (Γ : Ensemble Formula) (α β φ : Formula), 
+(Add Γ α ⊢ φ) /\ (Add Γ β ⊢ φ) -> (Add Γ (α ∨ β) ⊢ φ).
 Proof.
   intros. destruct H. 
   pose proof deduction_metatheorem as DMT.
@@ -73,8 +84,8 @@ Proof.
   - apply H.
 Qed.
   
-Corollary proof_by_cases_neg : forall (Γ : list Formula) (α φ : Formula), 
-((α :: Γ) ⊢ φ) /\ ((¬ α :: Γ) ⊢ φ) -> (Γ ⊢ φ).
+Corollary proof_by_cases_neg : forall (Γ : Ensemble Formula) (α φ : Formula), 
+(Add Γ α ⊢ φ) /\ (Add Γ (¬α) ⊢ φ) -> (Γ ⊢ φ).
 Proof.
   intros. destruct H.
   pose proof deduction_metatheorem as DMT.
@@ -92,26 +103,12 @@ Qed.
 
 (* Soundness *)
 
-Lemma in_set_sat : forall (Γ : list Formula) (α : Formula) (v : Atom -> MatrixDomain),
-In α Γ /\ matrixFormulaSetSAT v Γ -> matrixFormulaSAT v α.
-Proof.
-  intros. destruct H. Search In. induction Γ.
-  - simpl in H. destruct H.
-  - simpl in H0. destruct H0. simpl in H. destruct H.
-    + rewrite <- H. apply H0.
-    + apply IHΓ.
-      * apply H.
-      * apply H1.
-Qed.
 
-Theorem soundness_mat : forall (Γ : list Formula) (α : Formula), 
+Theorem soundness_mat : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊢ α) -> (Γ ⊨ α).
 Proof.
   intros. induction H.
-  - unfold matrixEntails. intros. apply (in_set_sat Γ).
-    split.
-    + apply H.
-    + apply H0.
+  - unfold matrixEntails. intros. apply H0 in H. apply H.
   - destruct a; unfold matrixEntails; intros; unfold matrixFormulaSAT; simpl;
     try (destruct (matrixEvaluation v f), (matrixEvaluation v f0); reflexivity);
     try (destruct (matrixEvaluation v f), (matrixEvaluation v f0), (matrixEvaluation v f1);

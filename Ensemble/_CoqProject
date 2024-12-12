@@ -1,2 +1,4 @@
 -R . LFI1
+./Semantics.v
+./Syntax.v
 ./Language.v
