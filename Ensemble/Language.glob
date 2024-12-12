@@ -1,0 +1,122 @@
+DIGEST 4e44f90e554d9e6fb552616936c5fc83
+FLFI1.Language
+R15:19 Coq.Arith.Arith <> <> lib
+R21:33 Coq.Sets.Infinite_sets <> <> lib
+R60:65 Coq.Strings.String <> <> lib
+R78:79 Coq.Sets.Ensembles <> In def
+R78:79 Coq.Sets.Ensembles <> In def
+R96:98 Coq.Sets.Ensembles <> Add def
+R96:98 Coq.Sets.Ensembles <> Add def
+R115:123 Coq.Sets.Ensembles <> Empty_set ind
+R115:123 Coq.Sets.Ensembles <> Empty_set ind
+R140:144 Coq.Sets.Ensembles <> Union ind
+R140:144 Coq.Sets.Ensembles <> Union ind
+R177:178 Coq.Sets.Ensembles <> In def
+not 161:161 <> :::x_'∈'_x
+R225:229 Coq.Sets.Ensembles <> Union ind
+not 209:209 <> :::x_'∪'_x
+R294:302 Coq.Sets.Ensembles <> Singleton ind
+not 280:280 <> :::'['_x_']'
+R367:374 Coq.Sets.Ensembles <> Included def
+not 351:351 <> :::x_'⊆'_x
+def 407:410 <> Atom
+R415:417 Coq.Init.Datatypes <> nat ind
+ind 431:437 <> Formula
+constr 452:454 <> Lit
+constr 481:483 <> Neg
+constr 513:515 <> And
+constr 556:557 <> Or
+constr 599:601 <> Imp
+constr 642:645 <> Cons
+R465:468 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R461:464 LFI1.Language <> Atom def
+R469:475 LFI1.Language <> Formula:1 ind
+R497:500 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R490:496 LFI1.Language <> Formula:1 ind
+R501:507 LFI1.Language <> Formula:1 ind
+R529:532 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R522:528 LFI1.Language <> Formula:1 ind
+R540:543 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R533:539 LFI1.Language <> Formula:1 ind
+R544:550 LFI1.Language <> Formula:1 ind
+R572:575 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R565:571 LFI1.Language <> Formula:1 ind
+R583:586 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R576:582 LFI1.Language <> Formula:1 ind
+R587:593 LFI1.Language <> Formula:1 ind
+R615:618 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R608:614 LFI1.Language <> Formula:1 ind
+R626:629 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R619:625 LFI1.Language <> Formula:1 ind
+R630:636 LFI1.Language <> Formula:1 ind
+R658:661 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R651:657 LFI1.Language <> Formula:1 ind
+R662:668 LFI1.Language <> Formula:1 ind
+scheme 431:437 <> Formula_rect
+scheme 431:437 <> Formula_ind
+scheme 431:437 <> Formula_rec
+scheme 431:437 <> Formula_sind
+R698:700 LFI1.Language <> Imp constr
+not 681:681 <> :::x_'→'_x
+R850:852 LFI1.Language <> And constr
+not 833:833 <> :::x_'∧'_x
+R921:922 LFI1.Language <> Or constr
+not 904:904 <> :::x_'∨'_x
+R988:990 LFI1.Language <> Neg constr
+not 974:974 <> :::'¬'_x
+R1070:1073 LFI1.Language <> Cons constr
+not 1055:1055 <> :::'∘'_x
+R1151:1153 LFI1.Language <> Lit constr
+not 1139:1139 <> :::'#'_x
+def 1235:1238 <> size
+R1245:1251 LFI1.Language <> Formula ind
+binder 1241:1241 <> f:3
+R1256:1258 Coq.Init.Datatypes <> nat ind
+R1270:1270 LFI1.Language <> f:3 var
+R1280:1282 LFI1.Language <> Lit constr
+R1297:1299 LFI1.Language <> Neg constr
+R1310:1312 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1313:1316 LFI1.Language <> size:4 def
+R1323:1325 LFI1.Language <> And constr
+R1345:1347 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1336:1338 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1339:1342 LFI1.Language <> size:4 def
+R1348:1351 LFI1.Language <> size:4 def
+R1358:1359 LFI1.Language <> Or constr
+R1380:1382 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1371:1373 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1374:1377 LFI1.Language <> size:4 def
+R1383:1386 LFI1.Language <> size:4 def
+R1393:1395 LFI1.Language <> Imp constr
+R1415:1417 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1406:1408 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1409:1412 LFI1.Language <> size:4 def
+R1418:1421 LFI1.Language <> size:4 def
+R1428:1431 LFI1.Language <> Cons constr
+R1439:1441 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1442:1445 LFI1.Language <> size:4 def
+def 1466:1470 <> atoms
+R1477:1483 LFI1.Language <> Formula ind
+binder 1473:1473 <> f:6
+R1488:1495 Coq.Sets.Ensembles <> Ensemble def
+R1497:1500 LFI1.Language <> Atom def
+R1513:1513 LFI1.Language <> f:6 var
+R1524:1526 LFI1.Language <> Lit constr
+R1536:1538 Coq.Sets.Ensembles <> Add def
+R1540:1548 Coq.Sets.Ensembles <> Empty_set ind
+R1556:1558 LFI1.Language <> Neg constr
+R1568:1572 LFI1.Language <> atoms:7 def
+R1580:1582 LFI1.Language <> And constr
+R1592:1596 Coq.Sets.Ensembles <> Union ind
+R1609:1613 LFI1.Language <> atoms:7 def
+R1599:1603 LFI1.Language <> atoms:7 def
+R1622:1623 LFI1.Language <> Or constr
+R1634:1638 Coq.Sets.Ensembles <> Union ind
+R1651:1655 LFI1.Language <> atoms:7 def
+R1641:1645 LFI1.Language <> atoms:7 def
+R1664:1666 LFI1.Language <> Imp constr
+R1676:1680 Coq.Sets.Ensembles <> Union ind
+R1693:1697 LFI1.Language <> atoms:7 def
+R1683:1687 LFI1.Language <> atoms:7 def
+R1706:1709 LFI1.Language <> Cons constr
+R1716:1720 LFI1.Language <> atoms:7 def

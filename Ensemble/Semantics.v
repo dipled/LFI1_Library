@@ -1,17 +1,4 @@
-Require Import Arith Infinite_sets.
-From Coq Require Export String.
-From LFI1 Require Import Language.
-Arguments In {U}.
-Arguments Add {U}.
-Arguments Empty_set {U}.
-Arguments Union {U}.
-Arguments Singleton {U}.
-Arguments Included {U}.
-
-Notation " a ∈ A " := (In A a) (at level 10).
-Notation " B ∪ C " := (Union B C) (at level 65, left associativity).
-Notation " [ a ] " := (Singleton a) (at level 0, right associativity).
-Notation " A ⊆ B " := (Included A B) (at level 70).
+From LFI1 Require Export Language.
 
 (* Semantic System: Matrix *)
 
@@ -75,11 +62,11 @@ Notation " ∘' x " :=
 
 Fixpoint matrixEvaluation (v : Atom -> MatrixDomain) (φ : Formula) : MatrixDomain :=
   match φ with
-  | a ∧ b => andM (matrixEvaluation v a) (matrixEvaluation v b)
-  | a ∨ b => orM (matrixEvaluation v a) (matrixEvaluation v b)
-  | a → b => impM (matrixEvaluation v a) (matrixEvaluation v b)
-  | ¬a    => negM (matrixEvaluation v a)
-  | ∘a    => consM (matrixEvaluation v a)
+  | a ∧ b => (matrixEvaluation v a) ∧' (matrixEvaluation v b)
+  | a ∨ b => (matrixEvaluation v a) ∨' (matrixEvaluation v b)
+  | a → b => (matrixEvaluation v a) →' (matrixEvaluation v b)
+  | ¬a    => ¬'(matrixEvaluation v a)
+  | ∘a    => ∘'(matrixEvaluation v a)
   | #a    => v a
   end.
 
