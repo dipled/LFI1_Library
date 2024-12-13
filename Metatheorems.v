@@ -90,14 +90,111 @@ Qed.
 
 (* Soundness *)
 
+Lemma bivaluation_lem : forall (v : Formula -> BivaluationDomain) (φ : Formula),
+v φ = ⊤ \/ v φ = ⊥.
+Proof.
+  intros. destruct (v φ).
+  - right. reflexivity.
+  - left. reflexivity.
+Qed.
+
+Lemma bivaluation_dec1 : forall (v : Formula -> BivaluationDomain) (φ : Formula),
+v φ = ⊤ <-> ~ v φ = ⊥.
+Proof.
+  intros. split.
+  + intro. destruct (v φ).
+    - discriminate H.
+    - intro. discriminate H0.
+  + intro. destruct (v φ).
+    - exfalso. apply H. reflexivity.
+    - reflexivity.
+Qed.
+
+Lemma bivaluation_dec2 : forall (v : Formula -> BivaluationDomain) (φ : Formula),
+v φ = ⊥ <-> ~ v φ = ⊤.
+Proof.
+    intros. split.
+  + intro. destruct (v φ).
+    - intro. discriminate H0.
+    - discriminate H.
+  + intro. destruct (v φ).
+    - reflexivity.
+    - exfalso. apply H. reflexivity.
+Qed.
+
+Fixpoint h_atom (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
+  match α with
+  | # a   => match (v α), (v ¬α) with
+             | ⊤, ⊥ => One
+             | ⊤, ⊤ => Half
+             | ⊥, _ => Zero
+             end
+  | ¬ β   => ¬'(h_atom β v)
+  | ∘ β   => ∘'(h_atom β v)
+  | β ∧ γ => (h_atom β v) ∧' (h_atom γ v)
+  | β ∨ γ => (h_atom β v) ∨' (h_atom γ v)
+  | β → γ => (h_atom β v) →' (h_atom γ v)
+  end.
+
+Definition h_formula (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
+  match (v α), (v ¬α) with
+  | ⊤, ⊥ => One
+  | ⊤, ⊤ => Half
+  | ⊥, _ => Zero       
+  end.
+
+Lemma h_valuation : forall (v : Formula -> BivaluationDomain),
+bivaluation v -> valuation (fun x => h_formula x v).
+Proof.
+  intros. unfold bivaluation in H. destruct_conjunction H. 
+  unfold valuation; try repeat split.
+  - unfold preserveOr. intros. unfold h_formula.
+    remember (v (φ ∨ ψ)). remember (v ¬(φ ∨ ψ)).
+    destruct b,  b0; symmetry in Heqb; symmetry in Heqb0.
+    + apply L2 in Heqb0. apply bivaluation_dec2 in Heqb. 
+      apply Heqb in Heqb0. destruct Heqb0.
+    + 
+
+
+(* Lemma designatedValue_prop : forall φ v, bivaluation v ->
+(h_atom φ v = One <-> (v φ = ⊤ /\ v (¬φ) = ⊥)) /\
+(h_atom φ v = Half <-> (v φ = ⊤ /\ v (¬φ) = ⊤)) /\ 
+(h_atom φ v = Zero <-> (v φ = ⊤ /\ v (¬φ) = ⊤)).
+Proof.
+  intros. split.
+  - intros. induction φ.
+    + split.
+      * intros. simpl in H0. destruct (v #a), (v ¬#a); try discriminate H0; split;
+        reflexivity.
+      * intros. simpl. destruct (v #a), (v ¬#a); destruct H0; try discriminate H0;
+        try discriminate H1; reflexivity.
+    + split.
+      * intros. simpl in H0. remember (h_atom φ v). destruct m; try discriminate H0.
+        rewrite Heqm in IHφ.
+Qed.  *)
+
 Lemma bivaluation_matrix_lemma : forall (v : Formula -> BivaluationDomain),
 bivaluation v -> 
-(exists (h : Formula -> MatrixDomain), valuation h ->
- forall φ : Formula, v φ = ⊤ <-> designatedValue (h φ)
+(exists (h : Formula -> MatrixDomain),
+ (forall φ : Formula, v φ = ⊤ <-> designatedValue (h φ)) /\ valuation h
 ).
-Proof. intros. Admitted.
+Proof. 
+  intros. exists (fun x => h_formula x v). intros. split. split.
+  - induction φ.
+    + intros. unfold h_formula. simpl. rewrite H0. destruct (v ¬#a); reflexivity.
+    + intros. simpl. destruct h_formula.
+      * 
+Qed.
 
-Theorem soundness_mat : forall (Γ : Ensemble Formula) (α : Formula), 
+Corollary bivaluation_matrix_imp1 : forall (Γ : Ensemble Formula) (α : Formula), 
+(Γ ⊨m α) -> (Γ ⊨ α).
+Proof.
+  intros. unfold matrixEntails in H. unfold bivaluationEntails.
+  intros. apply bivaluation_matrix_lemma in H0. destruct H0 as [h].
+  specialize (H h). apply H0.
+  - unfold valuation.
+
+Theorem soundness_matrix : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊢ α) -> (Γ ⊨m α).
 Proof.
   intros. induction H.
