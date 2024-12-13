@@ -95,7 +95,7 @@ bivaluation v ->
 (exists (h : Formula -> MatrixDomain), valuation h ->
  forall φ : Formula, v φ = ⊤ <-> designatedValue (h φ)
 ).
-Proof. Admitted.
+Proof. intros. Admitted.
 
 Theorem soundness_mat : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊢ α) -> (Γ ⊨m α).
