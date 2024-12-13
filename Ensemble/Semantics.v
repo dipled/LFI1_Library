@@ -1,11 +1,17 @@
 From LFI1 Require Export Language.
 
-(* Semantic System: Matrix *)
+(* Matrix Semantics: *)
 
 Inductive MatrixDomain : Set :=
   | One
   | Half
   | Zero.
+
+Definition designatedValue (a : MatrixDomain) : Prop :=
+  match a with
+  | Zero => False
+  | _ => True
+  end.
 
 Definition andM (a b : MatrixDomain) : MatrixDomain :=
   match a, b with
@@ -46,13 +52,13 @@ Definition consM (a : MatrixDomain) : MatrixDomain :=
   end.
 
 Notation " x →' y " := 
-(impM x y) (at level 80, right associativity).
+(impM x y) (at level 21, right associativity).
 
 Notation " x ∧' y " := 
 (andM x y) (at level 20, left associativity).
 
 Notation " x ∨' y " := 
-(orM x y) (at level 31, left associativity).
+(orM x y) (at level 22, left associativity).
 
 Notation " ¬' x " := 
 (negM x) (at level 9, right associativity, format "¬' x").
@@ -60,38 +66,46 @@ Notation " ¬' x " :=
 Notation " ∘' x " := 
 (consM x) (at level 9, right associativity, format "∘' x").
 
-Fixpoint matrixEvaluation (v : Atom -> MatrixDomain) (φ : Formula) : MatrixDomain :=
-  match φ with
-  | a ∧ b => (matrixEvaluation v a) ∧' (matrixEvaluation v b)
-  | a ∨ b => (matrixEvaluation v a) ∨' (matrixEvaluation v b)
-  | a → b => (matrixEvaluation v a) →' (matrixEvaluation v b)
-  | ¬a    => ¬'(matrixEvaluation v a)
-  | ∘a    => ∘'(matrixEvaluation v a)
-  | #a    => v a
-  end.
+(* Defining the conditions for a function to be a valuation over the matrix,
+   i.e., it must be a homomorphism from Formula to MatrixDomain.
+*)
 
-Definition designatedValue (a : MatrixDomain) : Prop :=
-  match a with
-  | Zero => False
-  | _ => True
-  end.
+Definition preserveAnd (v : Formula -> MatrixDomain) := 
+  forall φ ψ: Formula, (v (φ ∧ ψ)) = (v φ) ∧' (v ψ).
 
-Definition matrixFormulaSAT (v : Atom -> MatrixDomain) (φ : Formula) : Prop := 
-designatedValue (matrixEvaluation v φ).
+Definition preserveOr (v : Formula -> MatrixDomain) := 
+  forall φ ψ: Formula, (v (φ ∨ ψ)) = (v φ) ∨' (v ψ).
+
+Definition preserveTo (v : Formula -> MatrixDomain) := 
+  forall φ ψ: Formula, (v (φ → ψ)) = (v φ) →' (v ψ).
+
+Definition preserveNeg (v : Formula -> MatrixDomain) := 
+  forall φ: Formula, (v (¬φ)) = ¬'(v φ).
+
+Definition preserveCirc (v : Formula -> MatrixDomain) := 
+  forall φ: Formula, (v (∘φ)) = ∘'(v φ).
+
+Definition valuation (v : Formula -> MatrixDomain) :=
+  preserveOr v /\ preserveTo v /\ preserveAnd v /\ preserveNeg v /\ preserveCirc v.
+  
+Ltac destruct_conjunction H :=
+match type of H with
+| _ /\ _ => 
+  let L := fresh "L" in
+  let R := fresh "R" in
+  destruct H as [L R]; destruct_conjunction L; destruct_conjunction R
+| _ => idtac
+end.
+
+(* Defining the semantic consequence relation *)
 
 Definition matrixEntails (Γ:Ensemble Formula) (φ : Formula) := 
-forall v : (Atom -> MatrixDomain),
-(forall (ψ: Formula), 
-  ψ ∈ Γ -> designatedValue (matrixEvaluation v ψ)) -> 
-designatedValue ( matrixEvaluation v φ).
+forall v : (Formula -> MatrixDomain),
+valuation v -> 
+  (forall (ψ: Formula), 
+    ψ ∈ Γ -> designatedValue (v ψ)) -> 
+      designatedValue (v φ).
 
-Notation " A ⊨ B " := (matrixEntails A B) (at level 110, no associativity).
-
-Example teste : forall (Γ : Ensemble Formula) (α : Formula), 
- Γ ⊨ ¬ (α ∧ ¬α).
-Proof.
-  intros. unfold matrixEntails. intros.
-  unfold matrixFormulaSAT in *. simpl in *. destruct (matrixEvaluation v α); reflexivity.
-Qed.
+Notation " A ⊨m B " := (matrixEntails A B) (at level 110, no associativity).
 
 (* Semantic System: Valuations *)

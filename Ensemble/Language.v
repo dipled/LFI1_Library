@@ -9,6 +9,7 @@ Notation " a ∈ A " := (In A a) (at level 10).
 Notation " B ∪ C " := (Union B C) (at level 65, left associativity).
 Notation " [ a ] " := (Singleton a) (at level 0, right associativity).
 Notation " A ⊆ B " := (Included A B) (at level 70).
+Notation " ∅ "     := (Empty_set).
 Definition Atom := nat.
 
 Inductive Formula : Set :=
@@ -48,11 +49,11 @@ Fixpoint size (f : Formula) : nat :=
  | Or a b   => 1 + size a + size b
  | Imp a b  => 1 + size a + size b
  | Cons a => 2 + size a
- end. 
+ end.
 
 Fixpoint atoms (f : Formula) : Ensemble Atom :=
   match f with
-  | Lit x    => Add Empty_set x
+  | Lit x    => Add ∅ x
   | Neg a    => atoms a
   | And a b  => Union (atoms a) (atoms b)
   | Or a b   => Union (atoms a) (atoms b)

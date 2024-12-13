@@ -92,21 +92,33 @@ Qed.
 
 
 Theorem soundness_mat : forall (Γ : Ensemble Formula) (α : Formula), 
-(Γ ⊢ α) -> (Γ ⊨ α).
+(Γ ⊢ α) -> (Γ ⊨m α).
 Proof.
   intros. induction H.
-  - unfold matrixEntails. intros. apply H0 in H. apply H.
-  - destruct a; unfold matrixEntails; intros; unfold matrixFormulaSAT; simpl;
-    try (destruct (matrixEvaluation v f), (matrixEvaluation v f0); reflexivity);
-    try (destruct (matrixEvaluation v f), (matrixEvaluation v f0), (matrixEvaluation v f1);
-      reflexivity);
-    try (destruct (matrixEvaluation v f); reflexivity).
-  - unfold matrixEntails in *. intros. unfold matrixFormulaSAT in *.
+  - unfold matrixEntails. intros. apply H1 in H. apply H.
+  - destruct a; unfold matrixEntails; intros; simpl;
+    try unfold valuation in H; try destruct_conjunction H;
+    repeat rewrite L;
+    repeat rewrite L0; 
+    repeat rewrite L1;
+    repeat rewrite L2;
+    repeat rewrite R0;
+    repeat rewrite L;
+    repeat rewrite L0; 
+    repeat rewrite L1;
+    repeat rewrite L2;
+    repeat rewrite R0;
+    try destruct (v f);
+    try destruct (v f0);
+    try destruct (v f1);
+    try reflexivity.
+  - unfold matrixEntails in *. intros.
     specialize (IHdeduction1 v). specialize (IHdeduction2 v). 
-    apply IHdeduction1 in H1 as H2.
-    apply IHdeduction2 in H1 as H3.
-    simpl in H2, H3. destruct (matrixEvaluation v φ), (matrixEvaluation v ψ); 
-    try reflexivity;
-    try destruct H2;
-    try destruct H3.
+    apply IHdeduction1 in H1 as H3.
+    apply IHdeduction2 in H1 as H4.
+    + unfold valuation in H1. destruct_conjunction H1. rewrite L0 in H3.
+      destruct (v ψ), (v φ); try reflexivity; try destruct H3; try destruct H4;
+      try apply H2. 
+    + apply H2.
+    + apply H2.
 Qed.

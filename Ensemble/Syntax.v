@@ -1,6 +1,6 @@
 From LFI1 Require Export Language.
 
-(* Deductive System: Hilbert Calculus *)
+(* Hilbert calculus: *)
 
 Inductive Ax : Set :=
   | Ax1      : Formula -> Formula -> Ax
