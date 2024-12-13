@@ -122,7 +122,7 @@ Proof.
     - exfalso. apply H. reflexivity.
 Qed.
 
-Fixpoint h_atom (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
+(* Fixpoint h_atom (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
   match α with
   | # a   => match (v α), (v ¬α) with
              | ⊤, ⊥ => One
@@ -134,7 +134,7 @@ Fixpoint h_atom (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain
   | β ∧ γ => (h_atom β v) ∧' (h_atom γ v)
   | β ∨ γ => (h_atom β v) ∨' (h_atom γ v)
   | β → γ => (h_atom β v) →' (h_atom γ v)
-  end.
+  end. *)
 
 Definition h_formula (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
   match (v α), (v ¬α) with
@@ -153,8 +153,7 @@ Proof.
     destruct b,  b0; symmetry in Heqb; symmetry in Heqb0.
     + apply L2 in Heqb0. apply bivaluation_dec2 in Heqb. 
       apply Heqb in Heqb0. destruct Heqb0.
-    + 
-
+    Admitted.
 
 (* Lemma designatedValue_prop : forall φ v, bivaluation v ->
 (h_atom φ v = One <-> (v φ = ⊤ /\ v (¬φ) = ⊥)) /\
@@ -180,10 +179,18 @@ bivaluation v ->
 ).
 Proof. 
   intros. exists (fun x => h_formula x v). intros. split. split.
-  - induction φ.
-    + intros. unfold h_formula. simpl. rewrite H0. destruct (v ¬#a); reflexivity.
-    + intros. simpl. destruct h_formula.
-      * 
+  - intros. pose proof (bivaluation_lem v ¬φ). unfold h_formula.
+    destruct H1.
+    + rewrite H0. rewrite H1. reflexivity.
+    + rewrite H0. rewrite H1. reflexivity.
+  - intros. pose proof (bivaluation_lem v ¬φ). pose proof (bivaluation_lem v φ).
+    unfold h_formula in H0. 
+    destruct H1, H2.
+    + apply H2.
+    + rewrite H1 in H0. rewrite H2 in H0. destruct H0.
+    + apply H2.
+    + rewrite H1 in H0. rewrite H2 in H0. destruct H0.
+  - apply h_valuation. apply H.
 Qed.
 
 Corollary bivaluation_matrix_imp1 : forall (Γ : Ensemble Formula) (α : Formula), 
@@ -191,8 +198,10 @@ Corollary bivaluation_matrix_imp1 : forall (Γ : Ensemble Formula) (α : Formula
 Proof.
   intros. unfold matrixEntails in H. unfold bivaluationEntails.
   intros. apply bivaluation_matrix_lemma in H0. destruct H0 as [h].
-  specialize (H h). apply H0.
-  - unfold valuation.
+  specialize (H h). destruct H0. apply H0. apply H.
+  - apply H2.
+  - intros. apply H0. apply H1. apply H3.
+Qed.
 
 Theorem soundness_matrix : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊢ α) -> (Γ ⊨m α).
