@@ -94,7 +94,7 @@ Definition preserveCirc (v : Formula -> MatrixDomain) : Prop :=
 
 Definition valuation (v : Formula -> MatrixDomain) : Prop :=
   preserveOr v /\ preserveTo v /\ preserveAnd v /\ preserveNeg v /\ preserveCirc v.
-  
+
 Ltac destruct_conjunction H :=
 match type of H with
 | _ /\ _ => 
@@ -104,8 +104,7 @@ match type of H with
 | _ => idtac
 end.
 
-(* Defining the semantic consequence relation *)
-
+(* Defining the semantic consequence relation w.r.t matrices *)
 Definition matrixEntails (Γ:Ensemble Formula) (φ : Formula) := 
 forall v : (Formula -> MatrixDomain),
 valuation v -> 
@@ -115,7 +114,7 @@ valuation v ->
 
 Notation " Γ ⊨m φ " := (matrixEntails Γ φ) (at level 110, no associativity).
 
-(* Semantic System: Valuations *)
+(* Bivaluation semantics *)
 
 Inductive BivaluationDomain : Set :=
   | Bot
@@ -124,6 +123,9 @@ Inductive BivaluationDomain : Set :=
 Notation " ⊥ " := Bot.
 Notation " ⊤ " := Top.
 
+(* Defining the conditions a given map from Formula to BivaluationDomain must
+   follow in order to be a bivaluation (it doesn't have to be a homomorphism)
+*)
 Definition vAnd (v : Formula -> BivaluationDomain) : Prop :=
   forall φ ψ : Formula, (v (φ ∧ ψ)) = ⊤ <-> (v φ = ⊤) /\ (v ψ = ⊤).
 
@@ -158,6 +160,7 @@ Definition bivaluation (v : Formula -> BivaluationDomain) : Prop :=
   vAnd v /\ vOr v /\ vImp v /\ vNeg v /\ vCon v /\ vCi v /\
   vDne v /\ vDmAND v /\ vDmOR v /\ vCip v.
 
+(* Defining the semantic consequence relation w.r.t bivaluations *)
 Definition bivaluationEntails (Γ:Ensemble Formula) (φ : Formula) := 
 forall v : (Formula -> BivaluationDomain),
 bivaluation v -> 
@@ -166,6 +169,9 @@ bivaluation v ->
       (v φ) = ⊤.
 
 Notation " Γ ⊨ φ " := (bivaluationEntails Γ φ) (at level 110, no associativity).
+
+
+(* Proving some useful lemmas regarding bivaluations *)
 
 Lemma bivaluation_lem : forall (v : Formula -> BivaluationDomain) (φ : Formula),
 v φ = ⊤ \/ v φ = ⊥.
