@@ -90,6 +90,7 @@ Qed.
 
 (* Soundness *)
 
+(* Function used to prove Γ ⊨m α -> Γ ⊨ α *)
 Definition h_formula (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
   match (v α), (v ¬α) with
   | ⊤, ⊥ => One
@@ -97,6 +98,9 @@ Definition h_formula (α : Formula) (v : Formula -> BivaluationDomain) : MatrixD
   | ⊥, _ => Zero       
   end.
 
+(* Proof that if v is a bivaluation, then h_formula is a valuation over the matrices 
+   i.e., h_formula is a homomorphism.
+*)
 Lemma h_valuation : forall (v : Formula -> BivaluationDomain),
 bivaluation v -> valuation (fun x => h_formula x v).
 Proof.
@@ -189,6 +193,9 @@ Proof.
         -- rewrite H1 in H0; discriminate H0.
 Qed.
 
+(* Final lemma before proving Γ ⊨m α -> Γ ⊨ α, that generalizes the previous
+   results regarding h_formula.
+*)
 Lemma bivaluation_matrix_lemma : forall (v : Formula -> BivaluationDomain),
 bivaluation v -> 
 (exists (h : Formula -> MatrixDomain),
@@ -258,10 +265,11 @@ Proof.
   intros. apply bivaluation_matrix_imp1. apply soundness_matrix. apply H.
 Qed.
 
-(* Soundness *)
+(* Completeness *)
 
-(* LFI1 is tarskian:  *)
-
+(* LFI1 is tarskian, i.e., it enjoys reflexivity, monotonicity
+   and cut
+*)
 Proposition lfi1_reflexivity : 
 forall (Γ : Ensemble Formula) (φ : Formula),
   φ ∈ Γ -> Γ ⊢ φ.
@@ -294,6 +302,7 @@ Proof.
     apply H2.
 Qed.
 
+(* LFI1 is finitary *)
 Proposition lfi1_finitary :
   forall (Γ : Ensemble Formula) (α : Formula),
     (Γ ⊢ α) -> (exists (Γ0 : Ensemble Formula), (Finite Γ0) /\ Γ0 ⊆ Γ /\ Γ0 ⊢ α).
@@ -331,4 +340,36 @@ Proof.
         -- apply H7 in H9. apply H8 in H10.
            apply (MP ((x ∪ x0)) φ ψ).
            apply H9. apply H10.
+Qed.
+
+(* Defining maximal nontrivial sets of formulae w.r.t a given formula *)
+Definition maximal_nontrivial (Γ : Ensemble Formula) (φ : Formula) : Prop :=
+  ~ Γ ⊢ φ /\ (forall (ψ : Formula), ~ψ ∈ Γ -> (Add Γ ψ ⊢ φ)).
+
+(* Defining closed theories *)
+Definition closed_theory (Γ : Ensemble Formula) : Prop := forall φ : Formula, 
+  Γ ⊢ φ <-> φ ∈ Γ.
+
+(* Every maximal nontrivial set of formulae w.r.t to a given formula 
+   is a closed theory
+*)
+Lemma maximal_nontrivial_is_closed : forall (Γ : Ensemble Formula) (φ : Formula),
+  maximal_nontrivial Γ φ -> closed_theory Γ.
+Proof.
+  intros. unfold maximal_nontrivial in H; destruct H.
+  unfold closed_theory. intros γ. split.
+  - intros. 
+    pose proof (In_lem Formula Γ γ).
+    destruct H2. apply H2. apply H0 in H2.
+    unfold Add in H2. 
+    pose proof (lfi1_cut Γ (Γ ∪ [γ]) φ).
+    assert ((Γ ∪ [γ]) ⊢ φ /\ (forall δ : Formula, δ ∈ (Γ ∪ [γ]) -> Γ ⊢ δ)).
+    + split.
+      * apply H2.
+      * intros. destruct H4.
+        -- apply Premisse. apply H4.
+        -- inversion H4. rewrite <- H5.
+           apply H1.
+    + apply H3 in H4. exfalso. apply H. apply H4.
+  - intros. apply Premisse. apply H1.
 Qed.

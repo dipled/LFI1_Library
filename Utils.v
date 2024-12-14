@@ -24,3 +24,9 @@ Theorem contra : forall A B : Prop, (A -> B) -> (~B -> ~A).
 Proof.
   intros. intro. apply H0. apply H. apply H1.
 Qed.
+
+Theorem In_lem: forall (U : Type) (A : Ensemble U) (x : U),
+  x ∈ A \/ ~ x ∈ A.
+Proof.
+  intros. apply classic.
+Qed.
