@@ -66,13 +66,6 @@ Notation " ¬' x " :=
 Notation " ∘' x " := 
 (consM x) (at level 9, right associativity, format "∘' x").
 
-Lemma or_com : forall (a b : MatrixDomain), a ∨' b = b ∨' a.
-Proof. intros; destruct a, b; reflexivity. Qed.
-
-Lemma and_com : forall (a b : MatrixDomain), a ∨' b = b ∨' a.
-Proof. intros; destruct a, b; reflexivity. Qed.
-
-
 (* Defining the conditions for a function to be a valuation over the matrix,
    i.e., it must be a homomorphism from Formula to MatrixDomain.
 *)
@@ -105,7 +98,7 @@ match type of H with
 end.
 
 (* Defining the semantic consequence relation w.r.t matrices *)
-Definition matrixEntails (Γ:Ensemble Formula) (φ : Formula) := 
+Definition matrixEntails (Γ : Ensemble Formula) (φ : Formula) := 
 forall v : (Formula -> MatrixDomain),
 valuation v -> 
   (forall (ψ: Formula), 

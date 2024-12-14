@@ -28,5 +28,5 @@ Qed.
 Theorem In_lem: forall (U : Type) (A : Ensemble U) (x : U),
   x ∈ A \/ ~ x ∈ A.
 Proof.
-  intros. apply classic.
+  intros. unfold In. apply classic.
 Qed.
