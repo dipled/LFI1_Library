@@ -1,5 +1,5 @@
 Require Export Arith Infinite_sets.
-From Coq Require Export String.
+From LFI1 Require Export Utils.
 Arguments In {U}.
 Arguments Add {U}.
 Arguments Empty_set {U}.

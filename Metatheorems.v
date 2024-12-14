@@ -90,20 +90,6 @@ Qed.
 
 (* Soundness *)
 
-(* Fixpoint h_atom (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
-  match α with
-  | # a   => match (v α), (v ¬α) with
-             | ⊤, ⊥ => One
-             | ⊤, ⊤ => Half
-             | ⊥, _ => Zero
-             end
-  | ¬ β   => ¬'(h_atom β v)
-  | ∘ β   => ∘'(h_atom β v)
-  | β ∧ γ => (h_atom β v) ∧' (h_atom γ v)
-  | β ∨ γ => (h_atom β v) ∨' (h_atom γ v)
-  | β → γ => (h_atom β v) →' (h_atom γ v)
-  end. *)
-
 Definition h_formula (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
   match (v α), (v ¬α) with
   | ⊤, ⊥ => One
@@ -137,26 +123,71 @@ Proof.
     + apply L9 in Heqb. apply L16 in Heqb0. destruct Heqb0. destruct Heqb.
       * rewrite H1; rewrite H; rewrite H0. destruct (v ψ); reflexivity.
       * rewrite H1; rewrite H0; rewrite H; destruct (v φ); reflexivity.
-  -
-
-    Admitted.
-
-(* Lemma designatedValue_prop : forall φ v, bivaluation v ->
-(h_atom φ v = One <-> (v φ = ⊤ /\ v (¬φ) = ⊥)) /\
-(h_atom φ v = Half <-> (v φ = ⊤ /\ v (¬φ) = ⊤)) /\ 
-(h_atom φ v = Zero <-> (v φ = ⊤ /\ v (¬φ) = ⊤)).
-Proof.
-  intros. split.
-  - intros. induction φ.
-    + split.
-      * intros. simpl in H0. destruct (v #a), (v ¬#a); try discriminate H0; split;
-        reflexivity.
-      * intros. simpl. destruct (v #a), (v ¬#a); destruct H0; try discriminate H0;
-        try discriminate H1; reflexivity.
-    + split.
-      * intros. simpl in H0. remember (h_atom φ v). destruct m; try discriminate H0.
-        rewrite Heqm in IHφ.
-Qed.  *)
+  - unfold preserveTo. intros. unfold h_formula. remember (v (φ → ψ)). 
+    remember (v(¬(φ → ψ))). symmetry in Heqb, Heqb0. destruct b, b0.
+      * apply L11 in Heqb0. rewrite Heqb in Heqb0; discriminate Heqb0.
+      * apply bivaluation_dec2 in Heqb. 
+        specialize (L10 φ ψ). apply iff_neg in L10.
+        apply L10 in Heqb. apply R0 in Heqb0. destruct Heqb0. 
+        rewrite H, H0. destruct (v φ), (v ψ). 
+        -- discriminate H.
+        -- discriminate H.
+        -- destruct  (v ¬φ); reflexivity.
+        -- exfalso. apply Heqb. right. reflexivity.
+      * apply bivaluation_dec2 in Heqb0.
+        apply L10 in Heqb. specialize (R0 φ ψ).
+        apply iff_neg in R0. apply R0 in Heqb0.
+        destruct Heqb.
+        -- rewrite H. destruct (v ψ), (v ¬ψ); reflexivity.
+        -- rewrite H. destruct (v ¬φ), (v φ), (v ¬ψ); try reflexivity;
+           try discriminate H; exfalso; apply Heqb0; split; 
+           reflexivity.
+      * apply L10 in Heqb. apply R0 in Heqb0. destruct Heqb0.
+        destruct Heqb.
+        -- rewrite H1 in H; discriminate H.
+        -- rewrite H1, H, H0. destruct (v ¬φ); reflexivity.
+    - unfold preserveAnd. intros. unfold h_formula. 
+      remember (v(φ ∧ ψ)). remember (v ¬(φ ∧ ψ)).
+      symmetry in Heqb, Heqb0. destruct b, b0.
+      * apply L11 in Heqb0. rewrite Heqb in Heqb0; discriminate Heqb0.
+      * apply bivaluation_dec2 in Heqb. specialize (L8 φ ψ).
+        apply iff_neg in L8. apply L8 in Heqb. apply L15 in Heqb0.
+        destruct Heqb0.
+        -- rewrite H. destruct (v φ), (v ψ), (v ¬ψ); try reflexivity;
+           exfalso; apply Heqb; split; reflexivity.
+        -- rewrite H. destruct (v φ), (v ¬φ), (v ψ); try discriminate H;
+           try reflexivity; exfalso; apply Heqb; split; reflexivity.
+      * apply bivaluation_dec2 in Heqb0. apply L8 in Heqb.
+        destruct Heqb. rewrite H, H0. specialize (L15 φ ψ).
+        apply iff_neg in L15. apply L15 in Heqb0.
+        destruct (v ¬φ), (v ¬ψ); try reflexivity; 
+        try (exfalso; apply Heqb0; try (left; reflexivity);
+        try (right; reflexivity)).
+      * apply L8 in Heqb. apply L15 in Heqb0. destruct Heqb, Heqb0;
+        rewrite H, H0, H1; try (destruct (v ¬ψ); reflexivity);
+        try (destruct (v ¬φ); reflexivity).
+    - unfold preserveNeg. intros. unfold h_formula.
+      remember (v ¬φ). remember (v φ). symmetry in Heqb, Heqb0.
+      destruct b, b0.
+      * apply L2 in Heqb0. rewrite Heqb in Heqb0; discriminate Heqb0.
+      * reflexivity.
+      * apply L5 in Heqb0. rewrite Heqb0. reflexivity.
+      * apply L14 in Heqb0. rewrite Heqb0. reflexivity.
+    - unfold preserveCirc. intros. unfold h_formula.
+      remember (v ∘φ). remember (v ¬∘φ). symmetry in Heqb, Heqb0.
+      destruct b, b0.
+      * apply L2 in Heqb. rewrite Heqb in Heqb0; discriminate Heqb0.
+      * apply L13 in Heqb0. destruct Heqb0.
+        rewrite H, H0. reflexivity.
+      * apply L12 in Heqb; destruct Heqb.
+        -- rewrite H. reflexivity.
+        -- rewrite H. apply L11 in H. rewrite H.
+           reflexivity.
+      * apply L13 in Heqb0; destruct Heqb0. apply L12 in Heqb; 
+        destruct Heqb.
+        -- rewrite H1 in H; discriminate H.
+        -- rewrite H1 in H0; discriminate H0.
+Qed.
 
 Lemma bivaluation_matrix_lemma : forall (v : Formula -> BivaluationDomain),
 bivaluation v -> 
@@ -219,4 +250,10 @@ Proof.
       try apply H2. 
     + apply H2.
     + apply H2.
+Qed.
+
+Theorem soundness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
+(Γ ⊢ α) -> (Γ ⊨ α).
+Proof.
+  intros. apply bivaluation_matrix_imp1. apply soundness_matrix. apply H.
 Qed.

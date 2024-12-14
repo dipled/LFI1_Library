@@ -229,16 +229,6 @@ Definition vDmORf (v : Formula -> BivaluationDomain) : Prop :=
 Definition vCipf (v : Formula -> BivaluationDomain) : Prop :=
   forall φ ψ : Formula, (v ¬(φ → ψ)) = ⊥ <-> (v φ = ⊥) \/ (v ¬ψ = ⊥).
 
-Theorem iff_neg : forall A B : Prop, (A <-> B) -> (~A <-> ~B).
-Proof.
-  intros. split; intros; intro; apply H0; apply H; apply H1.
-Qed.
-
-Theorem contra : forall A B : Prop, (A -> B) -> (~B -> ~A).
-Proof.
-  intros. intro. apply H0. apply H. apply H1.
-Qed.
-
 Lemma bivaluation_additional : 
 forall (v : Formula -> BivaluationDomain),
 bivaluation v ->
@@ -327,4 +317,3 @@ Proof.
     * apply bivaluation_dec2. intro. apply R in H0.
       destruct H0. rewrite H in H1; discriminate H1.
 Qed.
-
