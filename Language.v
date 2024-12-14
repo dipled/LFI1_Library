@@ -1,15 +1,5 @@
-Require Export Arith Infinite_sets.
 From LFI1 Require Export Utils.
-Arguments In {U}.
-Arguments Add {U}.
-Arguments Empty_set {U}.
-Arguments Union {U}.
 
-Notation " a ∈ A " := (In A a) (at level 10).
-Notation " B ∪ C " := (Union B C) (at level 65, left associativity).
-Notation " [ a ] " := (Singleton a) (at level 0, right associativity).
-Notation " A ⊆ B " := (Included A B) (at level 70).
-Notation " ∅ "     := (Empty_set).
 Definition Atom := nat.
 
 Inductive Formula : Set :=
@@ -21,7 +11,7 @@ Inductive Formula : Set :=
   | Cons   : Formula -> Formula.
 
 Notation " x → y " := 
-(Imp x y) (at level 80, right associativity).
+(Imp x y) (at level 32, right associativity).
 
 (* Notation " x ↔ y " := 
 (bimplf x y) (at level 50, left associativity). *)

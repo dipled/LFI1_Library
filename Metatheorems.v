@@ -257,3 +257,78 @@ Theorem soundness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula),
 Proof.
   intros. apply bivaluation_matrix_imp1. apply soundness_matrix. apply H.
 Qed.
+
+(* Soundness *)
+
+(* LFI1 is tarskian:  *)
+
+Proposition lfi1_reflexivity : 
+forall (Γ : Ensemble Formula) (φ : Formula),
+  φ ∈ Γ -> Γ ⊢ φ.
+Proof.
+  intros. apply Premisse in H. apply H.
+Qed.
+
+Proposition lfi1_monotonicity :
+forall (Γ Δ : Ensemble Formula) (φ : Formula),
+  Δ ⊢ φ /\ Δ ⊆ Γ -> Γ ⊢ φ.
+Proof.
+  intros. destruct H. unfold Included in H0.
+  induction H.
+  - apply H0 in H. apply Premisse. apply H.
+  - apply AxiomInstance.
+  - pose proof H0 as H2. apply IHdeduction1 in H0.
+    apply IHdeduction2 in H2. apply (MP Γ φ ψ). apply H0.
+    apply H2.
+Qed.
+
+Proposition lfi1_cut :
+forall (Γ Δ : Ensemble Formula) (φ : Formula),
+  Δ ⊢ φ /\ (forall (δ : Formula), δ ∈ Δ -> Γ ⊢ δ) -> Γ ⊢ φ.
+Proof.
+  intros. destruct H. induction H.
+  - apply H0. apply H.
+  - apply AxiomInstance.
+  - pose proof H0 as H2. apply IHdeduction1 in H0.
+    apply IHdeduction2 in H2. apply (MP Γ φ ψ). apply H0.
+    apply H2.
+Qed.
+
+Proposition lfi1_finitary :
+  forall (Γ : Ensemble Formula) (α : Formula),
+    (Γ ⊢ α) -> (exists (Γ0 : Ensemble Formula), (Finite Γ0) /\ Γ0 ⊆ Γ /\ Γ0 ⊢ α).
+Proof.
+  intros. induction H.
+  - exists (Add ∅ φ). split; try split.
+    + unfold Add. apply Union_is_finite.
+      * apply Empty_is_finite.
+      * apply Noone_in_empty.
+    + unfold Add. unfold Included. intro.
+      intros. destruct H0.
+      * destruct H0.
+      * destruct H0. apply H.
+    + unfold Add. apply Premisse.
+      apply Union_intror. apply In_singleton.
+  - exists ∅. split; try split.
+    + apply Empty_is_finite.
+    + unfold Included. intros. destruct H.
+    + apply AxiomInstance.
+  - destruct IHdeduction1, IHdeduction2.
+    destruct H1. destruct H3. destruct H2. destruct H5.
+    exists (Union x x0). split; try split.
+    + apply Union_preserves_Finite.
+      * apply H1.
+      * apply H2.
+    + apply Union_minimal.
+      * apply H3.
+      * apply H5.
+    + pose proof (lfi1_monotonicity (x ∪ x0) x (φ → ψ)).
+      pose proof (lfi1_monotonicity (x ∪ x0) x0 (φ)).
+      assert (x ⊢ φ → ψ /\ x ⊆ (x ∪ x0)).
+      * split. apply H4. apply Union_increases_l.
+      * assert (x0 ⊢ φ /\ x0 ⊆ (x ∪ x0)).
+        -- split. apply H6. apply Union_increases_r.
+        -- apply H7 in H9. apply H8 in H10.
+           apply (MP ((x ∪ x0)) φ ψ).
+           apply H9. apply H10.
+Qed.

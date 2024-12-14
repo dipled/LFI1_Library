@@ -55,4 +55,4 @@ Inductive deduction : Ensemble Formula -> Formula -> Prop :=
   | MP : forall (Γ : Ensemble Formula) (φ ψ : Formula), (deduction Γ (φ → ψ)) -> 
     (deduction Γ φ) -> deduction Γ ψ.
 
-Notation " Γ ⊢ φ " := (deduction Γ φ) (at level 110, no associativity).
+Notation " Γ ⊢ φ " := (deduction Γ φ) (at level 50, no associativity).
