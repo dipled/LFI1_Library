@@ -302,7 +302,7 @@ Fixpoint valuation_condition_2 (x : Formula) : MatrixDomain :=
  | ∘a => ∘ₘ(valuation_condition_2' a)
  |_ => Zero end.
 
-Proposition lfi1_lfi_1 : exists (α β : Formula), ~(([α] ∪ [¬α]) ⊢ β).
+Proposition lfi1_lfi_1 : exists (α β : Formula), ~([α] ∪ [¬α] ⊢ β).
 Proof. 
   exists #0, #1. intro. apply deduction_metatheorem in H.
   apply soundness_matrix in H.
@@ -312,7 +312,7 @@ Proof.
   - intros. inversion H0. reflexivity.
 Qed.
 
-Proposition lfi1_lfi_2 : exists (α β : Formula), ~(([∘α] ∪ [α]) ⊢ β) /\ ~(([∘α] ∪ [¬α]) ⊢ β).
+Proposition lfi1_lfi_2 : exists (α β : Formula), ~([∘α] ∪ [α] ⊢ β) /\ ~([∘α] ∪ [¬α] ⊢ β).
 Proof. 
   exists #0, #1. split.
   - intro. apply deduction_metatheorem in H.
