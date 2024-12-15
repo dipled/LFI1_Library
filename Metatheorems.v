@@ -397,7 +397,7 @@ Qed.
    the excluded middle, which results in proof irrelevance.
 *)
 
-From Coq Require Export Infinite_sets.
+From Coq Require Export Infinite_sets Epsilon.
 Arguments Finite {U}.
 
 (* We then state a trivial fact about sets *)
@@ -476,3 +476,40 @@ Proof.
     + apply H3 in H4. exfalso. apply H. apply H4.
   - intros. apply Premisse. apply H1.
 Qed.
+
+(** Strong LEM *)
+Theorem strong_lem : forall P:Prop, {P} + {~P}.
+Proof.
+  intros. assert {x : bool | if x then P else ~P}.
+  - apply constructive_indefinite_description.
+    pose proof (classic P). destruct H.
+    + exists true. apply H.
+    + exists false. apply H.
+  - destruct H. destruct x.
+    + left. apply y.
+    + right. apply y.
+Qed. 
+
+(** Extend a given nontrivial set Γ
+    
+    Γ₀ = Γ
+
+    Γᵢ = • Γᵢ₋₁         if (Γᵢ₋₁ ∪ [φᵢ]) ⊢ φ
+         • Γᵢ₋₁ ∪ [φᵢ]  otherwise
+    Δ = ⋃{ᵢ₌₀}{∞} Γᵢ
+*)
+
+Fixpoint extend_nontrivial_set 
+  (Γ : Ensemble Formula) (n : nat) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
+match n with
+| O   => Γ
+| S m => match (strong_lem (((extend_nontrivial_set Γ m f φ) ∪ [f m]) ⊢ φ)) with
+| left _  => (extend_nontrivial_set Γ m f φ)
+| right _ => (extend_nontrivial_set Γ m f φ) ∪ [f m]
+         end
+end.
+
+Definition maximal_nontrivial_set 
+  (Γ : Ensemble Formula) (f: nat -> Formula) (φ : Formula): Ensemble Formula :=
+fun x => exists n : nat, x ∈ (extend_nontrivial_set Γ n f φ).
+
