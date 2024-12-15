@@ -1,6 +1,6 @@
 From LFI1 Require Export Syntax Semantics.
 
-(** Deduction metatheorem for the Hilbert calculus **)
+(** Deduction metatheorem for the Hilbert calculus *)
 
 Lemma id : forall (Γ : Ensemble Formula) (φ : Formula), Γ ⊢ φ → φ.
 Proof.
@@ -18,7 +18,7 @@ Proof.
 Qed.
 
 Lemma quasi_monotonicity : forall (Γ : Ensemble Formula) (α β : Formula), (Γ ⊢ β) -> 
-(Add Γ α) ⊢ β.
+(Γ ∪ [α]) ⊢ β.
 Proof.
   intros. induction H.
   - apply Premisse. left. apply H.
@@ -29,10 +29,10 @@ Proof.
 Qed.
 
 Theorem deduction_metatheorem : forall (Γ : Ensemble Formula) (α β : Formula), 
-((Add Γ α) ⊢ β) <-> (Γ ⊢ α → β).
+((Γ ∪ [α]) ⊢ β) <-> (Γ ⊢ α → β).
 Proof. 
   intros. split.
-  - intro. remember (Add Γ α) as Δ eqn: Heq in H. induction H.
+  - intro. remember (Γ ∪ [α]) as Δ eqn: Heq in H. induction H.
     + rewrite Heq in H. simpl in H. destruct H.
       * apply (MP Γ x (α → x)).
         -- apply (AxiomInstance Γ (Ax1 x α)).
@@ -50,9 +50,9 @@ Proof.
       * apply H1.
   - intro. 
     pose proof quasi_monotonicity Γ α (α → β). apply H0 in H as H1.
-    assert ((Add Γ α) ⊢ α) as H2.
+    assert ((Γ ∪ [α]) ⊢ α) as H2.
     + apply Premisse. simpl. right. reflexivity.
-    + apply (MP (Add Γ α) α β).
+    + apply (MP (Γ ∪ [α]) α β).
       * apply H1.
       * apply H2.
 Qed.
@@ -88,7 +88,7 @@ Proof.
   - apply H.
 Qed.
 
-(** Soundness **)
+(** Soundness *)
 
 (* Function used to prove Γ ⊨m α -> Γ ⊨ α *)
 Definition h_formula (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
@@ -265,7 +265,96 @@ Proof.
   intros. apply bivaluation_matrix_imp1. apply soundness_matrix. apply H.
 Qed.
 
-(** Completeness **)
+(** LFI1 is an LFI w.r.t ¬ and ∘, i.e. 
+  1) exists (α β : Formula), ~(α, ¬α ⊢ β)
+  2) exists (α β : Formula), ~(α, ∘α ⊢ β) /\ ~(¬α, ∘α ⊢ β)
+  3) forall (α β : Formula), ∘α, α, ¬α ⊢ β
+*)
+
+Fixpoint valuation_condition_1 (x : Formula) : MatrixDomain :=
+ match x with 
+ |#0 => Half
+ | a ∧ b => (valuation_condition_1 a) ∧' (valuation_condition_1 b)
+ | a ∨ b => (valuation_condition_1 a) ∨' (valuation_condition_1 b)
+ | a → b => (valuation_condition_1 a) →' (valuation_condition_1 b)
+ | ¬a => ¬'(valuation_condition_1 a)
+ | ∘a => ∘'(valuation_condition_1 a)
+ |_ => Zero end.
+
+Fixpoint valuation_condition_2 (x : Formula) : MatrixDomain :=
+ match x with 
+ |#0 => One
+ | a ∧ b => (valuation_condition_2 a) ∧' (valuation_condition_2 b)
+ | a ∨ b => (valuation_condition_2 a) ∨' (valuation_condition_2 b)
+ | a → b => (valuation_condition_2 a) →' (valuation_condition_2 b)
+ | ¬a => ¬'(valuation_condition_2 a)
+ | ∘a => ∘'(valuation_condition_2 a)
+ |_ => Zero end.
+
+ Fixpoint valuation_condition_2' (x : Formula) : MatrixDomain :=
+ match x with 
+ |#0 => Zero
+ |¬#0 => One
+ | a ∧ b => (valuation_condition_2' a) ∧' (valuation_condition_2' b)
+ | a ∨ b => (valuation_condition_2' a) ∨' (valuation_condition_2' b)
+ | a → b => (valuation_condition_2' a) →' (valuation_condition_2' b)
+ | ¬a => ¬'(valuation_condition_2' a)
+ | ∘a => ∘'(valuation_condition_2' a)
+ |_ => Zero end.
+
+Proposition lfi1_lfi_1 : exists (α β : Formula), ~(([α] ∪ [¬α]) ⊢ β).
+Proof. 
+  exists #0, #1. intro. apply deduction_metatheorem in H.
+  apply soundness_matrix in H.
+  unfold matrixEntails in H. 
+  specialize (H valuation_condition_1). simpl in H. apply H.
+  - unfold valuation. try repeat split.
+  - intros. inversion H0. reflexivity.
+Qed.
+
+Proposition lfi1_lfi_2 : exists (α β : Formula), ~(([∘α] ∪ [α]) ⊢ β) /\ ~(([∘α] ∪ [¬α]) ⊢ β).
+Proof. 
+  exists #0, #1. split.
+  - intro. apply deduction_metatheorem in H.
+    apply soundness_matrix in H.
+    unfold matrixEntails in H. 
+    specialize (H valuation_condition_2). simpl in H. apply H.
+    + unfold valuation. try repeat split.
+    + intros. inversion H0. simpl. reflexivity.
+  - intro. apply deduction_metatheorem in H.
+    apply soundness_matrix in H.
+    unfold matrixEntails in H. 
+    specialize (H valuation_condition_2'). simpl in H. apply H.
+    + unfold valuation. try repeat split. unfold preserveNeg.
+      intros. simpl. destruct φ; try destruct a; reflexivity.
+    + intros. inversion H0. simpl. reflexivity.
+Qed.
+
+Proposition lfi1_lfi_3 : forall (α β : Formula), ([∘α] ∪ [α] ∪ [¬α]) ⊢ β.
+Proof.
+  intros. pose proof (Premisse ([∘α] ∪ [α] ∪ [¬α]) (∘α)).
+  pose proof (Premisse ([∘α] ∪ [α] ∪ [¬α]) (α)).
+  pose proof (Premisse ([∘α] ∪ [α] ∪ [¬α]) (¬α)).
+  pose proof (AxiomInstance ([∘α] ∪ [α] ∪ [¬α]) (bc1 α β)). simpl in H2.
+  assert ((∘α ∈ ([∘α] ∪ [α] ∪ [¬α])) /\ (α ∈ ([∘α] ∪ [α] ∪ [¬α])) /\ ((¬α ∈ ([∘α] ∪ [α] ∪ [¬α]))));
+  try repeat split.
+  - apply Union_introl. apply Union_introl. apply In_singleton.
+  - apply Union_introl. apply Union_intror. apply In_singleton.
+  - apply Union_intror. apply In_singleton.
+  - destruct_conjunction H3. apply H in L. apply H0 in L0. apply H1 in R0.
+    pose proof (MP ([∘α] ∪ [α] ∪ [¬α]) (∘α) (α → ¬α → β)).
+    apply H3 in H2.
+    + pose proof (MP ([∘α] ∪ [α] ∪ [¬α]) (α) (¬α → β)).
+      apply H4 in H2.
+      * pose proof (MP ([∘α] ∪ [α] ∪ [¬α]) (¬α) (β)).
+        apply H5 in R0.
+        -- apply R0.
+        -- apply H2.
+      * apply L0.
+    + apply L.
+Qed.
+
+(** Completeness *)
 
 (* LFI1 is tarskian, i.e., it enjoys reflexivity, monotonicity
    and cut
@@ -305,13 +394,13 @@ Qed.
 (* From now on, we need to include the Infinite_sets module,
    which adds the concepts needed to construct the proof of
    completeness. This module, however, includes the axiom of
-   the excluded middle, which results in proof irrelevance
+   the excluded middle, which results in proof irrelevance.
 *)
 
 From Coq Require Export Infinite_sets.
 Arguments Finite {U}.
 
-(* We then state a trivial fact about sets*)
+(* We then state a trivial fact about sets *)
 Proposition In_lem {U : Type} : forall (A : Ensemble U) (x : U),
   x ∈ A \/ x ∉ A.
 Proof. intros. apply classic. Qed.
