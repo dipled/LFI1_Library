@@ -134,7 +134,7 @@ Proof.
     + right. apply y.
 Qed. 
 
-     (** Extend a given nontrivial set Γ and build a maximal nontrivial set (Δ)
+(** Extend a given nontrivial set Γ and build a maximal nontrivial set (Δ)
     
     Γ₀ = Γ
 
