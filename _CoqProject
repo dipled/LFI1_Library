@@ -3,4 +3,6 @@
 ./Language.v
 ./Semantics.v
 ./Syntax.v
+./Deduction_metatheorem.v
+./Soundness.v
 
