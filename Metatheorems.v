@@ -1,6 +1,6 @@
 From LFI1 Require Export Syntax Semantics.
 
-(* Deduction metatheorem for Hilbert calculus *)
+(** Deduction metatheorem for the Hilbert calculus **)
 
 Lemma id : forall (Γ : Ensemble Formula) (φ : Formula), Γ ⊢ φ → φ.
 Proof.
@@ -88,7 +88,7 @@ Proof.
   - apply H.
 Qed.
 
-(* Soundness *)
+(** Soundness **)
 
 (* Function used to prove Γ ⊨m α -> Γ ⊨ α *)
 Definition h_formula (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
@@ -265,7 +265,7 @@ Proof.
   intros. apply bivaluation_matrix_imp1. apply soundness_matrix. apply H.
 Qed.
 
-(* Completeness *)
+(** Completeness **)
 
 (* LFI1 is tarskian, i.e., it enjoys reflexivity, monotonicity
    and cut
@@ -301,6 +301,20 @@ Proof.
     apply IHdeduction2 in H2. apply (MP Γ φ ψ). apply H0.
     apply H2.
 Qed.
+
+(* From now on, we need to include the Infinite_sets module,
+   which adds the concepts needed to construct the proof of
+   completeness. This module, however, includes the axiom of
+   the excluded middle, which results in proof irrelevance
+*)
+
+From Coq Require Export Infinite_sets.
+Arguments Finite {U}.
+
+(* We then state a trivial fact about sets*)
+Proposition In_lem {U : Type} : forall (A : Ensemble U) (x : U),
+  x ∈ A \/ x ∉ A.
+Proof. intros. apply classic. Qed.
 
 (* LFI1 is finitary *)
 Proposition lfi1_finitary :
@@ -359,7 +373,7 @@ Proof.
   intros. unfold maximal_nontrivial in H; destruct H.
   unfold closed_theory. intros γ. split.
   - intros. 
-    pose proof (In_lem Formula Γ γ).
+    pose proof (In_lem Γ γ).
     destruct H2. apply H2. apply H0 in H2.
     unfold Add in H2. 
     pose proof (lfi1_cut Γ (Γ ∪ [γ]) φ).
