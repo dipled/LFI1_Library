@@ -504,8 +504,8 @@ Fixpoint extend_nontrivial_set
 match n with
 | O   => Γ
 | S m => match (strong_lem (((extend_nontrivial_set Γ m f φ) ∪ [f m]) ⊢ φ)) with
-| left _  => (extend_nontrivial_set Γ m f φ)
-| right _ => (extend_nontrivial_set Γ m f φ) ∪ [f m]
+         | left _  => (extend_nontrivial_set Γ m f φ)
+         | right _ => (extend_nontrivial_set Γ m f φ) ∪ [f m]
          end
 end.
 
