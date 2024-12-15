@@ -11,22 +11,22 @@ Inductive Formula : Set :=
   | Cons   : Formula -> Formula.
 
 Notation " x → y " := 
-(Imp x y) (at level 32, right associativity).
+(Imp x y) (at level 8, right associativity).
 
 (* Notation " x ↔ y " := 
 (bimplf x y) (at level 50, left associativity). *)
 
 Notation " x ∧ y " := 
-(And x y) (at level 20, left associativity).
+(And x y) (at level 6, left associativity).
 
 Notation " x ∨ y " := 
-(Or x y) (at level 31, left associativity).
+(Or x y) (at level 7, left associativity).
 
 Notation " ¬ x " := 
-(Neg x) (at level 9, right associativity, format "¬ x").
+(Neg x) (at level 5, right associativity, format "¬ x").
 
 Notation " ∘ x " := 
-(Cons x) (at level 9, right associativity, format "∘ x").
+(Cons x) (at level 5, right associativity, format "∘ x").
 
 Notation " # x " :=
 (Lit x) (at level 2, no associativity, x constr at level 1, format "# x").

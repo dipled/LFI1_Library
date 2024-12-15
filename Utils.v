@@ -10,9 +10,9 @@ Arguments Singleton {U}.
 
 Notation " a ∈ A " := (In A a) (at level 10).
 Notation " a ∉ A " := (~In A a) (at level 10).
-Notation " B ∪ C " := (Union B C) (at level 63, left associativity).
+Notation " B ∪ C " := (Union B C) (at level 61, left associativity).
 Notation " [ a ] " := (Singleton a) (at level 0, right associativity).
-Notation " A ⊆ B " := (Included A B) (at level 12).
+Notation " A ⊆ B " := (Included A B) (at level 71). 
 Notation " ∅ "     := (Empty_set).
 
 Theorem iff_neg : forall A B : Prop, (A <-> B) -> (~A <-> ~B).

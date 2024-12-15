@@ -51,39 +51,39 @@ Definition consM (a : MatrixDomain) : MatrixDomain :=
   | _    => One
   end.
 
-Notation " x →' y " := 
+Notation " x →ₘ y " := 
 (impM x y) (at level 21, right associativity).
 
-Notation " x ∧' y " := 
+Notation " x ∧ₘ y " := 
 (andM x y) (at level 20, left associativity).
 
-Notation " x ∨' y " := 
+Notation " x ∨ₘ y " := 
 (orM x y) (at level 22, left associativity).
 
-Notation " ¬' x " := 
-(negM x) (at level 9, right associativity, format "¬' x").
+Notation " ¬ₘ x " := 
+(negM x) (at level 9, right associativity, format "¬ₘ x").
 
-Notation " ∘' x " := 
-(consM x) (at level 9, right associativity, format "∘' x").
+Notation " ∘ₘ x " := 
+(consM x) (at level 9, right associativity, format "∘ₘ x").
 
 (* Defining the conditions for a function to be a valuation over the matrix,
    i.e., it must be a homomorphism from Formula to MatrixDomain.
 *)
 
 Definition preserveAnd (v : Formula -> MatrixDomain) : Prop := 
-  forall φ ψ: Formula, (v (φ ∧ ψ)) = (v φ) ∧' (v ψ).
+  forall φ ψ: Formula, (v (φ ∧ ψ)) = (v φ) ∧ₘ (v ψ).
 
 Definition preserveOr (v : Formula -> MatrixDomain) : Prop := 
-  forall φ ψ: Formula, (v (φ ∨ ψ)) = (v φ) ∨' (v ψ).
+  forall φ ψ: Formula, (v (φ ∨ ψ)) = (v φ) ∨ₘ (v ψ).
 
 Definition preserveTo (v : Formula -> MatrixDomain) : Prop := 
-  forall φ ψ: Formula, (v (φ → ψ)) = (v φ) →' (v ψ).
+  forall φ ψ: Formula, (v (φ → ψ)) = (v φ) →ₘ (v ψ).
 
 Definition preserveNeg (v : Formula -> MatrixDomain) : Prop := 
-  forall φ: Formula, (v (¬φ)) = ¬'(v φ).
+  forall φ: Formula, (v (¬φ)) = ¬ₘ(v φ).
 
 Definition preserveCirc (v : Formula -> MatrixDomain) : Prop := 
-  forall φ: Formula, (v (∘φ)) = ∘'(v φ).
+  forall φ: Formula, (v (∘φ)) = ∘ₘ(v φ).
 
 Definition valuation (v : Formula -> MatrixDomain) : Prop :=
   preserveOr v /\ preserveTo v /\ preserveAnd v /\ preserveNeg v /\ preserveCirc v.
@@ -105,7 +105,7 @@ valuation v ->
     ψ ∈ Γ -> designatedValue (v ψ)) -> 
       designatedValue (v φ).
 
-Notation " Γ ⊨m φ " := (matrixEntails Γ φ) (at level 110, no associativity).
+Notation " Γ ⊨m φ " := (matrixEntails Γ φ) (at level 50, no associativity).
 
 (* Bivaluation semantics *)
 
@@ -161,7 +161,7 @@ bivaluation v ->
     ψ ∈ Γ -> (v ψ) = ⊤) -> 
       (v φ) = ⊤.
 
-Notation " Γ ⊨ φ " := (bivaluationEntails Γ φ) (at level 110, no associativity).
+Notation " Γ ⊨ φ " := (bivaluationEntails Γ φ) (at level 50, no associativity).
 
 
 (* Proving some useful lemmas regarding bivaluations *)

@@ -274,32 +274,32 @@ Qed.
 Fixpoint valuation_condition_1 (x : Formula) : MatrixDomain :=
  match x with 
  |#0 => Half
- | a ∧ b => (valuation_condition_1 a) ∧' (valuation_condition_1 b)
- | a ∨ b => (valuation_condition_1 a) ∨' (valuation_condition_1 b)
- | a → b => (valuation_condition_1 a) →' (valuation_condition_1 b)
- | ¬a => ¬'(valuation_condition_1 a)
- | ∘a => ∘'(valuation_condition_1 a)
+ | a ∧ b => (valuation_condition_1 a) ∧ₘ (valuation_condition_1 b)
+ | a ∨ b => (valuation_condition_1 a) ∨ₘ (valuation_condition_1 b)
+ | a → b => (valuation_condition_1 a) →ₘ (valuation_condition_1 b)
+ | ¬a => ¬ₘ(valuation_condition_1 a)
+ | ∘a => ∘ₘ(valuation_condition_1 a)
  |_ => Zero end.
 
 Fixpoint valuation_condition_2 (x : Formula) : MatrixDomain :=
  match x with 
  |#0 => One
- | a ∧ b => (valuation_condition_2 a) ∧' (valuation_condition_2 b)
- | a ∨ b => (valuation_condition_2 a) ∨' (valuation_condition_2 b)
- | a → b => (valuation_condition_2 a) →' (valuation_condition_2 b)
- | ¬a => ¬'(valuation_condition_2 a)
- | ∘a => ∘'(valuation_condition_2 a)
+ | a ∧ b => (valuation_condition_2 a) ∧ₘ (valuation_condition_2 b)
+ | a ∨ b => (valuation_condition_2 a) ∨ₘ (valuation_condition_2 b)
+ | a → b => (valuation_condition_2 a) →ₘ (valuation_condition_2 b)
+ | ¬a => ¬ₘ(valuation_condition_2 a)
+ | ∘a => ∘ₘ(valuation_condition_2 a)
  |_ => Zero end.
 
  Fixpoint valuation_condition_2' (x : Formula) : MatrixDomain :=
  match x with 
  |#0 => Zero
  |¬#0 => One
- | a ∧ b => (valuation_condition_2' a) ∧' (valuation_condition_2' b)
- | a ∨ b => (valuation_condition_2' a) ∨' (valuation_condition_2' b)
- | a → b => (valuation_condition_2' a) →' (valuation_condition_2' b)
- | ¬a => ¬'(valuation_condition_2' a)
- | ∘a => ∘'(valuation_condition_2' a)
+ | a ∧ b => (valuation_condition_2' a) ∧ₘ (valuation_condition_2' b)
+ | a ∨ b => (valuation_condition_2' a) ∨ₘ (valuation_condition_2' b)
+ | a → b => (valuation_condition_2' a) →ₘ (valuation_condition_2' b)
+ | ¬a => ¬ₘ(valuation_condition_2' a)
+ | ∘a => ∘ₘ(valuation_condition_2' a)
  |_ => Zero end.
 
 Proposition lfi1_lfi_1 : exists (α β : Formula), ~(([α] ∪ [¬α]) ⊢ β).
