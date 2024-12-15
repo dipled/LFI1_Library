@@ -157,7 +157,8 @@ Definition maximal_nontrivial_set
   (Γ : Ensemble Formula) (f: nat -> Formula) (φ : Formula): Ensemble Formula :=
 fun x => exists n : nat, x ∈ (extend_nontrivial_set Γ n f φ).
 
-(** We then need to prove the existence of a bijection between Formula and nat.
+(** We then need to prove that Formula is denumerable, i.e.,
+    there is a bijection between Formula and nat.
     For this, we prove that:
       - There is an injection from nat to Formula
       - There is an injection from Formula to nat
