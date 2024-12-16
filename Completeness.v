@@ -412,10 +412,6 @@ Proof.
     + destruct H5. apply H4.
 Qed
 
-    
-    
-
-
 (** Extend a given nontrivial set Γ and build a maximal nontrivial set (Δ)
     
     Γ₀ = Γ
