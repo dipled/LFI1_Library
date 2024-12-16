@@ -138,24 +138,24 @@ Qed.
     
     Γ₀ = Γ
 
-    Γᵢ = • Γᵢ₋₁         if (Γᵢ₋₁ ∪ [φᵢ]) ⊢ φ
-         • Γᵢ₋₁ ∪ [φᵢ]  otherwise
+    Γᵢ = • Γᵢ₋₁         if (Γᵢ₋₁ ∪ [φᵢ₋₁]) ⊢ φ
+         • Γᵢ₋₁ ∪ [φᵢ₋₁]  otherwise
     Δ = ⋃{ᵢ₌₀}{∞} Γᵢ
 *)
 
-Fixpoint extend_nontrivial_set 
-  (Γ : Ensemble Formula) (n : nat) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
-match n with
+Fixpoint Gamma_i 
+  (Γ : Ensemble Formula) (i : nat) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
+match i with
   | O   => Γ
-  | S m => match (strong_lem (((extend_nontrivial_set Γ m f φ) ∪ [f m]) ⊢ φ)) with
-            | left _  => (extend_nontrivial_set Γ m f φ)
-            | right _ => (extend_nontrivial_set Γ m f φ) ∪ [f m]
+  | S n => match (strong_lem (((Gamma_i Γ n f φ) ∪ [f n]) ⊢ φ)) with
+            | left _  => (Gamma_i Γ n f φ)
+            | right _ => (Gamma_i Γ n f φ) ∪ [f n]
           end
 end.
 
-Definition maximal_nontrivial_set 
+Definition Delta
   (Γ : Ensemble Formula) (f: nat -> Formula) (φ : Formula): Ensemble Formula :=
-fun x => exists n : nat, x ∈ (extend_nontrivial_set Γ n f φ).
+fun x => exists n : nat, x ∈ (Gamma_i Γ n f φ).
 
 (** We then need to prove that Formula is denumerable, i.e.,
     there is a bijection between Formula and nat.
