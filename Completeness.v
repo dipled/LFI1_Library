@@ -136,7 +136,8 @@ Qed.
 
 
 (** Defining the valuation used in the completeness proof *)
-Definition completeness_valuation (Γ : Ensemble Formula) : Formula -> BivaluationDomain :=
+Definition completeness_valuation (Γ : Ensemble Formula) : 
+Formula -> BivaluationDomain :=
   fun x =>
           match (strong_lem (x ∈ Γ)) with
           | left _ => ⊤
@@ -148,9 +149,9 @@ Lemma completeness_valuation_is_bivaluation : forall (Γ : Ensemble Formula) (φ
   (maximal_nontrivial Γ φ) -> bivaluation (completeness_valuation Γ).
 Proof.
   intros. unfold maximal_nontrivial in H. destruct H.
-  unfold bivaluation. try repeat split.
-  - unfold completeness_valuation in H1. destruct (strong_lem(φ0 ∧ ψ ∈ Γ)); 
-    try discriminate H1. unfold completeness_valuation. destruct (strong_lem (φ0 ∈ Γ)).
+  unfold bivaluation. try repeat split; unfold completeness_valuation in *.
+  - destruct (strong_lem(φ0 ∧ ψ ∈ Γ)); 
+    try discriminate H1. destruct (strong_lem (φ0 ∈ Γ)).
     + reflexivity.
     + pose proof (Premisse Γ (φ0 ∧ ψ)).
       apply H2 in i. pose proof (AxiomInstance Γ (Ax4 φ0 ψ)); simpl in H3.
@@ -163,8 +164,8 @@ Proof.
           ++ apply Premisse. apply H6.
           ++ inversion H6. rewrite <- H7. apply H3.
       * apply i.
-  - unfold completeness_valuation in H1. destruct (strong_lem(φ0 ∧ ψ ∈ Γ));
-    try discriminate H1. unfold completeness_valuation. destruct (strong_lem (ψ ∈ Γ)).
+  - destruct (strong_lem(φ0 ∧ ψ ∈ Γ));
+    try discriminate H1. destruct (strong_lem (ψ ∈ Γ)).
     + reflexivity.
     + pose proof (Premisse Γ (φ0 ∧ ψ)).
       apply H2 in i. pose proof (AxiomInstance Γ (Ax5 φ0 ψ)); simpl in H3.
@@ -177,7 +178,7 @@ Proof.
           ++ apply Premisse. apply H6.
           ++ inversion H6. rewrite <- H7. apply H3.
       * apply i.
-  - intros. destruct H1. unfold completeness_valuation in *.
+  - intros. destruct H1.
     destruct (strong_lem (φ0 ∈ Γ)), (strong_lem (ψ ∈ Γ));
     try discriminate H1; try discriminate H2.
     destruct H1, H2. destruct (strong_lem (φ0 ∧ ψ ∈ Γ)); try reflexivity.
@@ -192,7 +193,227 @@ Proof.
            ++ inversion H5. apply H1.
       * apply Premisse. apply i0.
     + apply Premisse. apply i.
-  Admitted.
+  - intros. destruct (strong_lem (φ0 ∨ ψ ∈ Γ));
+    try discriminate H1. destruct (strong_lem (φ0 ∈ Γ)), (strong_lem (ψ ∈ Γ));
+    try (left; reflexivity); try (right; reflexivity). exfalso. apply H.
+    apply H0 in n. apply H0 in n0. pose proof (proof_by_cases Γ φ0 ψ φ).
+    assert (Γ ∪ [φ0] ⊢ φ /\ Γ ∪ [ψ] ⊢ φ); try (split; assumption).
+    apply H2 in H3. pose proof (lfi1_cut Γ (Γ ∪ [φ0 ∨ ψ]) φ).
+    apply H4. split; try assumption. intros.
+    destruct H5.
+    + apply Premisse. apply H5.
+    + inversion H5. apply Premisse. apply i.
+  - intros. destruct H1.
+    + destruct (strong_lem (φ0 ∈ Γ)); try discriminate H1.
+      destruct (strong_lem (φ0 ∨ ψ ∈ Γ)); try reflexivity.
+      apply H0 in n. exfalso. apply H. pose proof (lfi1_cut Γ (Γ ∪ [φ0 ∨ ψ]) φ).
+      apply H2. split; try assumption. intros. destruct H3.
+      * apply Premisse. assumption.
+      * inversion H3. pose proof (Premisse Γ φ0). apply H5 in i.
+        pose proof (AxiomInstance Γ (Ax6 φ0 ψ)); simpl in H6.
+        pose proof (MP Γ φ0 φ0 ∨ ψ). apply H7 in H6; assumption.
+    + destruct (strong_lem (ψ ∈ Γ)); try discriminate H1.
+      destruct (strong_lem (φ0 ∨ ψ ∈ Γ)); try reflexivity.
+      apply H0 in n. exfalso. apply H. pose proof (lfi1_cut Γ (Γ ∪ [φ0 ∨ ψ]) φ).
+      apply H2. split; try assumption. intros. destruct H3.
+      * apply Premisse. assumption.
+      * inversion H3. pose proof (Premisse Γ ψ). apply H5 in i.
+        pose proof (AxiomInstance Γ (Ax7 φ0 ψ)); simpl in H6.
+        pose proof (MP Γ ψ φ0 ∨ ψ). apply H7 in H6; assumption.
+  - intros.
+    destruct (strong_lem (φ0 → ψ ∈ Γ)); try discriminate H1; destruct H1.
+    destruct (strong_lem (φ0 ∈ Γ)), (strong_lem (ψ ∈ Γ)); try (left; reflexivity);
+    try (right; reflexivity). exfalso; apply H. apply H0 in n.
+    pose proof (lfi1_cut Γ (Γ ∪ [ψ]) φ). apply H1. split; try assumption.
+    intros. destruct H2.
+    + apply Premisse. apply H2.
+    + inversion H2. rewrite <- H3. pose proof (Premisse Γ φ0).
+      pose proof (Premisse Γ φ0 → ψ). apply H5 in i. apply H4 in i0.
+      pose proof (MP Γ φ0 ψ). apply H6 in i; assumption.
+  - intros. destruct H1.
+    + destruct (strong_lem (φ0 ∈ Γ)) in H1; try discriminate H1.
+      destruct (strong_lem (φ0 → ψ ∈ Γ)); try reflexivity.
+      exfalso. apply H. pose proof (AxiomInstance Γ (Ax9 φ0 ψ)); simpl in H2.
+      apply H0 in n. apply H0 in n0. apply deduction_metatheorem in n.
+      apply deduction_metatheorem in n0. pose proof (AxiomInstance Γ (Ax8 φ0 → ψ φ0 φ));
+      simpl in H3. pose proof (MP Γ ((φ0 → ψ) → φ)) ((φ0 → φ) → (φ0 → ψ) ∨ φ0 → φ).
+      apply H4 in H3.
+      * pose proof (MP Γ ((φ0 → φ)) ((φ0 → ψ) ∨ φ0 → φ)).
+        apply H5 in H3.
+        -- pose proof (MP Γ ((φ0 → ψ) ∨ φ0) φ). apply H6 in H3.
+           ++ apply H3.
+           ++ apply H2.
+        -- apply n.
+      * apply n0.
+    + destruct (strong_lem (ψ ∈ Γ)) in H1; try discriminate H1.
+      destruct (strong_lem (φ0 → ψ ∈ Γ)); try reflexivity.
+      exfalso. apply H. apply H0 in n. pose proof (AxiomInstance Γ (Ax1 ψ φ0)); simpl in H2.
+      pose proof (MP Γ ψ φ0 → ψ). apply H3 in H2.
+      * pose proof (lfi1_cut Γ (Γ ∪ [φ0 → ψ]) φ). apply H4. split; try assumption.
+        intros. destruct H5.
+        -- apply Premisse. apply H5.
+        -- inversion H5. apply H2.
+      * apply Premisse. apply i.
+  - unfold vNeg. intros. destruct (strong_lem (¬φ0 ∈ Γ)); try discriminate H1.
+    destruct (strong_lem (φ0 ∈ Γ)); try reflexivity. apply H0 in n.
+    apply H0 in n0. pose proof (proof_by_cases_neg Γ φ0 φ).
+    exfalso. apply H. apply H2. split; assumption.
+  - unfold vCon. intros. destruct (strong_lem (∘φ0 ∈ Γ)); try discriminate H1.
+    destruct (strong_lem (φ0 ∈ Γ)), (strong_lem (¬φ0 ∈ Γ)); try (left; reflexivity);
+    try (right; reflexivity). exfalso. apply H. pose proof (AxiomInstance Γ (bc1 φ0 φ));
+    simpl in H2. apply (Premisse Γ ∘φ0) in i. apply (Premisse Γ φ0) in i0.
+    apply (Premisse Γ ¬φ0) in i1. apply (MP Γ ∘φ0 φ0 → ¬φ0 → φ) in H2.
+    + apply (MP Γ φ0 ¬φ0 → φ) in H2.
+      * apply (MP Γ ¬φ0 φ) in H2; assumption.
+      * apply i0.
+    + apply i.
+  - destruct (strong_lem (¬∘φ0 ∈ Γ)); try discriminate H1.
+    destruct (strong_lem (φ0 ∈ Γ)); try reflexivity.
+    apply (Premisse Γ ¬∘φ0) in i. pose proof (AxiomInstance Γ (ci φ0)); simpl in H2.
+    apply (MP Γ ¬∘φ0 (φ0 ∧ ¬φ0)) in H2; try assumption.
+    pose proof (AxiomInstance Γ (Ax4 φ0 ¬φ0)); simpl in H3.
+    apply (MP Γ φ0 ∧ ¬φ0 φ0) in H3; try assumption. apply H0 in n.
+    pose proof (lfi1_cut Γ (Γ ∪ [φ0]) φ). exfalso; apply H; apply H4.
+    split; try assumption. intros. destruct H5.
+    + apply Premisse. apply H5.
+    + inversion H5. rewrite <- H6. apply H3.
+  - destruct (strong_lem (¬∘φ0 ∈ Γ)); try discriminate H1.
+    destruct (strong_lem (¬φ0 ∈ Γ)); try reflexivity.
+    apply (Premisse Γ ¬∘φ0) in i. pose proof (AxiomInstance Γ (ci φ0)); simpl in H2.
+    apply (MP Γ ¬∘φ0 (φ0 ∧ ¬φ0)) in H2; try assumption.
+    pose proof (AxiomInstance Γ (Ax5 φ0 ¬φ0)); simpl in H3.
+    apply (MP Γ φ0 ∧ ¬φ0 ¬φ0) in H3; try assumption. apply H0 in n.
+    pose proof (lfi1_cut Γ (Γ ∪ [¬φ0]) φ). exfalso; apply H; apply H4.
+    split; try assumption. intros. destruct H5.
+    + apply Premisse. apply H5.
+    + inversion H5. apply H3.
+  - intros. destruct (strong_lem (¬¬φ0 ∈ Γ)); try discriminate H1.
+    destruct (strong_lem (φ0 ∈ Γ)); try reflexivity.
+    exfalso; apply H. apply H0 in n. apply (Premisse Γ ¬¬φ0) in i.
+    pose proof (AxiomInstance Γ (cf φ0)); simpl in H2.
+    apply (MP Γ ¬¬φ0 φ0) in H2; try assumption.
+    pose proof (lfi1_cut Γ (Γ ∪ [φ0]) φ). apply H3; split; try assumption.
+    intros. destruct H4.
+    + apply Premisse. apply H4.
+    + inversion H4. rewrite <- H5. apply H2.
+  - intros. destruct (strong_lem (φ0 ∈ Γ)); try discriminate H1.
+    destruct (strong_lem (¬¬φ0 ∈ Γ)); try reflexivity.
+    exfalso; apply H. apply H0 in n. apply (Premisse Γ φ0) in i.
+    pose proof (AxiomInstance Γ (ce φ0)); simpl in H2.
+    apply (MP Γ φ0 ¬¬φ0) in H2; try assumption.
+    pose proof (lfi1_cut Γ (Γ ∪ [¬¬φ0]) φ). apply H3; split; try assumption.
+    intros. destruct H4.
+    + apply Premisse. apply H4.
+    + inversion H4. apply H2.
+  - intros. destruct (strong_lem (¬(φ0 ∧ ψ) ∈ Γ)); try discriminate H1.
+    destruct (strong_lem (¬φ0 ∈ Γ)), (strong_lem (¬ψ ∈ Γ));
+    try (left; reflexivity); try (right; reflexivity).
+    apply (Premisse Γ ¬(φ0 ∧ ψ)) in i. apply H0 in n.
+    apply H0 in n0. pose proof (proof_by_cases Γ ¬φ0 ¬ψ φ).
+    exfalso. apply H. pose proof (AxiomInstance Γ (negland1 φ0 ψ));
+    simpl in H3. apply (MP Γ ¬(φ0 ∧ ψ) ¬φ0 ∨ ¬ψ) in H3; try assumption.
+    apply (lfi1_cut Γ (Γ ∪ [¬φ0 ∨ ¬ψ]) φ). split.
+    + apply H2. split; assumption.
+    + intros. destruct H4.
+      * apply Premisse. apply H4.
+      * inversion H4. apply H3.
+  - intros. destruct H1.
+    + destruct (strong_lem (¬φ0 ∈ Γ)); try discriminate H1.
+      destruct (strong_lem (¬(φ0 ∧ ψ) ∈ Γ)); try reflexivity.
+      apply H0 in n. exfalso. apply H. apply (Premisse Γ ¬φ0) in i.
+      pose proof (AxiomInstance Γ (Ax6 ¬φ0 ¬ψ)); simpl in H2.
+      apply (MP Γ ¬φ0 ¬φ0 ∨ ¬ψ) in H2; try assumption.
+      pose proof (AxiomInstance Γ (negland2 φ0 ψ)); simpl in H3.
+      apply (MP Γ ¬φ0 ∨ ¬ψ ¬(φ0 ∧ ψ)) in H3; try assumption.
+      apply (lfi1_cut Γ (Γ ∪ [¬(φ0 ∧ ψ)]) φ). split; try assumption.
+      intros. destruct H4.
+      * apply Premisse. apply H4.
+      * destruct H4. apply H3.
+    + destruct (strong_lem (¬ψ ∈ Γ)); try discriminate H1.
+      destruct (strong_lem (¬(φ0 ∧ ψ) ∈ Γ)); try reflexivity.
+      apply H0 in n. exfalso. apply H. apply (Premisse Γ ¬ψ) in i.
+      pose proof (AxiomInstance Γ (Ax7 ¬φ0 ¬ψ)); simpl in H2.
+      apply (MP Γ ¬ψ ¬φ0 ∨ ¬ψ) in H2; try assumption.
+      pose proof (AxiomInstance Γ (negland2 φ0 ψ)); simpl in H3.
+      apply (MP Γ ¬φ0 ∨ ¬ψ ¬(φ0 ∧ ψ)) in H3; try assumption.
+      apply (lfi1_cut Γ (Γ ∪ [¬(φ0 ∧ ψ)]) φ). split; try assumption.
+      intros. destruct H4.
+      * apply Premisse. apply H4.
+      * destruct H4. apply H3.
+  - destruct (strong_lem (¬(φ0 ∨ ψ) ∈ Γ)); try discriminate H1.
+    destruct (strong_lem (¬φ0 ∈ Γ)); try reflexivity.
+    apply H0 in n. apply (Premisse Γ ¬(φ0 ∨ ψ)) in i.
+    pose proof (AxiomInstance Γ (neglor1 φ0 ψ)); simpl in H2.
+    apply (MP Γ ¬(φ0 ∨ ψ) ¬φ0 ∧ ¬ψ) in H2; try assumption.
+    pose proof (AxiomInstance Γ (Ax4 ¬φ0 ¬ψ)); simpl in H3.
+    apply (MP Γ ¬φ0 ∧ ¬ψ ¬φ0) in H3; try assumption.
+    exfalso. apply H. apply (lfi1_cut Γ (Γ ∪ [¬φ0]) φ). split; try assumption.
+    intros. destruct H4.
+    + apply Premisse. apply H4.
+    + destruct H4. apply H3.
+  - destruct (strong_lem (¬(φ0 ∨ ψ) ∈ Γ)); try discriminate H1.
+    destruct (strong_lem (¬ψ ∈ Γ)); try reflexivity.
+    apply H0 in n. apply (Premisse Γ ¬(φ0 ∨ ψ)) in i.
+    pose proof (AxiomInstance Γ (neglor1 φ0 ψ)); simpl in H2.
+    apply (MP Γ ¬(φ0 ∨ ψ) ¬φ0 ∧ ¬ψ) in H2; try assumption.
+    pose proof (AxiomInstance Γ (Ax5 ¬φ0 ¬ψ)); simpl in H3.
+    apply (MP Γ ¬φ0 ∧ ¬ψ ¬ψ) in H3; try assumption.
+    exfalso. apply H. apply (lfi1_cut Γ (Γ ∪ [¬ψ]) φ). split; try assumption.
+    intros. destruct H4.
+    + apply Premisse. apply H4.
+    + destruct H4. apply H3.
+  - intros. destruct H1. destruct strong_lem in H1;
+    destruct strong_lem in H2; try discriminate H1; try discriminate H2.
+    destruct strong_lem; try reflexivity. apply Premisse in i.
+    apply Premisse in i0. apply H0 in n. exfalso; apply H.
+    pose proof (AxiomInstance Γ (Ax3 ¬φ0 ¬ψ)); simpl in H3.
+    apply (MP Γ ¬φ0 ¬ψ → ¬φ0 ∧ ¬ψ) in H3; try assumption.
+    apply (MP Γ ¬ψ ¬φ0 ∧ ¬ψ) in H3; try assumption.
+    pose proof (AxiomInstance Γ (neglor2 φ0 ψ)); simpl in H4.
+    apply (MP Γ ¬φ0 ∧ ¬ψ ¬(φ0 ∨ ψ)) in H4; try assumption.
+    apply (lfi1_cut Γ (Γ ∪ [¬(φ0 ∨ ψ)]) φ). split; try assumption.
+    intros. destruct H5.
+    + apply Premisse. apply H5.
+    + destruct H5. apply H4.
+  - destruct strong_lem in H1; try discriminate H1.
+    destruct strong_lem; try reflexivity.
+    apply Premisse in i; apply H0 in n. exfalso; apply H.
+    pose proof (AxiomInstance Γ (negto1 φ0 ψ)); simpl in H2.
+    apply (MP Γ ¬(φ0 → ψ) φ0 ∧ ¬ψ) in H2; try assumption.
+    pose proof (AxiomInstance Γ (Ax4 φ0 ¬ψ)); simpl in H3.
+    apply (MP Γ φ0 ∧ ¬ψ φ0) in H3; try assumption.
+    apply (lfi1_cut Γ (Γ ∪ [φ0]) φ). split; try assumption.
+    intros. destruct H4.
+    + apply Premisse. apply H4.
+    + destruct H4. apply H3.
+  - destruct strong_lem in H1; try discriminate H1.
+    destruct strong_lem; try reflexivity.
+    apply Premisse in i; apply H0 in n. exfalso; apply H.
+    pose proof (AxiomInstance Γ (negto1 φ0 ψ)); simpl in H2.
+    apply (MP Γ ¬(φ0 → ψ) φ0 ∧ ¬ψ) in H2; try assumption.
+    pose proof (AxiomInstance Γ (Ax5 φ0 ¬ψ)); simpl in H3.
+    apply (MP Γ φ0 ∧ ¬ψ ¬ψ) in H3; try assumption.
+    apply (lfi1_cut Γ (Γ ∪ [¬ψ]) φ). split; try assumption.
+    intros. destruct H4.
+    + apply Premisse. apply H4.
+    + destruct H4. apply H3.
+  - intros. destruct H1. destruct strong_lem in H1; try discriminate H1.
+    destruct strong_lem in H2; try discriminate H2.
+    destruct strong_lem; try reflexivity.
+    exfalso; apply H. apply H0 in n. apply Premisse in i. apply Premisse in i0.
+    pose proof (AxiomInstance Γ (Ax3 φ0 ¬ψ)); simpl in H3.
+    apply (MP Γ φ0 ¬ψ → φ0 ∧ ¬ψ) in H3; try assumption.
+    apply (MP Γ ¬ψ φ0 ∧ ¬ψ) in H3; try assumption.
+    pose proof (AxiomInstance Γ (negto2 φ0 ψ)); simpl in H4.
+    apply (MP Γ φ0 ∧ ¬ψ ¬(φ0 → ψ)) in H4; try assumption.
+    apply (lfi1_cut Γ (Γ ∪ [¬(φ0 → ψ)]) φ). split; try assumption.
+    intros. destruct H5.
+    + apply Premisse. apply H5.
+    + destruct H5. apply H4.
+Qed
+
+    
+    
 
 
 (** Extend a given nontrivial set Γ and build a maximal nontrivial set (Δ)

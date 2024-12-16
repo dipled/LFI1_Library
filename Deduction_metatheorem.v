@@ -56,7 +56,7 @@ Proof.
 Qed.
 
 Corollary proof_by_cases : forall (Γ : Ensemble Formula) (α β φ : Formula), 
-(Add Γ α ⊢ φ) /\ (Add Γ β ⊢ φ) -> (Add Γ (α ∨ β) ⊢ φ).
+(Γ ∪ [α] ⊢ φ) /\ (Γ ∪ [β] ⊢ φ) -> (Γ ∪ [α ∨ β] ⊢ φ).
 Proof.
   intros. destruct H. 
   pose proof deduction_metatheorem as DMT.
@@ -70,7 +70,7 @@ Proof.
 Qed.
   
 Corollary proof_by_cases_neg : forall (Γ : Ensemble Formula) (α φ : Formula), 
-(Add Γ α ⊢ φ) /\ (Add Γ (¬α) ⊢ φ) -> (Γ ⊢ φ).
+(Γ ∪ [α] ⊢ φ) /\ (Γ ∪ [¬α] ⊢ φ) -> (Γ ⊢ φ).
 Proof.
   intros. destruct H.
   pose proof deduction_metatheorem as DMT.
