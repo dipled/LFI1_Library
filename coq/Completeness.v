@@ -424,11 +424,11 @@ Qed.
 Fixpoint Gamma_i 
   (Γ : Ensemble Formula) (i : nat) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
 match i with
-  | O   => Γ
-  | S n => match (strong_lem (((Gamma_i Γ n f φ) ∪ [f n]) ⊢ φ)) with
-            | left _  => (Gamma_i Γ n f φ)
-            | right _ => (Gamma_i Γ n f φ) ∪ [f n]
-          end
+| O   => Γ
+| S n => match (strong_lem (((Gamma_i Γ n f φ) ∪ [f n]) ⊢ φ)) with
+         | left _  => (Gamma_i Γ n f φ)
+         | right _ => (Gamma_i Γ n f φ) ∪ [f n]
+         end
 end.
 
 Definition Delta
@@ -441,3 +441,36 @@ fun x => exists n : nat, x ∈ (Gamma_i Γ n f φ).
       - There is an injection from nat to Formula
       - There is an injection from Formula to nat
 *)
+
+(** Defining countability for inductive types, inspired by
+    https://github.com/QinxiangCao/Countable_PaperSubmission
+ *)
+
+Definition function_injective {A B : Type} (f: A -> B): Prop :=
+  forall a1 a2, f a1 = f a2 -> a1 = a2.
+
+Definition function_surjective {A B : Type} (f: A -> B): Prop :=
+  forall b, exists a, f a = b.
+
+Record injection (A B: Type): Type := Build_injection {
+  inj_f:> A -> B;
+  in_inj: function_injective inj_f
+}.
+
+Record surjection (A B: Type): Type := Build_surjection {
+  sur_f:> A -> B;
+  su_surj: function_surjective sur_f
+}.
+
+Record bijection (A B: Type): Type := Build_bijection {
+  bij_f:> A -> B;
+  in_bij: function_injective bij_f;
+  su_bij: function_surjective bij_f
+}.
+
+Definition injection_trans {A B C : Type} (f1: injection A B) (f2: injection B C): injection A C.
+  apply (Build_injection A C (fun a => f2 (f1 a))).
+  unfold function_injective. intros. apply (in_inj B C f2) in H. 
+  apply (in_inj A B f1) in H. apply H.
+Defined.
+
