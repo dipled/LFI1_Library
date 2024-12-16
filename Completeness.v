@@ -154,7 +154,7 @@ match i with
 end.
 
 Definition Delta
-  (Γ : Ensemble Formula) (f: nat -> Formula) (φ : Formula): Ensemble Formula :=
+  (Γ : Ensemble Formula) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
 fun x => exists n : nat, x ∈ (Gamma_i Γ n f φ).
 
 (** We then need to prove that Formula is denumerable, i.e.,
