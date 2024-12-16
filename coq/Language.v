@@ -1,4 +1,5 @@
-From LFI1 Require Export Utils.
+Require Import LFI1.Utils.
+Require Import Arith Constructive_sets.
 
 Definition Atom := nat.
 

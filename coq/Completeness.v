@@ -1,4 +1,7 @@
-From LFI1 Require Export Soundness.
+From LFI1 Require Import Utils Language Syntax Semantics.
+From LFI1 Require Import Deduction_metatheorem Soundness.
+Require Import Arith Constructive_sets.
+
 (* LFI1 is tarskian, i.e., it enjoys reflexivity, monotonicity
    and cut
 *)
@@ -41,7 +44,7 @@ Qed.
    proof irrelevance.
 *)
 
-From Coq Require Export Infinite_sets Epsilon.
+Require Import Infinite_sets Epsilon.
 Arguments Finite {U}.
 
 (* We then state a trivial fact about sets *)

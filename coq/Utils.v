@@ -1,5 +1,4 @@
-Require Export Arith Constructive_sets.
-From Coq Require Export String.
+Require Import Arith Constructive_sets.
 
 Arguments In {U}.
 Arguments Add {U}.

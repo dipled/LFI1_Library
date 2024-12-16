@@ -1,4 +1,5 @@
-From LFI1 Require Export Language.
+Require Import LFI1.Utils LFI1.Language.
+Require Import Arith Constructive_sets.
 
 (* Hilbert calculus: *)
 

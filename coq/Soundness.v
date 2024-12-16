@@ -1,4 +1,6 @@
-From LFI1 Require Export Deduction_metatheorem.
+From LFI1 Require Import Utils Language Syntax Semantics.
+From LFI1 Require Import Deduction_metatheorem.
+Require Import Arith Constructive_sets.
 
 (* Function used to prove Γ ⊨m α -> Γ ⊨ α *)
 Definition h_formula (α : Formula) (v : Formula -> BivaluationDomain) : MatrixDomain :=
