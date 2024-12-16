@@ -91,7 +91,7 @@ Qed.
 
 (* Defining maximal nontrivial sets of formulae w.r.t a given formula *)
 Definition maximal_nontrivial (Γ : Ensemble Formula) (φ : Formula) : Prop :=
-  ~ Γ ⊢ φ /\ (forall (ψ : Formula), ~ψ ∈ Γ -> (Add Γ ψ ⊢ φ)).
+  ~ Γ ⊢ φ /\ (forall (ψ : Formula), ~ψ ∈ Γ -> (Γ ∪ [ψ] ⊢ φ)).
 
 (* Defining closed theories *)
 Definition closed_theory (Γ : Ensemble Formula) : Prop := forall φ : Formula, 
@@ -133,6 +133,67 @@ Proof.
     + left. apply y.
     + right. apply y.
 Qed. 
+
+
+(** Defining the valuation used in the completeness proof *)
+Definition completeness_valuation (Γ : Ensemble Formula) : Formula -> BivaluationDomain :=
+  fun x =>
+          match (strong_lem (x ∈ Γ)) with
+          | left _ => ⊤
+          | right _ => ⊥
+          end.
+
+(** Proving that completeness_valuation is indeed a bivaluation *)
+Lemma completeness_valuation_is_bivaluation : forall (Γ : Ensemble Formula) (φ : Formula),
+  (maximal_nontrivial Γ φ) -> bivaluation (completeness_valuation Γ).
+Proof.
+  intros. unfold maximal_nontrivial in H. destruct H.
+  unfold bivaluation. try repeat split.
+  - unfold completeness_valuation in H1. destruct (strong_lem(φ0 ∧ ψ ∈ Γ)); 
+    try discriminate H1. unfold completeness_valuation. destruct (strong_lem (φ0 ∈ Γ)).
+    + reflexivity.
+    + pose proof (Premisse Γ (φ0 ∧ ψ)).
+      apply H2 in i. pose proof (AxiomInstance Γ (Ax4 φ0 ψ)); simpl in H3.
+      pose proof (MP Γ (φ0 ∧ ψ) φ0). apply H4 in H3.
+      * specialize (H0 φ0). apply H0 in n.
+        pose proof (lfi1_cut Γ (Γ ∪ [φ0]) φ). exfalso. apply H.
+        apply H5. split.
+        -- apply n.
+        -- intros. destruct H6.
+          ++ apply Premisse. apply H6.
+          ++ inversion H6. rewrite <- H7. apply H3.
+      * apply i.
+  - unfold completeness_valuation in H1. destruct (strong_lem(φ0 ∧ ψ ∈ Γ));
+    try discriminate H1. unfold completeness_valuation. destruct (strong_lem (ψ ∈ Γ)).
+    + reflexivity.
+    + pose proof (Premisse Γ (φ0 ∧ ψ)).
+      apply H2 in i. pose proof (AxiomInstance Γ (Ax5 φ0 ψ)); simpl in H3.
+      pose proof (MP Γ (φ0 ∧ ψ) ψ). apply H4 in H3.
+      * specialize (H0 ψ). apply H0 in n.
+        pose proof (lfi1_cut Γ (Γ ∪ [ψ]) φ). exfalso. apply H.
+        apply H5. split.
+        -- apply n.
+        -- intros. destruct H6.
+          ++ apply Premisse. apply H6.
+          ++ inversion H6. rewrite <- H7. apply H3.
+      * apply i.
+  - intros. destruct H1. unfold completeness_valuation in *.
+    destruct (strong_lem (φ0 ∈ Γ)), (strong_lem (ψ ∈ Γ));
+    try discriminate H1; try discriminate H2.
+    destruct H1, H2. destruct (strong_lem (φ0 ∧ ψ ∈ Γ)); try reflexivity.
+    apply H0 in n. pose proof (AxiomInstance Γ (Ax3 φ0 ψ)); simpl in H1.
+    pose proof (MP Γ φ0 ψ → φ0 ∧ ψ). apply H2 in H1.
+    + pose proof (MP Γ ψ φ0 ∧ ψ). apply H3 in H1.
+      * pose proof (lfi1_cut Γ (Γ ∪ [φ0 ∧ ψ]) φ). exfalso. apply H.
+        apply H4. split.
+        -- apply n.
+        -- intros. destruct H5.
+           ++ apply Premisse. apply H5.
+           ++ inversion H5. apply H1.
+      * apply Premisse. apply i0.
+    + apply Premisse. apply i.
+  Admitted.
+
 
 (** Extend a given nontrivial set Γ and build a maximal nontrivial set (Δ)
     
