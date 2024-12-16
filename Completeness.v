@@ -410,7 +410,7 @@ Proof.
     intros. destruct H5.
     + apply Premisse. apply H5.
     + destruct H5. apply H4.
-Qed
+Qed.
 
 (** Extend a given nontrivial set Γ and build a maximal nontrivial set (Δ)
     
