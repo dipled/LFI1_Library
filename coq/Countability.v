@@ -12,7 +12,7 @@ Definition function_injective {A B : Type} (f: A -> B): Prop :=
 Definition function_surjective {A B : Type} (f: A -> B): Prop :=
   forall b, exists a, f a = b.
 
-Definition inverse_function {A B : Type} (f : A -> B) (g : B -> A) :=
+  Definition inverse_function {A B : Type} (f : A -> B) (g : B -> A) : Prop :=
   forall x : A, g (f x) = x.
 
 Record injection (A B: Type): Type := Build_injection {
