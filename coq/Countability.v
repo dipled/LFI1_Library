@@ -1,10 +1,22 @@
-Require Import Epsilon.
+Require Import Epsilon Classical.
 (** Defining countability for inductive types, inspired by
   https://github.com/QinxiangCao/Countable_PaperSubmission
   and
   https://github.com/guodk/A-Comprehensive-Formalization-of-Propositional-Logic-in-Coq
 
  *)
+
+Theorem strong_lem : forall P : Prop, {P} + {~P}.
+Proof.
+  intros. assert {x : bool | if x then P else ~P}.
+  - apply constructive_indefinite_description.
+    pose proof (classic P). destruct H.
+    + exists true. apply H.
+    + exists false. apply H.
+  - destruct H. destruct x.
+    + left. apply y.
+    + right. apply y.
+Qed. 
 
 Definition function_injective {A B : Type} (f: A -> B): Prop :=
   forall a1 a2, f a1 = f a2 -> a1 = a2.
@@ -67,3 +79,19 @@ Definition Countable (A: Type): Type := injection A nat.
 Definition injection_Countable {A B : Type} (f : injection A B) (CB : Countable B) : 
 Countable A :=
   injection_trans f CB.
+
+Definition inverse_fun {A B : Type} (f : A -> B) (a: A) (y:B) : A :=
+  match (strong_lem (exists x, f x = y)) with
+  | left l => proj1_sig (constructive_indefinite_description _ l)
+  | right _ => a
+  end.
+
+Fact injection_funrev : forall {A B : Type} (f : A -> B),
+  inhabited A -> function_injective f -> exists g, inverse_function f g.
+Proof.
+  intros. destruct H as [x]. unfold function_injective in H0.
+  exists (inverse_fun f x). unfold inverse_function. intros.
+  unfold inverse_fun. destruct (strong_lem (exists x1 : A, f x1 = f x0)).
+  - destruct constructive_indefinite_description. simpl. apply H0. apply e0.
+  - exfalso. apply n. exists x0. reflexivity.
+Qed.
