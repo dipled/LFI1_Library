@@ -509,10 +509,12 @@ Definition bijection_sym {A B : Type} (f : bijection A B): bijection B A.
     - unfold function_surjective. intros.
       exists (f b). destruct constructive_indefinite_description.
       simpl. apply (in_bij _ _ f) in e. apply e.
-Qed.
-      
-
-
-
-
 Defined.
+
+(** Defining countable *)
+
+Definition Countable (A: Type): Type := injection A nat.
+
+Definition injection_Countable {A B : Type} (f : injection A B) (CB : Countable B) : 
+Countable A :=
+  injection_trans f CB.
