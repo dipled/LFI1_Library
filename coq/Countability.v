@@ -40,8 +40,6 @@ Definition bijection_injection {A B : Type} (f : bijection A B) : injection A B.
   apply (Build_injection A B f). apply (in_bij A B f).
 Defined.
 
-Print bijection_injection.
-
 Definition bijection_surjection {A B : Type} (f : bijection A B) : surjection A B.
   apply (Build_surjection A B f). apply (su_bij _ _ f).
 Defined.
