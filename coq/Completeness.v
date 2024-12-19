@@ -402,7 +402,8 @@ Proof.
     + destruct H5. apply H4.
 Qed.
 
-(** Extend a given nontrivial set Γ and build a maximal nontrivial set (Δ)
+(** Lindenbaum's lemma
+    Extend a given nontrivial set Γ and build a maximal nontrivial set (Δ)
     
     Γ₀ = Γ
 
@@ -410,6 +411,12 @@ Qed.
          • Γᵢ₋₁ ∪ [φᵢ₋₁]  otherwise
     Δ = ⋃{ᵢ₌₀}{∞} Γᵢ
 *)
+Section Lindenbaum.
+
+Context (Γ : Ensemble Formula)
+        (φ : Formula).
+
+Hypothesis Gamma_nontrivial_wrt_phi : (~ Γ ⊢ φ).
 
 Fixpoint Gamma_i 
   (Γ : Ensemble Formula) (i : nat) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
@@ -421,7 +428,7 @@ Fixpoint Gamma_i
            end
   end.
 
-Definition Delta_leq
+Definition Gamma_i_fun
   (Γ : Ensemble Formula) (i : nat) (f : nat -> Formula) (φ : Formula) : Ensemble Formula :=
 fun (ψ : Formula) => exists m : nat, m <= i /\ ψ ∈ (Gamma_i Γ i f φ).
 
@@ -429,26 +436,38 @@ Definition Delta
   (Γ : Ensemble Formula) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
 fun (ψ : Formula) => exists n : nat, ψ ∈ (Gamma_i Γ n f φ).
 
-Proposition Gamma_i_Delta_leq : 
-forall (Γ : Ensemble Formula) (i : nat) (f : nat -> Formula) (φ : Formula),
-  (Delta_leq Γ i f φ) = (Gamma_i Γ i f φ).
+Proposition Gamma_i_fun_Gamma_i_eq : 
+forall (i : nat) (f : nat -> Formula),
+  (Gamma_i_fun Γ i f φ) = (Gamma_i Γ i f φ).
 Proof.
   intros. induction i.
   - apply Extensionality_Ensembles. unfold Same_set. split.
     + unfold Included. intros. destruct H. destruct H.
       simpl in H0. unfold Gamma_i. apply H0.
     + unfold Included. intros. unfold Gamma_i in H.
-      unfold Delta_leq. exists 0. simpl. 
+      unfold Gamma_i_fun. exists 0. simpl. 
       split; try reflexivity; try apply H.
   - apply Extensionality_Ensembles. unfold Same_set. split.
     + unfold Included. intros. destruct H. destruct H.
       apply H0.
-    + unfold Included. intros. unfold Delta_leq.
+    + unfold Included. intros. unfold Gamma_i_fun.
       exists (S i). split; try reflexivity; try apply H.
 Qed.
 
-Fact Gamma_i_m_included_n : 
-forall (Γ : Ensemble Formula) (f : nat -> Formula) (m : nat) (n : nat) (φ : Formula), 
+(** Γ ⊆ Γₙ, for all n*)
+Fact Gamma_in_Gamma_i : forall (f : nat -> Formula) (i : nat), 
+  Γ ⊆ (Gamma_i Γ i f φ).
+Proof.
+  intros. unfold Included. intros. induction i.
+  - simpl. apply H.
+  - simpl. destruct strong_lem.
+    + apply IHi.
+    + left. apply IHi.
+Qed.
+
+(** Γₘ ⊆ Γₙ , where m ≤ n*)
+Fact Gamma_i_m_included_Gamma_i_n : 
+forall (f : nat -> Formula) (m : nat) (n : nat), 
 m <= n -> (Gamma_i Γ m f φ) ⊆ (Gamma_i Γ n f φ).
 Proof.
   intros. generalize dependent m. induction n.
@@ -461,6 +480,42 @@ Proof.
       * left. unfold Included in H1. apply H1. apply H2.
 Qed.
 
+(** Γ ⊆ ∆ *)
+Fact Gamma_i_fun_included_Delta : 
+forall (i : nat) (f : nat -> Formula),
+  (Gamma_i_fun Γ i f φ) ⊆ (Delta Γ f φ).
+Proof.
+  intros. unfold Included. intros.
+  induction i.
+  - unfold Delta. exists 0. rewrite <- Gamma_i_fun_Gamma_i_eq. apply H.
+  - unfold Delta. exists (S i). unfold Gamma_i_fun in H.
+    destruct H. destruct H. apply H0.
+Qed.
+
+(** ~(Γ ⊢ φ) -> ~(Γᵢ ⊢ φ) for all i *)
+Fact Gamma_i_non_trivial :
+forall (i : nat) (f : nat -> Formula),
+  ~((Gamma_i Γ i f φ) ⊢ φ).
+Proof.
+  intros. intro. induction i.
+  - simpl in H. contradiction.
+  - simpl in H. destruct strong_lem in H.
+    + contradiction.
+    + contradiction.
+Qed.
+
+Fact Delta_f_i_Gamma_i : 
+  forall (i : nat) (f : nat -> Formula),
+(f i) ∈ (Delta Γ f φ) -> (f i) ∈ (Gamma_i Γ i f φ).
+Proof.
+  intros. destruct (strong_lem ((f i) ∈ (Gamma_i Γ i f φ))).
+  - apply i0.
+  - unfold Delta in H. destruct H. unfold Gamma_i in H.
+
+
+
+
+End Lindenbaum.
 
 
 (** We then need to prove that Formula is denumerable, i.e.,
