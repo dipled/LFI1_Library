@@ -45,6 +45,7 @@ Qed.
 *)
 
 Require Import Infinite_sets Epsilon.
+From LFI1 Require Import Countability.
 Arguments Finite {U}.
 
 (* We then state a trivial fact about sets *)
@@ -123,20 +124,6 @@ Proof.
     + apply H3 in H4. exfalso. apply H. apply H4.
   - intros. apply Premisse. apply H1.
 Qed.
-
-(** Strong LEM *)
-Theorem strong_lem : forall P : Prop, {P} + {~P}.
-Proof.
-  intros. assert {x : bool | if x then P else ~P}.
-  - apply constructive_indefinite_description.
-    pose proof (classic P). destruct H.
-    + exists true. apply H.
-    + exists false. apply H.
-  - destruct H. destruct x.
-    + left. apply y.
-    + right. apply y.
-Qed. 
-
 
 (** Defining the valuation used in the completeness proof *)
 Definition completeness_valuation (Γ : Ensemble Formula) : 
@@ -434,9 +421,47 @@ Fixpoint Gamma_i
            end
   end.
 
+Definition Delta_leq
+  (Γ : Ensemble Formula) (i : nat) (f : nat -> Formula) (φ : Formula) : Ensemble Formula :=
+fun (ψ : Formula) => exists m : nat, m <= i /\ ψ ∈ (Gamma_i Γ i f φ).
+
 Definition Delta
   (Γ : Ensemble Formula) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
-fun (x : Formula) => exists n : nat, x ∈ (Gamma_i Γ n f φ).
+fun (ψ : Formula) => exists n : nat, ψ ∈ (Gamma_i Γ n f φ).
+
+Proposition Gamma_i_Delta_leq : 
+forall (Γ : Ensemble Formula) (i : nat) (f : nat -> Formula) (φ : Formula),
+  (Delta_leq Γ i f φ) = (Gamma_i Γ i f φ).
+Proof.
+  intros. induction i.
+  - apply Extensionality_Ensembles. unfold Same_set. split.
+    + unfold Included. intros. destruct H. destruct H.
+      simpl in H0. unfold Gamma_i. apply H0.
+    + unfold Included. intros. unfold Gamma_i in H.
+      unfold Delta_leq. exists 0. simpl. 
+      split; try reflexivity; try apply H.
+  - apply Extensionality_Ensembles. unfold Same_set. split.
+    + unfold Included. intros. destruct H. destruct H.
+      apply H0.
+    + unfold Included. intros. unfold Delta_leq.
+      exists (S i). split; try reflexivity; try apply H.
+Qed.
+
+Fact Gamma_i_m_included_n : 
+forall (Γ : Ensemble Formula) (f : nat -> Formula) (m : nat) (n : nat) (φ : Formula), 
+m <= n -> (Gamma_i Γ m f φ) ⊆ (Gamma_i Γ n f φ).
+Proof.
+  intros. generalize dependent m. induction n.
+  - intros. unfold Included. intros. inversion H. rewrite H1 in H0; apply H0.
+  - intros. inversion H. 
+    + unfold Included. intros. apply H1.
+    + unfold Included. intros. apply IHn in H1.
+      simpl. destruct strong_lem.
+      * apply H1. apply H2.
+      * left. unfold Included in H1. apply H1. apply H2.
+Qed.
+
+
 
 (** We then need to prove that Formula is denumerable, i.e.,
     there is a bijection between Formula and nat.

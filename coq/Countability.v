@@ -1,4 +1,4 @@
-Require Import Epsilon Classical.
+Require Import Epsilon Infinite_sets Utils.
 (** Defining countability for inductive types, inspired by
   https://github.com/QinxiangCao/Countable_PaperSubmission
   and
@@ -17,6 +17,9 @@ Proof.
     + left. apply y.
     + right. apply y.
 Qed. 
+
+Inductive image_set {A B : Type} (f : A -> B) (M: Ensemble A) : Ensemble B :=
+image_intro : forall a, a ∈ M -> (f a) ∈ (image_set f M).
 
 Definition function_injective {A B : Type} (f: A -> B): Prop :=
   forall a1 a2, f a1 = f a2 -> a1 = a2.
