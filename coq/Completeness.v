@@ -492,7 +492,7 @@ Proof.
     destruct H. destruct H. apply H0.
 Qed.
 
-(** ~(Γ ⊢ φ) -> ~(Γᵢ ⊢ φ) for all i *)
+(** ~(Γᵢ ⊢ φ) for all i *)
 Fact Gamma_i_non_trivial :
 forall (i : nat) (f : nat -> Formula),
   ~((Gamma_i Γ i f φ) ⊢ φ).
