@@ -510,7 +510,10 @@ Fact Delta_f_i_Gamma_i :
 Proof.
   intros. destruct (strong_lem ((f i) ∈ (Gamma_i Γ i f φ))).
   - apply i0.
-  - unfold Delta in H. destruct H. unfold Gamma_i in H.
+  - unfold Delta in H. destruct H. induction i.
+    + simpl in n. remember x. induction n0.
+      * contradiction.
+      * simpl in H.
 
 
 
