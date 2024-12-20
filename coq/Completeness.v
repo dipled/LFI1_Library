@@ -548,10 +548,17 @@ Proof.
 Qed.
  
 Fact not_in_Delta_Gamma_i : forall ψ f,
-  ψ ∉ (Delta f) -> ~exists n : nat, ψ ∈ (Gamma_i n f).
+  ψ ∉ (Delta f) -> forall n : nat, ψ ∉ (Gamma_i n f).
 Proof.
   intros. intro. destruct H.
-  unfold Delta. destruct H0. exists x. apply H.
+  unfold Delta. exists n. apply H0.
+Qed.
+
+Fact not_in_Delta_Gamma_i_2 : forall f i,
+  (f (S i)) ∉ (Delta f) ->  (f (S i)) ∉ (Gamma_i (S i) f).
+Proof.
+  intros. intro. destruct H.
+  unfold Delta. exists (S i). apply H0.
 Qed.
 
 Fact not_in_Gamma_i_trivial : forall f i,
@@ -568,7 +575,7 @@ Fact Delta_maximal_nontrivial : forall (f : nat -> Formula),
 Proof.
   intros. unfold maximal_nontrivial. split.
   - apply Delta_nvdash_phi.
-  - intros. 
+  - intros.  
   
 
 
