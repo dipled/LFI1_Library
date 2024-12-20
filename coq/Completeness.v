@@ -423,9 +423,9 @@ Fixpoint Gamma_i
  (i : nat) (f: nat -> Formula) : Ensemble Formula :=
   match i with
   | O   => Γ
-  | S n => match (strong_lem (((Gamma_i n f) ∪ [f n]) ⊢ φ)) with
+  | S n => match (strong_lem (((Gamma_i n f) ∪ [f i]) ⊢ φ)) with
            | left _  => (Gamma_i n f)
-           | right _ => (Gamma_i n f) ∪ [f n]
+           | right _ => (Gamma_i n f) ∪ [f i]
            end
   end.
 
@@ -547,12 +547,28 @@ Proof.
   contradiction.
 Qed.
  
+Fact not_in_Delta_Gamma_i : forall ψ f,
+  ψ ∉ (Delta f) -> ~exists n : nat, ψ ∈ (Gamma_i n f).
+Proof.
+  intros. intro. destruct H.
+  unfold Delta. destruct H0. exists x. apply H.
+Qed.
+
+Fact not_in_Gamma_i_trivial : forall f i,
+  ~ (f (S i)) ∈ (Gamma_i (S i) f) -> (Gamma_i (S i) f) ∪ [f (S i)] ⊢ φ.
+Proof.
+  intros.
+  simpl. simpl in H. destruct (strong_lem (Gamma_i i f ∪ [f (S i)] ⊢ φ)).
+  - apply d.
+  - destruct H. right. apply In_singleton.
+Qed.
+
 Fact Delta_maximal_nontrivial : forall (f : nat -> Formula),
-  ~ Γ ⊢ φ -> maximal_nontrivial (Delta f) φ.
+  maximal_nontrivial (Delta f) φ.
 Proof.
   intros. unfold maximal_nontrivial. split.
-  - apply Delta_nvdash_phi. apply H.
-  - intros.
+  - apply Delta_nvdash_phi.
+  - intros. 
   
 
 
