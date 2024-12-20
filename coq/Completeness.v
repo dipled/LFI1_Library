@@ -1,5 +1,6 @@
 From LFI1 Require Import Utils Language Syntax Semantics.
 From LFI1 Require Import Deduction_metatheorem Soundness.
+Require Import Coq.Program.Equality.
 Require Import Arith Constructive_sets.
 
 (* LFI1 is tarskian, i.e., it enjoys reflexivity, monotonicity
@@ -412,33 +413,30 @@ Qed.
     Δ = ⋃{ᵢ₌₀}{∞} Γᵢ
 *)
 Section Lindenbaum.
-
-Context (Γ : Ensemble Formula)
+Variable (Γ : Ensemble Formula)
         (φ : Formula).
 
-Hypothesis Gamma_nontrivial_wrt_phi : (~ Γ ⊢ φ).
-
 Fixpoint Gamma_i 
-  (Γ : Ensemble Formula) (i : nat) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
+ (i : nat) (f: nat -> Formula) : Ensemble Formula :=
   match i with
   | O   => Γ
-  | S n => match (strong_lem (((Gamma_i Γ n f φ) ∪ [f n]) ⊢ φ)) with
-           | left _  => (Gamma_i Γ n f φ)
-           | right _ => (Gamma_i Γ n f φ) ∪ [f n]
+  | S n => match (strong_lem (((Gamma_i n f) ∪ [f n]) ⊢ φ)) with
+           | left _  => (Gamma_i n f)
+           | right _ => (Gamma_i n f) ∪ [f n]
            end
   end.
 
 Definition Gamma_i_fun
-  (Γ : Ensemble Formula) (i : nat) (f : nat -> Formula) (φ : Formula) : Ensemble Formula :=
-fun (ψ : Formula) => exists m : nat, m <= i /\ ψ ∈ (Gamma_i Γ i f φ).
+ (i : nat) (f : nat -> Formula) : Ensemble Formula :=
+fun (ψ : Formula) => exists m : nat, m <= i /\ ψ ∈ (Gamma_i i f).
 
 Definition Delta
-  (Γ : Ensemble Formula) (f: nat -> Formula) (φ : Formula) : Ensemble Formula :=
-fun (ψ : Formula) => exists n : nat, ψ ∈ (Gamma_i Γ n f φ).
+ (f: nat -> Formula) : Ensemble Formula :=
+fun (ψ : Formula) => exists n : nat, ψ ∈ (Gamma_i n f).
 
 Proposition Gamma_i_fun_Gamma_i_eq : 
 forall (i : nat) (f : nat -> Formula),
-  (Gamma_i_fun Γ i f φ) = (Gamma_i Γ i f φ).
+  (Gamma_i_fun i f) = (Gamma_i i f).
 Proof.
   intros. induction i.
   - apply Extensionality_Ensembles. unfold Same_set. split.
@@ -456,7 +454,7 @@ Qed.
 
 (** Γ ⊆ Γₙ, for all n*)
 Fact Gamma_in_Gamma_i : forall (f : nat -> Formula) (i : nat), 
-  Γ ⊆ (Gamma_i Γ i f φ).
+  Γ ⊆ (Gamma_i i f).
 Proof.
   intros. unfold Included. intros. induction i.
   - simpl. apply H.
@@ -468,7 +466,7 @@ Qed.
 (** Γₘ ⊆ Γₙ , where m ≤ n*)
 Fact Gamma_i_m_included_Gamma_i_n : 
 forall (f : nat -> Formula) (m : nat) (n : nat), 
-m <= n -> (Gamma_i Γ m f φ) ⊆ (Gamma_i Γ n f φ).
+m <= n -> (Gamma_i m f) ⊆ (Gamma_i n f).
 Proof.
   intros. generalize dependent m. induction n.
   - intros. unfold Included. intros. inversion H. rewrite H1 in H0; apply H0.
@@ -483,7 +481,7 @@ Qed.
 (** Γ ⊆ ∆ *)
 Fact Gamma_i_fun_included_Delta : 
 forall (i : nat) (f : nat -> Formula),
-  (Gamma_i_fun Γ i f φ) ⊆ (Delta Γ f φ).
+  (Gamma_i_fun i f) ⊆ (Delta f).
 Proof.
   intros. unfold Included. intros.
   induction i.
@@ -495,26 +493,64 @@ Qed.
 (** ~(Γᵢ ⊢ φ) for all i *)
 Fact Gamma_i_non_trivial :
 forall (i : nat) (f : nat -> Formula),
-  ~((Gamma_i Γ i f φ) ⊢ φ).
+  ~(Γ ⊢ φ) -> ~((Gamma_i i f) ⊢ φ).
 Proof.
   intros. intro. induction i.
-  - simpl in H. contradiction.
-  - simpl in H. destruct strong_lem in H.
+  - simpl in H0. contradiction.
+  - simpl in H0. destruct strong_lem in H0.
     + contradiction.
     + contradiction.
 Qed.
 
-Fact Delta_f_i_Gamma_i : 
-  forall (i : nat) (f : nat -> Formula),
-(f i) ∈ (Delta Γ f φ) -> (f i) ∈ (Gamma_i Γ i f φ).
+Fact Delta_f_i_Gamma_i_con :
+  forall (f : nat -> Formula) (φ0 : Formula), 
+(Delta f) ⊢ φ0 -> (exists n : nat, (Gamma_i_fun n f) ⊢ φ0).
 Proof.
-  intros. destruct (strong_lem ((f i) ∈ (Gamma_i Γ i f φ))).
-  - apply i0.
-  - unfold Delta in H. destruct H. induction i.
-    + simpl in n. remember x. induction n0.
-      * contradiction.
-      * simpl in H.
+  intros. dependent induction H.
+  - destruct H. exists x.
+    apply Premisse. rewrite Gamma_i_fun_Gamma_i_eq. apply H.
+  - exists 0. apply AxiomInstance.
+  - specialize (IHdeduction1 f). specialize (IHdeduction2 f).
+    destruct IHdeduction1, IHdeduction2; try reflexivity.
+    destruct (Nat.le_ge_cases x x0).
+    + exists x0. pose proof (Gamma_i_m_included_Gamma_i_n f x x0).
+      apply H4 in H3. pose proof (lfi1_monotonicity (Gamma_i_fun x0 f) (Gamma_i_fun x f) ).
+      specialize (H5 φ0 → ψ). 
+      assert (Gamma_i_fun x f ⊢ φ0 → ψ /\ Gamma_i_fun x f ⊆ Gamma_i_fun x0 f).
+      split. assumption. rewrite Gamma_i_fun_Gamma_i_eq. rewrite Gamma_i_fun_Gamma_i_eq.
+      assumption.
+      apply H5 in H6. apply (MP (Gamma_i_fun x0 f) φ0).
+      * apply H6.
+      * apply H2.
+    + exists x. pose proof (Gamma_i_m_included_Gamma_i_n f x0 x).
+      apply H4 in H3. pose proof (lfi1_monotonicity (Gamma_i_fun x f) (Gamma_i_fun x0 f)).
+      specialize (H5 φ0). 
+      assert (Gamma_i_fun x0 f ⊢ φ0 /\ Gamma_i_fun x0 f ⊆ Gamma_i_fun x f).
+      split. assumption. rewrite Gamma_i_fun_Gamma_i_eq. rewrite Gamma_i_fun_Gamma_i_eq.
+      assumption.
+      apply H5 in H6. apply (MP (Gamma_i_fun x f) φ0).
+      * apply H1.
+      * apply H6.
+Qed.
 
+Fact Delta_nvdash_phi : 
+  forall (f : nat -> Formula), 
+  ~Γ ⊢ φ -> ~ (Delta f) ⊢ φ.
+Proof.
+  intros. intro. pose proof (Gamma_i_non_trivial).
+  apply Delta_f_i_Gamma_i_con in H0. destruct H0.
+  specialize (H1 x f). apply H1 in H. rewrite Gamma_i_fun_Gamma_i_eq in H0.
+  contradiction.
+Qed.
+   
+
+Fact Delta_maximal_nontrivial : forall (f : nat -> Formula),
+  ~ Γ ⊢ φ -> maximal_nontrivial (Delta f) φ.
+Proof.
+  intros. unfold maximal_nontrivial. split.
+  - apply Delta_nvdash_phi. apply H.
+  - intros.
+  
 
 
 
