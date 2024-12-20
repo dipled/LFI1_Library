@@ -564,11 +564,19 @@ Proof.
 Qed.
 
 Fact Delta_maximal_nontrivial : forall (f : nat -> Formula),
-  maximal_nontrivial (Delta f) φ.
+  function_injective f -> maximal_nontrivial (Delta f) φ.
 Proof.
   intros. unfold maximal_nontrivial. split.
   - apply Delta_nvdash_phi.
-  - intros.
+  - intros. assert (exists g, inverse_function f g).
+    + apply injection_funrev.
+      * Search inhabited. apply (exists_inhabited Nat.Even). exists 0. unfold Nat.Even.
+        exists 0. reflexivity.
+      * apply H.
+    + destruct H1. remember (x ψ). 
+      remember (f (x ψ)).
+      unfold inverse_function in H1.
+      specialize H1  
   
 
 
