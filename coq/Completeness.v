@@ -562,7 +562,7 @@ Proof.
 Qed.
 
 Fact not_in_Gamma_i_trivial : forall f i,
-  ~ (f (S i)) ∈ (Gamma_i (S i) f) -> (Gamma_i (S i) f) ∪ [f (S i)] ⊢ φ.
+  (f (S i)) ∉ (Gamma_i (S i) f) -> (Gamma_i (S i) f) ∪ [f (S i)] ⊢ φ.
 Proof.
   intros.
   simpl. simpl in H. destruct (strong_lem (Gamma_i i f ∪ [f (S i)] ⊢ φ)).
