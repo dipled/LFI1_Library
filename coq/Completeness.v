@@ -413,8 +413,11 @@ Qed.
     Δ = ⋃{ᵢ₌₀}{∞} Γᵢ
 *)
 Section Lindenbaum.
+
 Variable (Γ : Ensemble Formula)
         (φ : Formula).
+
+Hypothesis Gamma_nontrivial : ~Γ ⊢ φ.
 
 Fixpoint Gamma_i 
  (i : nat) (f: nat -> Formula) : Ensemble Formula :=
@@ -493,11 +496,11 @@ Qed.
 (** ~(Γᵢ ⊢ φ) for all i *)
 Fact Gamma_i_non_trivial :
 forall (i : nat) (f : nat -> Formula),
-  ~(Γ ⊢ φ) -> ~((Gamma_i i f) ⊢ φ).
+  ~((Gamma_i i f) ⊢ φ).
 Proof.
   intros. intro. induction i.
-  - simpl in H0. contradiction.
-  - simpl in H0. destruct strong_lem in H0.
+  - simpl in H. contradiction.
+  - simpl in H. destruct strong_lem in H.
     + contradiction.
     + contradiction.
 Qed.
@@ -510,7 +513,8 @@ Proof.
   - destruct H. exists x.
     apply Premisse. rewrite Gamma_i_fun_Gamma_i_eq. apply H.
   - exists 0. apply AxiomInstance.
-  - specialize (IHdeduction1 f). specialize (IHdeduction2 f).
+  - 
+    specialize (IHdeduction1 Gamma_nontrivial f). specialize (IHdeduction2 Gamma_nontrivial f).
     destruct IHdeduction1, IHdeduction2; try reflexivity.
     destruct (Nat.le_ge_cases x x0).
     + exists x0. pose proof (Gamma_i_m_included_Gamma_i_n f x x0).
@@ -535,15 +539,14 @@ Qed.
 
 Fact Delta_nvdash_phi : 
   forall (f : nat -> Formula), 
-  ~Γ ⊢ φ -> ~ (Delta f) ⊢ φ.
+  ~ (Delta f) ⊢ φ.
 Proof.
   intros. intro. pose proof (Gamma_i_non_trivial).
-  apply Delta_f_i_Gamma_i_con in H0. destruct H0.
-  specialize (H1 x f). apply H1 in H. rewrite Gamma_i_fun_Gamma_i_eq in H0.
+  apply Delta_f_i_Gamma_i_con in H. destruct H.
+  specialize (H0 x f). rewrite Gamma_i_fun_Gamma_i_eq in H.
   contradiction.
 Qed.
-   
-
+ 
 Fact Delta_maximal_nontrivial : forall (f : nat -> Formula),
   ~ Γ ⊢ φ -> maximal_nontrivial (Delta f) φ.
 Proof.
