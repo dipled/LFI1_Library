@@ -415,7 +415,7 @@ Qed.
 Section Lindenbaum.
 
 Variable (Γ : Ensemble Formula)
-        (φ : Formula).
+         (φ : Formula).
 
 Hypothesis Gamma_nontrivial : ~Γ ⊢ φ.
 
@@ -437,6 +437,7 @@ Definition Delta
  (f: nat -> Formula) : Ensemble Formula :=
 fun (ψ : Formula) => exists n : nat, ψ ∈ (Gamma_i n f).
 
+(** Showing that these forms of defining Gamma_i are equivalent *)
 Proposition Gamma_i_fun_Gamma_i_eq : 
 forall (i : nat) (f : nat -> Formula),
   (Gamma_i_fun i f) = (Gamma_i i f).
@@ -455,18 +456,19 @@ Proof.
       exists (S i). split; try reflexivity; try apply H.
 Qed.
 
-(** Γ ⊆ Γₙ, for all n*)
-Fact Gamma_in_Gamma_i : forall (f : nat -> Formula) (i : nat), 
-  Γ ⊆ (Gamma_i i f).
+(** Γ ⊆ ∆ *)
+Fact Gamma_i_fun_included_Delta : 
+forall (i : nat) (f : nat -> Formula),
+  (Gamma_i_fun i f) ⊆ (Delta f).
 Proof.
-  intros. unfold Included. intros. induction i.
-  - simpl. apply H.
-  - simpl. destruct strong_lem.
-    + apply IHi.
-    + left. apply IHi.
+  intros. unfold Included. intros.
+  induction i.
+  - unfold Delta. exists 0. rewrite <- Gamma_i_fun_Gamma_i_eq. apply H.
+  - unfold Delta. exists (S i). unfold Gamma_i_fun in H.
+    destruct H. destruct H. apply H0.
 Qed.
 
-(** Γₘ ⊆ Γₙ , where m ≤ n*)
+(** Γₘ ⊆ Γₙ , where m ≤ n *)
 Fact Gamma_i_m_included_Gamma_i_n : 
 forall (f : nat -> Formula) (m : nat) (n : nat), 
 m <= n -> (Gamma_i m f) ⊆ (Gamma_i n f).
@@ -481,18 +483,6 @@ Proof.
       * left. unfold Included in H1. apply H1. apply H2.
 Qed.
 
-(** Γ ⊆ ∆ *)
-Fact Gamma_i_fun_included_Delta : 
-forall (i : nat) (f : nat -> Formula),
-  (Gamma_i_fun i f) ⊆ (Delta f).
-Proof.
-  intros. unfold Included. intros.
-  induction i.
-  - unfold Delta. exists 0. rewrite <- Gamma_i_fun_Gamma_i_eq. apply H.
-  - unfold Delta. exists (S i). unfold Gamma_i_fun in H.
-    destruct H. destruct H. apply H0.
-Qed.
-
 (** ~(Γᵢ ⊢ φ) for all i *)
 Fact Gamma_i_non_trivial :
 forall (i : nat) (f : nat -> Formula),
@@ -505,6 +495,7 @@ Proof.
     + contradiction.
 Qed.
 
+(** Δ ⊢ φ0 -> ∃n : nat, Γₙ ⊢ φ0 *)
 Fact Delta_f_i_Gamma_i_con :
   forall (f : nat -> Formula) (φ0 : Formula), 
 (Delta f) ⊢ φ0 -> (exists n : nat, (Gamma_i_fun n f) ⊢ φ0).
@@ -537,6 +528,7 @@ Proof.
       * apply H6.
 Qed.
 
+(** ~(Δ ⊢ φ) *)
 Fact Delta_nvdash_phi : 
   forall (f : nat -> Formula), 
   ~ (Delta f) ⊢ φ.
@@ -546,7 +538,8 @@ Proof.
   specialize (H0 x f). rewrite Gamma_i_fun_Gamma_i_eq in H.
   contradiction.
 Qed.
- 
+
+(** ψ ∉ Δ -> ∀n : nat, ψ ∉ Γₙ *)
 Fact not_in_Delta_Gamma_i : forall (ψ : Formula) (f : nat -> Formula),
   ψ ∉ (Delta f) -> forall n : nat, ψ ∉ (Gamma_i n f).
 Proof.
@@ -554,6 +547,7 @@ Proof.
   unfold Delta. exists n. apply H0.
 Qed.
 
+(** φᵢ ∉ Γ₍ᵢ₊₁₎ -> Γᵢ ∪ {φᵢ} ⊢ φ *)
 Fact not_in_Gamma_i_trivial : forall (f : nat -> Formula) (i : nat),
   (f i) ∉ (Gamma_i (S i) f) -> (Gamma_i i f) ∪ [f i] ⊢ φ.
 Proof.
@@ -563,30 +557,29 @@ Proof.
   - destruct H. right. apply In_singleton.
 Qed.
 
-Fact Delta_maximal_nontrivial : forall (f : nat -> Formula),
-  function_injective f -> maximal_nontrivial (Delta f) φ.
+(** Delta is maximal nontrivial *)
+Fact Delta_maximal_nontrivial : forall (f : bijection nat Formula),
+  maximal_nontrivial (Delta f) φ.
 Proof.
-  intros. unfold maximal_nontrivial. split.
+  intros. destruct f as [f in_bij su_bij]. simpl. unfold function_injective in in_bij.
+  unfold function_surjective in su_bij. unfold maximal_nontrivial. split.
   - apply Delta_nvdash_phi.
-  - intros. assert (exists g, inverse_function f g).
-    + apply injection_funrev.
-      * Search inhabited. apply (exists_inhabited Nat.Even). exists 0. unfold Nat.Even.
-        exists 0. reflexivity.
-      * apply H.
-    + destruct H1. remember (x ψ). 
-      remember (f (x ψ)).
-      unfold inverse_function in H1.
-      specialize H1  
-  
-
-
+  - intros. pose proof (su_bij ψ). destruct H0.
+    rewrite <- H0 in H. assert (forall n : nat, (f x) ∉ (Gamma_i n f));
+    try (apply not_in_Delta_Gamma_i; apply H).
+    specialize (H1 (S x)). apply not_in_Gamma_i_trivial in H1.
+    rewrite <- H0. pose proof (lfi1_monotonicity (Delta f ∪ [f x]) (Gamma_i x f ∪ [f x]) φ).
+    apply H2. split.
+    + apply H1.
+    + unfold Included. intros. destruct H3.
+      * left. pose proof (Gamma_i_fun_included_Delta x f).
+        unfold Included in H4. apply H4. rewrite Gamma_i_fun_Gamma_i_eq.
+        apply H3.
+      * right. apply H3.
+Qed.
 
 End Lindenbaum.
 
 
-(** We then need to prove that Formula is denumerable, i.e.,
-    there is a bijection between Formula and nat.
-    For this, we prove that:
-      - There is an injection from nat to Formula
-      - There is an injection from Formula to nat
-*)
+(* Theorem completeness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
+(Γ ⊨ α) -> (Γ ⊢ α).*)

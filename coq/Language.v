@@ -32,14 +32,14 @@ Notation " ∘ x " :=
 Notation " # x " :=
 (Lit x) (at level 2, no associativity, x constr at level 1, format "# x").
 
-Fixpoint size (f : Formula) : nat :=
+Fixpoint complexity (f : Formula) : nat :=
  match f with
  | Lit x    => 1
- | Neg a    => 1 + size a
- | And a b  => 1 + size a + size b
- | Or a b   => 1 + size a + size b
- | Imp a b  => 1 + size a + size b
- | Cons a => 2 + size a
+ | Neg a    => 1 + complexity a
+ | And a b  => 1 + complexity a + complexity b
+ | Or a b   => 1 + complexity a + complexity b
+ | Imp a b  => 1 + complexity a + complexity b
+ | Cons a => 2 + complexity a
  end.
 
 Fixpoint atoms (f : Formula) : Ensemble Atom :=

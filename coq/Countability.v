@@ -1,4 +1,5 @@
-Require Import Epsilon Infinite_sets Utils.
+Require Import Epsilon Infinite_sets Utils Language Lia Arith.
+
 (** Defining countability for inductive types, inspired by
   https://github.com/QinxiangCao/Countable_PaperSubmission
   and
@@ -18,6 +19,11 @@ Proof.
     + right. apply y.
 Qed. 
 
+Theorem le_lt_or_eq : forall n m, n <= m -> n < m \/ n = m.
+Proof.
+  induction 1; auto with arith.
+Qed.
+
 Inductive image_set {A B : Type} (f : A -> B) (M: Ensemble A) : Ensemble B :=
 image_intro : forall a, a ∈ M -> (f a) ∈ (image_set f M).
 
@@ -26,6 +32,9 @@ Definition function_injective {A B : Type} (f: A -> B): Prop :=
 
 Definition function_surjective {A B : Type} (f: A -> B): Prop :=
   forall b, exists a, f a = b.
+
+Inductive function_bijective {A B} (f: A -> B): Prop :=
+  | fun_bij_intro : function_injective f -> function_surjective f -> function_bijective f.
 
 Definition inverse_function {A B : Type} (f : A -> B) (g : B -> A) : Prop :=
   forall x : A, g (f x) = x.
@@ -75,14 +84,6 @@ Definition bijection_sym {A B : Type} (f : bijection A B): bijection B A.
       simpl. apply (in_bij _ _ f) in e. apply e.
 Defined.
 
-(** Defining countable *)
-
-Definition Countable (A: Type): Type := injection A nat.
-
-Definition injection_Countable {A B : Type} (f : injection A B) (CB : Countable B) : 
-Countable A :=
-  injection_trans f CB.
-
 Definition inverse_fun {A B : Type} (f : A -> B) (a: A) (y:B) : A :=
   match (strong_lem (exists x, f x = y)) with
   | left l => proj1_sig (constructive_indefinite_description _ l)
@@ -98,3 +99,217 @@ Proof.
   - destruct constructive_indefinite_description. simpl. apply H0. apply e0.
   - exfalso. apply n. exists x0. reflexivity.
 Qed.
+
+Section CantorBernsteinShroder.
+
+Context {A B : Type}
+        (f : A -> B)
+        (g : B -> A).
+
+Hypothesis Inj_f : function_injective f.
+
+Hypothesis Inj_g : function_injective g.
+
+Hypothesis Inhabited_B : inhabited B.
+
+Fixpoint Cn (n : nat) : Ensemble A :=
+  match n with
+  | O => Complement (image_set g (Full_set B))
+  | S n' => image_set g (image_set f (Cn n'))
+  end.
+
+Let Cset : Ensemble A := fun x => exists n, x ∈ (Cn n).
+
+Let g_rev := 
+proj1_sig (constructive_indefinite_description _ (injection_funrev g Inhabited_B Inj_g)).
+
+Let h (a : A) :=
+  match (strong_lem (a ∈ Cset)) with
+  | left _ => f a
+  | right _ => g_rev a
+  end.
+
+Lemma cantor_bernstein_shroder : function_bijective h.
+Proof.
+  assert (inverse_function g g_rev).
+  { unfold inverse_function. intros.
+    unfold g_rev. destruct constructive_indefinite_description.
+    simpl. unfold inverse_function in i. apply i. 
+  }
+  assert (in_cset : forall x : A, ~ x ∈ Cset -> exists y : B, x = g y).
+  { 
+    intros. destruct (strong_lem (exists y : B, x = g y)); try assumption.
+    exfalso; apply H0. unfold In. unfold Cset. exists 0. simpl.
+    unfold In. unfold Complement. intro. destruct H1. 
+    apply n. exists a. reflexivity.
+  }
+  apply fun_bij_intro.
+  - unfold function_injective. intros. unfold h in H0.
+    destruct (strong_lem (a1 ∈ Cset)), (strong_lem (a2 ∈ Cset)).
+    + apply Inj_f; assumption.
+    + assert (g (f a1) = a2). 
+      { pose proof in_cset _ n. destruct H1 as [y].
+        rewrite H1 in H0. rewrite H in H0. rewrite H0. rewrite H1. 
+        reflexivity.
+      }
+      destruct i. exfalso; apply n. unfold In. unfold Cset. exists (S x). simpl. 
+      rewrite <- H1. apply image_intro. apply image_intro. apply H2.
+    + assert (g (f a2) = a1).
+      { 
+        destruct (strong_lem (exists y : B, a1 = g y)).
+        - destruct e. rewrite H1 in H0. rewrite H in H0. rewrite <- H0.
+          rewrite H1. reflexivity.
+        - exfalso; apply n. unfold In. unfold Cset. exists 0. simpl.
+          unfold In. unfold Complement. intro. destruct H1.
+          apply n0. exists a. reflexivity.
+      }
+      destruct i. exfalso; apply n. unfold In. unfold Cset. exists (S x). simpl.
+      rewrite <- H1. repeat apply image_intro. assumption.
+    + pose proof in_cset _ n. destruct H1. pose proof in_cset _ n0.
+      destruct H2. rewrite H1, H2. rewrite H1, H2 in H0. 
+      rewrite H in H0, H0. rewrite H0. reflexivity.
+  - unfold function_surjective. intros. destruct (strong_lem (b ∈ (image_set f Cset))).
+    + destruct i. unfold h. exists a. destruct strong_lem.
+      * reflexivity.
+      * contradiction.
+    + assert (~(g b) ∈ Cset).
+      { 
+        intro. destruct H0. destruct x.
+        - simpl in H0. unfold In in H0.
+          unfold Complement in H0. exfalso; apply H0.
+          apply image_intro. apply Full_intro.
+        - simpl in H0. destruct (strong_lem (b ∈ (image_set f (Cn x)))).
+          + destruct i. apply n. apply image_intro. unfold In.
+            unfold Cset. exists x. apply H1.          
+          + remember (g b). destruct H0. exfalso; apply n0.
+            apply Inj_g in Heqa. rewrite <- Heqa. apply H0.
+      }
+      exists (g b). unfold h. destruct strong_lem.
+      * destruct i. exfalso; apply H0. unfold In. unfold Cset.
+        exists x. apply H1.
+      * apply H.
+Qed.
+
+End CantorBernsteinShroder.
+(* 
+Definition sum_injection {A1 B1 A2 B2} (f1: injection A1 B1) (f2: injection A2 B2): injection (sum A1 A2) (sum B1 B2).
+  apply (Build_injection _ _ (fun a => match a with inl x => inl (f1 x) | inr y => inr (f2 y) end)).
+  hnf; intros. destruct a1, a2; try inversion H.
+  - inversion H. apply (in_inj _ _ f1) in H1. f_equal; auto.
+  - inversion H. apply (in_inj _ _ _) in H1. f_equal; auto.
+Defined.
+
+Definition prod_injection {A1 B1 A2 B2} (f1: injection A1 B1) (f2: injection A2 B2): injection (prod A1 A2) (prod B1 B2).
+  apply (Build_injection _ _ (fun m =>
+          match m with
+          | (m1, m2) => (f1 m1, f2 m2) end )).
+  hnf; intros. destruct a1, a2.
+  inversion H. apply in_inj in H1, H2. congruence.
+Defined.
+
+Definition sigT_injection (I: Type) (A: I -> Type) (B: Type) (f: forall i: I, injection (A i) B): injection (sigT A) (I * B).
+  apply (Build_injection _ _ (fun a => (projT1 a, f (projT1 a) (projT2 a)))).
+  hnf; intros. inversion H. destruct a1,a2. simpl in *.
+  subst. apply (in_inj _ _ (f x0)) in H2. congruence.
+Defined.
+
+Definition nat2_nat_bijection: bijection (sum nat nat) nat.
+  apply (Build_bijection _ _ (fun n => match n with | inl n => n + n | inr n => S (n + n) end)).
+  - hnf; intros. destruct a1 eqn:Ha1, a2 eqn:Ha2; try lia; f_equal; lia.
+  - hnf; intros. assert (forall n, exists m, n= m + m \/ n = S (m + m)).
+    { intros. induction n. eauto. destruct IHn. destruct H.
+      - exists x; lia.
+      - exists (S x); lia. }
+    destruct (H b) as [n []].
+    + exists (inl n). auto.
+    + exists (inr n); auto.
+Defined.
+
+Definition natnat_nat_bijection: bijection (prod nat nat) nat.
+  set (fix sum (x : nat) : nat := match x with
+       | 0 => 0
+       | S x0 => S x0 + sum x0
+       end) as f.
+  apply (Build_bijection _ _
+    (fun n => match n with | (n1, n2) => f (n1+n2) + n1 end)).
+  - hnf; intros. destruct a1 as (a11, a12), a2 as (a21, a22).
+    assert (forall m1 m2, m1 < m2 -> f m1 + m1 < f m2).
+    { intros. remember (m2 - m1 - 1) as d; assert (m2 = (S d) + m1) by lia.
+      subst m2. clear. induction d; simpl in *; lia. }
+    destruct (Compare_dec.le_lt_dec (a11 + a12) (a21 + a22)).
+    + destruct (le_lt_or_eq _ _ l).
+      * pose proof H0 _ _ H1. lia.
+      * rewrite H1 in *. assert (a11=a21) by lia. subst.
+        assert (a12 = a22) by lia. auto.
+    + apply H0 in l. lia.
+  - hnf; intros. assert ( forall a, exists s, f s <= a < f (S s)).
+    { induction a. exists 0. auto. destruct IHa as [s Hs].
+      remember (a - f s) as d.
+      destruct (PeanoNat.Nat.lt_ge_cases d s).
+      + exists s. simpl in *. lia.
+      + exists (S s). simpl in *; lia. }
+    destruct (H b) as [s Hs].
+    remember (b - (f s)) as a1. assert (a1 <= s) by (unfold f in *; lia).
+    exists (a1, s-a1). replace (a1 + (s - a1)) with s by lia. 
+    lia.
+Defined.
+
+Definition Countable (A: Type): Type := injection A nat.
+
+Definition injection_Countable {A B} (R: injection A B) (CB: Countable B): Countable A := injection_trans R CB.
+
+Definition bijection_Countable {A B} (R: bijection A B) (CB: Countable B): Countable A := injection_Countable (bijection_injection R) CB.
+
+Definition sum_Countable {A B} (CA: Countable A) (CB: Countable B): Countable (sum A B) :=
+  injection_trans (sum_injection CA CB) (bijection_injection nat2_nat_bijection).
+
+Definition prod_Countable {A B} (CA: Countable A) (CB: Countable B): Countable (prod A B) :=
+  injection_trans (prod_injection CA CB) (bijection_injection natnat_nat_bijection).
+
+Definition nCountable_Countable {A: nat -> Type} (CA: forall n, Countable (A n)): Countable (sigT A) :=
+  injection_trans (sigT_injection _ _ _ CA) (bijection_injection natnat_nat_bijection).
+
+Definition nat_Countable : Countable nat.
+  apply (Build_injection _ _ (fun n => n )).
+  hnf; intros. eauto.
+Defined.
+
+Ltac solve_Countable :=
+  match goal with
+  | |- Countable (sum _ _) => apply sum_Countable; solve_Countable
+  | |- Countable (prod _ _) => apply prod_Countable; solve_Countable
+  | |- Countable (sigT _) => try (apply nCountable_Countable; intro; solve_Countable)
+  | |- Countable nat => apply nat_Countable
+  | _ => try assumption
+  end.
+
+Lemma complexity_countable : forall n : nat,
+  Countable (sig (fun x: Formula => complexity x <= n)).
+Proof.
+  induction n.
+  - apply (@bijection_Countable _ nat); solve_Countable.
+    apply bijection_sym.
+    apply (Build_bijection _ _ (fun x => exist (fun x => complexity x <= 0) (Lit x) (le_n x))).
+    + hnf; intros. inversion H; auto.
+    + hnf; intros. destruct b. inversion l. destruct x; inversion H0.
+      exists n. f_equal. apply proof_irrelevance.
+  - set (s := sig (fun x => rankF x <= n)).
+    apply (@injection_Countable _ (nat + s + s * s)%type); [| solve_Countable].
+    assert (SNot : forall y m, rankF (Not y) <= S m -> rankF y <= m).
+    { intros. simpl in H. lia. }
+    assert (SContainl : forall m a b, rankF (Contain a b) <= S m -> rankF a <= m).
+    { intros. simpl in H. lia. }
+    assert (SContainr : forall m a b, rankF (Contain a b) <= S m -> rankF b <= m).
+    { intros. simpl in H. lia. }
+    apply (Build_injection _ _ (fun x => match x with
+          | exist _ (Var p) _ => inl (inl p)
+          | exist _ (Not y) l => inl (inr (exist _ y (SNot _ _ l) ))
+          | exist _ (Contain a b) l => inr
+           (exist _ a (SContainl _ _ _ l), exist _ b (SContainr _ _ _ l)) end)).
+    hnf; intros. 
+    destruct a1 as [[p1 | y1 | y1 z1] ?H];
+    destruct a2 as [[p2 | y2 | y2 z2] ?H]; try inversion H.
+    + f_equal. apply proof_irrelevance.
+    + subst. f_equal. apply proof_irrelevance.
+    + subst. f_equal. apply proof_irrelevance.
+Qed. *)

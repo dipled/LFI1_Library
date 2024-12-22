@@ -6,6 +6,7 @@ Arguments Empty_set {U}.
 Arguments Union {U}.
 Arguments Included {U}.
 Arguments Singleton {U}.
+Arguments Complement {U}.
 
 Notation " a ∈ A " := (In A a) (at level 10).
 Notation " a ∉ A " := (~In A a) (at level 10).
