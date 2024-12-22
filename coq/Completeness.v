@@ -456,7 +456,7 @@ Proof.
       exists (S i). split; try reflexivity; try apply H.
 Qed.
 
-(** Γ ⊆ ∆ *)
+(** Γᵢ ⊆ ∆ *)
 Fact Gamma_i_fun_included_Delta : 
 forall (i : nat) (f : nat -> Formula),
   (Gamma_i_fun i f) ⊆ (Delta f).
@@ -580,6 +580,45 @@ Qed.
 
 End Lindenbaum.
 
+(** For now, assume a bijection between formula and nat *)
+Axiom formula_countable : bijection nat Formula.
 
-(* Theorem completeness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
-(Γ ⊨ α) -> (Γ ⊢ α).*)
+Theorem completeness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
+(Γ ⊨ α) -> (Γ ⊢ α).
+Proof.
+  intros. destruct (strong_lem (Γ ⊢ α)); try assumption.
+  pose proof formula_countable as FC.
+  pose proof (Delta_maximal_nontrivial Γ α n FC).
+  pose proof (Delta_maximal_nontrivial Γ α n FC).
+  destruct FC as [f]. simpl in H0, H1.
+  destruct H0.
+  assert (α ∉ (Delta Γ α f)). 
+  intro. apply Premisse in H3. contradiction.
+  pose proof (completeness_valuation_is_bivaluation (Delta Γ α f) α).
+  apply H4 in H1 as H5. assert (completeness_valuation (Delta Γ α f) α = ⊥).
+  - unfold completeness_valuation. destruct (strong_lem (α ∈ (Delta Γ α f))); auto; contradiction.
+  - unfold bivaluationEntails in H. specialize (H (completeness_valuation (Delta Γ α f))).
+    rewrite H6 in H. discriminate H.
+    + apply H5.
+    + intros. unfold completeness_valuation. destruct (strong_lem (ψ ∈ (Delta Γ α f))).
+      * reflexivity.
+      * pose proof (not_in_Delta_Gamma_i Γ α ψ f).
+        assert (forall n : nat, ψ ∉ (Gamma_i Γ α n f)); try (apply H8; assumption).
+        specialize (H9 0). simpl in H9. contradiction.
+Qed.
+  
+Corollary completeness_matrix : forall (Γ : Ensemble Formula) (α : Formula), 
+(Γ ⊨m α) -> (Γ ⊢ α).
+Proof.
+  intros. apply bivaluation_matrix_imp1 in H. apply completeness_bivaluations.
+  apply H.
+Qed.
+
+Corollary matrix_bivaluations_eq : forall (Γ : Ensemble Formula) (α : Formula),
+(Γ ⊨m α) <-> (Γ ⊨ α).
+Proof.
+  intros. split.
+  - apply bivaluation_matrix_imp1.
+  - intro. apply soundness_matrix. apply completeness_bivaluations. apply H.
+Qed.
+  

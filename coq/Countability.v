@@ -194,22 +194,28 @@ End CantorBernsteinShroder.
 (* 
 Definition sum_injection {A1 B1 A2 B2} (f1: injection A1 B1) (f2: injection A2 B2): injection (sum A1 A2) (sum B1 B2).
   apply (Build_injection _ _ (fun a => match a with inl x => inl (f1 x) | inr y => inr (f2 y) end)).
-  hnf; intros. destruct a1, a2; try inversion H.
-  - inversion H. apply (in_inj _ _ f1) in H1. f_equal; auto.
-  - inversion H. apply (in_inj _ _ _) in H1. f_equal; auto.
+  unfold function_injective. intros. destruct a1, a2.
+  - inversion H. pose proof (in_inj _ _ f1). unfold function_injective in H0.
+    apply H0 in H1. rewrite H1. reflexivity.
+  - inversion H.
+  - inversion H.
+  - inversion H. pose proof (in_inj _ _ f2). unfold function_injective in H0.
+    apply H0 in H1. rewrite H1. reflexivity.
 Defined.
 
 Definition prod_injection {A1 B1 A2 B2} (f1: injection A1 B1) (f2: injection A2 B2): injection (prod A1 A2) (prod B1 B2).
   apply (Build_injection _ _ (fun m =>
           match m with
           | (m1, m2) => (f1 m1, f2 m2) end )).
-  hnf; intros. destruct a1, a2.
-  inversion H. apply in_inj in H1, H2. congruence.
+  unfold function_injective. intros.
+  destruct a1, a2. inversion H. apply (in_inj _ _ f1) in H1.
+  apply (in_inj _  _ f2) in H2. rewrite H1, H2. reflexivity.
 Defined.
 
-Definition sigT_injection (I: Type) (A: I -> Type) (B: Type) (f: forall i: I, injection (A i) B): injection (sigT A) (I * B).
+Definition sigT_injection 
+(I: Type) (A: I -> Type) (B: Type) (f: forall i: I, injection (A i) B): injection (sigT A) (I * B).
   apply (Build_injection _ _ (fun a => (projT1 a, f (projT1 a) (projT2 a)))).
-  hnf; intros. inversion H. destruct a1,a2. simpl in *.
+  unfold function_injective. intros. inversion H. destruct a1,a2. simpl in *.
   subst. apply (in_inj _ _ (f x0)) in H2. congruence.
 Defined.
 
@@ -283,33 +289,78 @@ Ltac solve_Countable :=
   | _ => try assumption
   end.
 
-Lemma complexity_countable : forall n : nat,
-  Countable (sig (fun x: Formula => complexity x <= n)).
+Fixpoint rankF (p : Formula): nat :=
+  match p with
+  | # _ => 0
+  | ¬ x => 1 + rankF x
+  | ∘ x => 1 + rankF x
+  | x → y => 1 + rankF x + rankF y
+  | x ∧ y => 1 + rankF x + rankF y
+  | x ∨ y => 1 + rankF x + rankF y
+  end.
+
+Lemma rankF_countable : forall n,
+  Countable (sig (fun x: Formula => rankF x <= n)).
 Proof.
   induction n.
   - apply (@bijection_Countable _ nat); solve_Countable.
     apply bijection_sym.
-    apply (Build_bijection _ _ (fun x => exist (fun x => complexity x <= 0) (Lit x) (le_n x))).
+    apply (Build_bijection _ _ (fun x => exist (fun x => rankF x <= 0) (#x) (le_n 0))).
     + hnf; intros. inversion H; auto.
     + hnf; intros. destruct b. inversion l. destruct x; inversion H0.
-      exists n. f_equal. apply proof_irrelevance.
+      exists a. f_equal. apply proof_irrelevance.
   - set (s := sig (fun x => rankF x <= n)).
     apply (@injection_Countable _ (nat + s + s * s)%type); [| solve_Countable].
-    assert (SNot : forall y m, rankF (Not y) <= S m -> rankF y <= m).
+    assert (SNeg : forall y m, rankF (¬y) <= S m -> rankF y <= m).
     { intros. simpl in H. lia. }
-    assert (SContainl : forall m a b, rankF (Contain a b) <= S m -> rankF a <= m).
+    assert (SCon : forall y m, rankF (∘y) <= S m -> rankF y <= m).
     { intros. simpl in H. lia. }
-    assert (SContainr : forall m a b, rankF (Contain a b) <= S m -> rankF b <= m).
+    assert (SImpl : forall m a b, rankF (a → b) <= S m -> rankF a <= m).
     { intros. simpl in H. lia. }
+    assert (SImpr : forall m a b, rankF (a → b) <= S m -> rankF b <= m).
+    { intros. simpl in H. lia. }
+    assert (SAndl : forall m a b, rankF (a ∧ b) <= S m -> rankF a <= m).
+    { intros. simpl in H. lia. }
+    assert (SAndr : forall m a b, rankF (a ∧ b) <= S m -> rankF b <= m).
+    { intros. simpl in H. lia. }
+    assert (SOrl : forall m a b, rankF (a ∨ b) <= S m -> rankF a <= m).
+    { intros. simpl in H. lia. }
+    assert (SOrr : forall m a b, rankF (a ∨ b) <= S m -> rankF b <= m).
+    { intros. simpl in H. lia. }
+
     apply (Build_injection _ _ (fun x => match x with
-          | exist _ (Var p) _ => inl (inl p)
-          | exist _ (Not y) l => inl (inr (exist _ y (SNot _ _ l) ))
-          | exist _ (Contain a b) l => inr
-           (exist _ a (SContainl _ _ _ l), exist _ b (SContainr _ _ _ l)) end)).
+          | exist _ (# p) _ => inl (inl p)
+          | exist _ (¬ y) l => inl (inr (exist _ y (SNeg _ _ l) ))
+          | exist _ (∘ y) l => inl (inr (exist _ y (SCon _ _ l) ))
+          | exist _ (a → b) l => inr
+            (exist _ a (SImpl _ _ _ l), exist _ b (SImpr _ _ _ l)) 
+          | exist _ (a ∧ b) l => inr
+            (exist _ a (SAndl _ _ _ l), exist _ b (SAndr _ _ _ l))
+          | exist _ (a ∨ b) l => inr
+            (exist _ a (SOrl _ _ _ l), exist _ b (SOrr _ _ _ l)) end)).
     hnf; intros. 
-    destruct a1 as [[p1 | y1 | y1 z1] ?H];
-    destruct a2 as [[p2 | y2 | y2 z2] ?H]; try inversion H.
+    destruct a1 as [[p1 | y1 | y1 z1 | y1 z1| y1 z1 | y1] ?H];
+    destruct a2 as [[p2 | y2 | y2 z2 | y2 z2| y2 z2 | y2] ?H]; try inversion H.
     + f_equal. apply proof_irrelevance.
     + subst. f_equal. apply proof_irrelevance.
     + subst. f_equal. apply proof_irrelevance.
+Qed.
+
+Theorem Formula_contable : Countable Formula.
+Proof.
+  apply (@injection_Countable _ (sigT (fun n => sig (fun x => rankF x <= n)))).
+  - apply (Build_injection _ _ 
+    (fun x0 => existT (fun n => sig (fun x => rankF x <= n))
+       (rankF x0) (exist (fun x => rankF x <= rankF x0) x0 (le_n (rankF x0))))).
+    hnf; intros. inversion H. auto.
+  - solve_Countable. apply rankF_countable.
+Qed.
+
+Lemma bijection_nat_formula : bijection nat Formula.
+Proof.
+  pose proof @Bernstein_Theorem nat Formula.
+  pose proof Formula_contable. destruct X.
+  assert (@function_injective nat Formula (fun n => (Var n))).
+  { hnf; intros. inversion H0; auto. }
+  apply (H _ _ H0 in_inj). constructor. exact (Var 0).
 Qed. *)
