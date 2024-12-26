@@ -33,9 +33,9 @@ Definition function_injective {A B : Type} (f: A -> B): Prop :=
 Definition function_surjective {A B : Type} (f: A -> B): Prop :=
   forall b, exists a, f a = b.
 
-Inductive function_bijective {A B} (f: A -> B): Prop :=
-  | fun_bij_intro : function_injective f -> function_surjective f -> function_bijective f.
-
+Definition function_bijective {A B} (f: A -> B): Prop :=
+  function_injective f /\ function_surjective f.
+  
 Definition inverse_function {A B : Type} (f : A -> B) (g : B -> A) : Prop :=
   forall x : A, g (f x) = x.
 
@@ -54,7 +54,7 @@ Record bijection (A B: Type): Type := Build_bijection {
   in_bij : function_injective bij_f;
   su_bij : function_surjective bij_f;
 }.
-
+(* 
 Definition injection_trans {A B C : Type} (f1: injection A B) (f2: injection B C): injection A C.
   apply (Build_injection A C (fun (x : A) => f2 (f1 x))). unfold function_injective. 
   intros. apply (in_inj B C f2) in H. apply (in_inj A B f1) in H. apply H.
@@ -143,7 +143,7 @@ Proof.
     unfold In. unfold Complement. intro. destruct H1. 
     apply n. exists a. reflexivity.
   }
-  apply fun_bij_intro.
+  split.
   - unfold function_injective. intros. unfold h in H0.
     destruct (strong_lem (a1 ∈ Cset)), (strong_lem (a2 ∈ Cset)).
     + apply Inj_f; assumption.
@@ -191,7 +191,7 @@ Proof.
 Qed.
 
 End CantorBernsteinShroder.
-(* 
+
 Definition sum_injection {A1 B1 A2 B2} (f1: injection A1 B1) (f2: injection A2 B2): injection (sum A1 A2) (sum B1 B2).
   apply (Build_injection _ _ (fun a => match a with inl x => inl (f1 x) | inr y => inr (f2 y) end)).
   unfold function_injective. intros. destruct a1, a2.
