@@ -38,61 +38,20 @@ Proof.
     apply H2.
 Qed.
 
-(* From now on, we need to include the Infinite_sets and
+(* From now on, we need to include the Classical_sets and
    Epsilon modules, which add the concepts needed to construct 
    the proof of completeness. These modules, however, include 
    the excluded middle and epsilon axioms, which result in 
    proof irrelevance.
 *)
 
-Require Import Infinite_sets Epsilon.
+Require Import Classical_sets Epsilon.
 From LFI1 Require Import Countability.
-Arguments Finite {U}.
 
 (* We then state a trivial fact about sets *)
 Proposition In_lem {U : Type} : forall (A : Ensemble U) (x : U),
   x ∈ A \/ x ∉ A.
 Proof. intros. apply classic. Qed.
-
-(* LFI1 is finitary *)
-Proposition lfi1_finitary :
-  forall (Γ : Ensemble Formula) (α : Formula),
-    (Γ ⊢ α) -> (exists (Γ0 : Ensemble Formula), (Finite Γ0) /\ Γ0 ⊆ Γ /\ Γ0 ⊢ α).
-Proof.
-  intros. induction H.
-  - exists (Add ∅ φ). split; try split.
-    + unfold Add. apply Union_is_finite.
-      * apply Empty_is_finite.
-      * apply Noone_in_empty.
-    + unfold Add. unfold Included. intro.
-      intros. destruct H0.
-      * destruct H0.
-      * destruct H0. apply H.
-    + unfold Add. apply Premisse.
-      apply Union_intror. apply In_singleton.
-  - exists ∅. split; try split.
-    + apply Empty_is_finite.
-    + unfold Included. intros. destruct H.
-    + apply AxiomInstance.
-  - destruct IHdeduction1, IHdeduction2.
-    destruct H1. destruct H3. destruct H2. destruct H5.
-    exists (Union x x0). split; try split.
-    + apply Union_preserves_Finite.
-      * apply H1.
-      * apply H2.
-    + apply Union_minimal.
-      * apply H3.
-      * apply H5.
-    + pose proof (lfi1_monotonicity (x ∪ x0) x (φ → ψ)).
-      pose proof (lfi1_monotonicity (x ∪ x0) x0 (φ)).
-      assert (x ⊢ φ → ψ /\ x ⊆ (x ∪ x0)).
-      * split. apply H4. apply Union_increases_l.
-      * assert (x0 ⊢ φ /\ x0 ⊆ (x ∪ x0)).
-        -- split. apply H6. apply Union_increases_r.
-        -- apply H7 in H9. apply H8 in H10.
-           apply (MP ((x ∪ x0)) φ ψ).
-           apply H9. apply H10.
-Qed.
 
 (* Defining maximal nontrivial sets of formulae w.r.t a given formula *)
 Definition maximal_nontrivial (Γ : Ensemble Formula) (φ : Formula) : Prop :=
@@ -615,4 +574,3 @@ Proof.
   - apply bivaluation_matrix_imp1.
   - intro. apply soundness_matrix. apply completeness_bivaluations. apply H.
 Qed.
-  
