@@ -442,18 +442,12 @@ Proposition Gamma_i_fun_Gamma_i_eq :
 forall (i : nat) (f : nat -> Formula),
   (Gamma_i_fun i f) = (Gamma_i i f).
 Proof.
-  intros. induction i.
-  - apply Extensionality_Ensembles. unfold Same_set. split.
-    + unfold Included. intros. destruct H. destruct H.
-      simpl in H0. unfold Gamma_i. apply H0.
-    + unfold Included. intros. unfold Gamma_i in H.
-      unfold Gamma_i_fun. exists 0. simpl. 
-      split; try reflexivity; try apply H.
-  - apply Extensionality_Ensembles. unfold Same_set. split.
-    + unfold Included. intros. destruct H. destruct H.
-      apply H0.
-    + unfold Included. intros. unfold Gamma_i_fun.
-      exists (S i). split; try reflexivity; try apply H.
+  intros. apply Extensionality_Ensembles. unfold Same_set. split.
+    + unfold Included. intros. destruct H. destruct H. apply H0.
+    + unfold Included. intros. unfold Gamma_i_fun. unfold In. exists i.
+      split.
+      * reflexivity.
+      * apply H.
 Qed.
 
 (** Γᵢ ⊆ ∆ *)
