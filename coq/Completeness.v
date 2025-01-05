@@ -510,7 +510,7 @@ Proof.
   - destruct H. right. apply In_singleton.
 Qed.
 
-(** Delta is maximal nontrivial *)
+(** Delta is maximal nontrivial given a bijection between nat and Formula*)
 Fact Delta_maximal_nontrivial : forall (f : bijection nat Formula),
   maximal_nontrivial (Delta f) φ.
 Proof.
