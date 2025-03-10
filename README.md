@@ -1,6 +1,7 @@
 Uma biblioteca da lógica de inconsistência formal LFI1 implementada em Coq.
 
 ## Como compilar os arquivos:
+- Ter o coqide instalado
 - No arquivo _CoqProject, consta:
   ```
   -R . [NomeDoProjeto]
