@@ -9,4 +9,4 @@ Uma biblioteca da lógica de inconsistência formal LFI1 implementada em Coq.
 
 - execute o comando coq_makefile -f _CoqProject -o CoqMakeFile
 - compile com make -f CoqMakefile
-- depois, podemos limpar com make -f CoqMakefile clean
+- depois, podemos limpar com make -f CoqMakeFile clean
