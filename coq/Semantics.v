@@ -89,15 +89,6 @@ Definition preserveCirc (v : Formula -> MatrixDomain) : Prop :=
 Definition valuation (v : Formula -> MatrixDomain) : Prop :=
   preserveOr v /\ preserveTo v /\ preserveAnd v /\ preserveNeg v /\ preserveCirc v.
 
-Ltac destruct_conjunction H :=
-match type of H with
-| _ /\ _ => 
-  let L := fresh "L" in
-  let R := fresh "R" in
-  destruct H as [L R]; destruct_conjunction L; destruct_conjunction R
-| _ => idtac
-end.
-
 (* Defining the semantic consequence relation w.r.t matrices *)
 Definition matrixEntails (Γ : Ensemble Formula) (φ : Formula) := 
 forall v : (Formula -> MatrixDomain),
