@@ -39,3 +39,8 @@ Record surjection (A B: Type): Type := Build_surjection {
   sur_f :> A -> B;
   su_surj : function_surjective sur_f
 }.
+
+(* Theorem inj_surj_inverse : forall {A B : Type} (f : injection A B), function_surjective (inverse_function f).
+Proof.
+  intros. destruct f as [f inj_f]. simpl. unfold function_injective in inj_f.
+  unfold function_surjective. intros. unfold inverse_function.  *)
