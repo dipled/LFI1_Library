@@ -1,4 +1,4 @@
-Require Import Arith Constructive_sets.
+From Stdlib Require Import Arith Constructive_sets.
 
 Arguments In {U}.
 Arguments Add {U}.

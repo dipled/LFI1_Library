@@ -1,5 +1,5 @@
 Require Import LFI1.Utils LFI1.Language LFI1.Syntax.
-Require Import Arith Constructive_sets.
+From Stdlib Require Import Arith Constructive_sets.
 
 Lemma id : forall (Γ : Ensemble Formula) (φ : Formula), Γ ⊢ φ → φ.
 Proof.

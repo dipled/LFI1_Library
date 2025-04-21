@@ -1,5 +1,5 @@
 Require Import LFI1.Utils LFI1.Language.
-Require Import Arith Constructive_sets.
+From Stdlib Require Import Arith Constructive_sets.
 
 (* Matrix Semantics: *)
 

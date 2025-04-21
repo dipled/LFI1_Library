@@ -1,7 +1,7 @@
 From LFI1 Require Import Utils Language Syntax Semantics.
 From LFI1 Require Import Deduction_metatheorem Soundness.
 Require Import Coq.Program.Equality.
-Require Import Arith Constructive_sets.
+From Stdlib Require Import Arith Constructive_sets.
 
 (* LFI1 is tarskian, i.e., it enjoys reflexivity, monotonicity
    and cut
