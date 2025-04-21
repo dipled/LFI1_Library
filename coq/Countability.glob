@@ -1,0 +1,177 @@
+DIGEST b53835368184cc97da6191ca3831027b
+FLFI1.Countability
+R15:21 Coq.Logic.Epsilon <> <> lib
+R23:35 Coq.Sets.Infinite_sets <> <> lib
+R37:41 LFI1.Utils <> <> lib
+R43:50 LFI1.Language <> <> lib
+R52:54 Coq.micromega.Lia <> <> lib
+R56:60 Coq.Arith.Arith <> <> lib
+prf 289:298 <> strong_lem
+binder 309:309 <> P:1
+R319:319 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R321:325 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R328:328 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R320:320 LFI1.Countability <> P:1 var
+R326:326 Coq.Init.Logic <> ::type_scope:'~'_x not
+R327:327 LFI1.Countability <> P:1 var
+R355:355 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R357:359 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R364:366 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R386:386 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R360:363 Coq.Init.Datatypes <> bool ind
+binder 356:356 <> x:2
+R370:370 LFI1.Countability <> x:2 var
+R384:384 Coq.Init.Logic <> ::type_scope:'~'_x not
+R355:355 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R357:359 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R364:366 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R386:386 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R360:363 Coq.Init.Datatypes <> bool ind
+binder 356:356 <> x:3
+R370:370 LFI1.Countability <> x:3 var
+R384:384 Coq.Init.Logic <> ::type_scope:'~'_x not
+R399:433 Coq.Logic.Epsilon <> constructive_indefinite_description thm
+R399:433 Coq.Logic.Epsilon <> constructive_indefinite_description thm
+R452:458 Coq.Logic.Classical_Prop <> classic prfax
+R452:458 Coq.Logic.Classical_Prop <> classic prfax
+R489:492 Coq.Init.Datatypes <> true constr
+R489:492 Coq.Init.Datatypes <> true constr
+R517:521 Coq.Init.Datatypes <> false constr
+R517:521 Coq.Init.Datatypes <> false constr
+prf 619:629 <> le_lt_or_eq
+binder 640:640 <> n:4
+binder 642:642 <> m:5
+R651:654 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R646:649 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R645:645 LFI1.Countability <> n:4 var
+R650:650 LFI1.Countability <> m:5 var
+R660:663 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R656:658 Coq.Init.Peano <> ::nat_scope:x_'<'_x not
+R655:655 LFI1.Countability <> n:4 var
+R659:659 LFI1.Countability <> m:5 var
+R665:667 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R664:664 LFI1.Countability <> n:4 var
+R668:668 LFI1.Countability <> m:5 var
+ind 726:734 <> image_set
+constr 794:804 <> image_intro
+binder 737:737 <> A:6
+binder 739:739 <> B:7
+R755:758 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R754:754 LFI1.Countability <> A:6 var
+R759:759 LFI1.Countability <> B:7 var
+binder 750:750 <> f:8
+R766:773 Coq.Sets.Ensembles <> Ensemble def
+R775:775 LFI1.Countability <> A:6 var
+binder 763:763 <> M:9
+R780:787 Coq.Sets.Ensembles <> Ensemble def
+binder 815:815 <> a:12
+R825:828 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R819:823 LFI1.Utils <> :::x_'∈'_x not
+R824:824 LFI1.Countability <> M:9 var
+R818:818 LFI1.Countability <> a:12 var
+R829:829 LFI1.Utils <> :::x_'∈'_x not
+R833:839 LFI1.Utils <> :::x_'∈'_x not
+R853:853 LFI1.Utils <> :::x_'∈'_x not
+R840:848 LFI1.Countability <> image_set:10 ind
+R852:852 LFI1.Countability <> M:9 var
+R850:850 LFI1.Countability <> f:8 var
+R830:830 LFI1.Countability <> f:8 var
+R832:832 LFI1.Countability <> a:12 var
+scheme 726:734 <> image_set_ind
+scheme 726:734 <> image_set_sind
+def 868:885 <> function_injective
+binder 888:888 <> A:13
+binder 890:890 <> B:14
+R905:908 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R904:904 LFI1.Countability <> A:13 var
+R909:909 LFI1.Countability <> B:14 var
+binder 901:901 <> f:15
+binder 930:931 <> a1:16
+binder 933:934 <> a2:17
+R948:951 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R941:943 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R937:937 LFI1.Countability <> f:15 var
+R939:940 LFI1.Countability <> a1:16 var
+R944:944 LFI1.Countability <> f:15 var
+R946:947 LFI1.Countability <> a2:17 var
+R954:956 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R952:953 LFI1.Countability <> a1:16 var
+R957:958 LFI1.Countability <> a2:17 var
+def 973:991 <> function_surjective
+binder 994:994 <> A:18
+binder 996:996 <> B:19
+R1011:1014 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1010:1010 LFI1.Countability <> A:18 var
+R1015:1015 LFI1.Countability <> B:19 var
+binder 1007:1007 <> f:20
+binder 1036:1036 <> b:21
+R1039:1045 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R1047:1048 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 1046:1046 <> a:22
+R1052:1054 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1049:1049 LFI1.Countability <> f:20 var
+R1051:1051 LFI1.Countability <> a:22 var
+R1055:1055 LFI1.Countability <> b:21 var
+def 1070:1087 <> function_bijective
+binder 1090:1090 <> A:23
+binder 1092:1092 <> B:24
+R1100:1103 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1099:1099 LFI1.Countability <> A:23 var
+R1104:1104 LFI1.Countability <> B:24 var
+binder 1096:1096 <> f:25
+R1138:1141 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R1118:1135 LFI1.Countability <> function_injective def
+R1137:1137 LFI1.Countability <> f:25 var
+R1142:1160 LFI1.Countability <> function_surjective def
+R1162:1162 LFI1.Countability <> f:25 var
+def 1179:1194 <> inverse_function
+binder 1197:1197 <> A:26
+binder 1199:1199 <> B:27
+R1215:1218 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1214:1214 LFI1.Countability <> A:26 var
+R1219:1219 LFI1.Countability <> B:27 var
+binder 1210:1210 <> f:28
+R1228:1231 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1227:1227 LFI1.Countability <> B:27 var
+R1232:1232 LFI1.Countability <> A:26 var
+binder 1223:1223 <> g:29
+R1258:1258 LFI1.Countability <> A:26 var
+binder 1254:1254 <> x:30
+R1268:1270 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1261:1261 LFI1.Countability <> g:29 var
+R1264:1264 LFI1.Countability <> f:28 var
+R1266:1266 LFI1.Countability <> x:30 var
+R1271:1271 LFI1.Countability <> x:30 var
+rec 1282:1290 <> injection
+proj 1333:1337 <> inj_f
+proj 1352:1357 <> in_inj
+binder 1293:1293 <> A:31
+binder 1295:1295 <> B:32
+R1343:1346 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1342:1342 LFI1.Countability <> A:31 var
+R1347:1347 LFI1.Countability <> B:32 var
+R1361:1378 LFI1.Countability <> function_injective def
+R1380:1384 LFI1.Countability <> inj_f:34 meth
+rec 1397:1406 <> surjection
+proj 1450:1454 <> sur_f
+proj 1469:1475 <> su_surj
+binder 1409:1409 <> A:36
+binder 1411:1411 <> B:37
+R1460:1463 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1459:1459 LFI1.Countability <> A:36 var
+R1464:1464 LFI1.Countability <> B:37 var
+R1479:1497 LFI1.Countability <> function_surjective def
+R1499:1503 LFI1.Countability <> sur_f:39 meth
+rec 1516:1524 <> bijection
+proj 1567:1571 <> bij_f
+proj 1586:1591 <> in_bij
+proj 1623:1628 <> su_bij
+binder 1527:1527 <> A:41
+binder 1529:1529 <> B:42
+R1577:1580 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1576:1576 LFI1.Countability <> A:41 var
+R1581:1581 LFI1.Countability <> B:42 var
+R1595:1612 LFI1.Countability <> function_injective def
+R1614:1618 LFI1.Countability <> bij_f:44 meth
+R1632:1650 LFI1.Countability <> function_surjective def
+R1652:1656 LFI1.Countability <> bij_f:44 meth

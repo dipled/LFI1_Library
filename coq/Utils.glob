@@ -1,0 +1,59 @@
+DIGEST 0ce5cf2d4fffc2734e3a92780b277b82
+FLFI1.Utils
+R15:19 Coq.Arith.Arith <> <> lib
+R21:37 Coq.Sets.Constructive_sets <> <> lib
+R51:52 Coq.Sets.Ensembles <> In def
+R51:52 Coq.Sets.Ensembles <> In def
+R69:71 Coq.Sets.Ensembles <> Add def
+R69:71 Coq.Sets.Ensembles <> Add def
+R88:96 Coq.Sets.Ensembles <> Empty_set ind
+R88:96 Coq.Sets.Ensembles <> Empty_set ind
+R113:117 Coq.Sets.Ensembles <> Union ind
+R113:117 Coq.Sets.Ensembles <> Union ind
+R134:141 Coq.Sets.Ensembles <> Included def
+R134:141 Coq.Sets.Ensembles <> Included def
+R158:166 Coq.Sets.Ensembles <> Singleton ind
+R158:166 Coq.Sets.Ensembles <> Singleton ind
+R183:192 Coq.Sets.Ensembles <> Complement def
+R183:192 Coq.Sets.Ensembles <> Complement def
+R225:226 Coq.Sets.Ensembles <> In def
+not 209:209 <> :::x_'∈'_x
+R273:273 Coq.Init.Logic <> ::type_scope:'~'_x not
+R274:275 Coq.Sets.Ensembles <> In def
+not 257:257 <> :::x_'∉'_x
+R322:326 Coq.Sets.Ensembles <> Union ind
+not 306:306 <> :::x_'∪'_x
+R391:399 Coq.Sets.Ensembles <> Singleton ind
+not 377:377 <> :::'['_x_']'
+R464:471 Coq.Sets.Ensembles <> Included def
+not 448:448 <> :::x_'⊆'_x
+R519:527 Coq.Sets.Ensembles <> Empty_set ind
+not 503:503 <> :::'∅'
+prf 540:546 <> iff_neg
+binder 557:557 <> A:1
+binder 559:559 <> B:2
+R569:569 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R577:582 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R592:592 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R571:575 Coq.Init.Logic <> ::type_scope:x_'<->'_x not
+R570:570 LFI1.Utils <> A:1 var
+R576:576 LFI1.Utils <> B:2 var
+R585:589 Coq.Init.Logic <> ::type_scope:x_'<->'_x not
+R583:583 Coq.Init.Logic <> ::type_scope:'~'_x not
+R584:584 LFI1.Utils <> A:1 var
+R590:590 Coq.Init.Logic <> ::type_scope:'~'_x not
+R591:591 LFI1.Utils <> B:2 var
+prf 677:682 <> contra
+binder 693:693 <> A:3
+binder 695:695 <> B:4
+R705:705 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R712:717 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R726:726 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R707:710 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R706:706 LFI1.Utils <> A:3 var
+R711:711 LFI1.Utils <> B:4 var
+R720:723 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R718:718 Coq.Init.Logic <> ::type_scope:'~'_x not
+R719:719 LFI1.Utils <> B:4 var
+R724:724 Coq.Init.Logic <> ::type_scope:'~'_x not
+R725:725 LFI1.Utils <> A:3 var
