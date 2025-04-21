@@ -24,3 +24,12 @@ Theorem contra : forall A B : Prop, (A -> B) -> (~B -> ~A).
 Proof.
   intros. intro. apply H0. apply H. apply H1.
 Qed. 
+
+Ltac destruct_conjunction H :=
+match type of H with
+| _ /\ _ => 
+  let L := fresh "L" in
+  let R := fresh "R" in
+  destruct H as [L R]; destruct_conjunction L; destruct_conjunction R
+| _ => idtac
+end.

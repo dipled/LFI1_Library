@@ -511,10 +511,10 @@ Proof.
 Qed.
 
 (** Delta is maximal nontrivial given a bijection between nat and Formula*)
-Fact Delta_maximal_nontrivial : forall (f : bijection nat Formula),
+Fact Delta_maximal_nontrivial : forall (f : surjection nat Formula),
   maximal_nontrivial (Delta f) φ.
 Proof.
-  intros. destruct f as [f in_bij su_bij]. simpl. unfold function_injective in in_bij.
+  intros. destruct f as [f su_bij]. simpl. 
   unfold function_surjective in su_bij. unfold maximal_nontrivial. split.
   - apply Delta_nvdash_phi.
   - intros. pose proof (su_bij ψ). destruct H0.
@@ -533,8 +533,8 @@ Qed.
 
 End Lindenbaum.
 
-(** For now, assume a bijection between formula and nat *)
-Axiom formula_countable : bijection nat Formula.
+(** For now, assume a surjection between nat and Formula *)
+Axiom formula_countable : surjection nat Formula.
 
 Theorem completeness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊨ α) -> (Γ ⊢ α).
