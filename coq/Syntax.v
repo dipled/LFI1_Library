@@ -49,7 +49,6 @@ Definition instantiate (a : Ax) : Formula :=
   | negto2 α β   => (α ∧ ¬β) → ¬(α → β)
   end.
   
-
 Inductive deduction : Ensemble Formula -> Formula -> Prop :=
   | Premisse : forall (Γ : Ensemble Formula) (φ : Formula), φ ∈ Γ -> deduction Γ φ
   | AxiomInstance : forall (Γ : Ensemble Formula) (a : Ax), deduction Γ (instantiate a)
@@ -57,3 +56,5 @@ Inductive deduction : Ensemble Formula -> Formula -> Prop :=
     (deduction Γ φ) -> deduction Γ ψ.
 
 Notation " Γ ⊢ φ " := (deduction Γ φ) (at level 50, no associativity).
+
+Check deduction.
