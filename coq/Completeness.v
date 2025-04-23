@@ -45,7 +45,7 @@ Qed.
    proof irrelevance.
 *)
 
-Require Import Classical_sets Epsilon.
+From Stdlib Require Import Classical_sets Epsilon.
 From LFI1 Require Import Countability.
 
 (* We then state a trivial fact about sets *)
@@ -83,7 +83,7 @@ Proof.
            apply H1.
     + apply H3 in H4. exfalso. apply H. apply H4.
   - intros. apply Premisse. apply H1.
-Qed.
+Qed. About strong_lem.
 
 (** Defining the valuation used in the completeness proof *)
 Definition completeness_valuation (Γ : Ensemble Formula) : 
@@ -363,11 +363,11 @@ Proof.
 Qed.
 
 (** Lindenbaum's lemma
-    Extend a given nontrivial set Γ and build a maximal nontrivial set (Δ)
+    Extend a given nontrivial set Γ w.r.t φ and build a maximal nontrivial set (Δ) w.r.t φ
     
     Γ₀ = Γ
 
-    Γᵢ = • Γᵢ₋₁         if (Γᵢ₋₁ ∪ [φᵢ₋₁]) ⊢ φ
+    Γᵢ = • Γᵢ₋₁           if (Γᵢ₋₁ ∪ [φᵢ₋₁]) ⊢ φ
          • Γᵢ₋₁ ∪ [φᵢ₋₁]  otherwise
     Δ = ⋃{ᵢ₌₀}{∞} Γᵢ
 *)
