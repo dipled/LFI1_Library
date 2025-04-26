@@ -56,5 +56,3 @@ Inductive deduction : Ensemble Formula -> Formula -> Prop :=
     (deduction Γ φ) -> deduction Γ ψ.
 
 Notation " Γ ⊢ φ " := (deduction Γ φ) (at level 50, no associativity).
-
-Check deduction.
