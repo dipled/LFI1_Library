@@ -90,7 +90,7 @@ Definition valuation (v : Formula -> MatrixDomain) : Prop :=
   preserveOr v /\ preserveTo v /\ preserveAnd v /\ preserveNeg v /\ preserveCirc v.
 
 (* Defining the semantic consequence relation w.r.t matrices *)
-Definition matrixEntails (Γ : Ensemble Formula) (φ : Formula) := 
+Definition matrixEntails (Γ : Ensemble Formula) (φ : Formula) : Prop:= 
 forall v : (Formula -> MatrixDomain),
 valuation v -> 
   (forall (ψ: Formula), 
@@ -146,7 +146,7 @@ Definition bivaluation (v : Formula -> BivaluationDomain) : Prop :=
   vDne v /\ vDmAND v /\ vDmOR v /\ vCip v.
 
 (* Defining the semantic consequence relation w.r.t bivaluations *)
-Definition bivaluationEntails (Γ:Ensemble Formula) (φ : Formula) := 
+Definition bivaluationEntails (Γ:Ensemble Formula) (φ : Formula) : Prop:= 
 forall v : (Formula -> BivaluationDomain),
 bivaluation v -> 
   (forall (ψ: Formula), 
