@@ -127,7 +127,7 @@ Proof.
   - apply h_valuation. apply H.
 Qed.
 
-Corollary bivaluation_matrix_imp1 : forall (Γ : Ensemble Formula) (α : Formula), 
+Corollary matrix_bivaluation_imp : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊨m α) -> (Γ ⊨ α).
 Proof.
   intros. unfold matrixEntails in H. unfold bivaluationEntails.
@@ -178,7 +178,7 @@ Qed.
 Corollary soundness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊢ α) -> (Γ ⊨ α).
 Proof.
-  intros. apply bivaluation_matrix_imp1. apply soundness_matrix. apply H.
+  intros. apply matrix_bivaluation_imp. apply soundness_matrix. apply H.
 Qed.
 
 (** LFI1 is an LFI w.r.t ¬ and ∘, i.e. 

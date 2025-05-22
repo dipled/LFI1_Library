@@ -529,13 +529,13 @@ Qed.
 Corollary completeness_matrix : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊨m α) -> (Γ ⊢ α).
 Proof.
-  intros. apply completeness_bivaluations. apply bivaluation_matrix_imp1. apply H.
+  intros. apply completeness_bivaluations. apply matrix_bivaluation_imp. apply H.
 Qed.
 
 Corollary matrix_bivaluations_eq : forall (Γ : Ensemble Formula) (α : Formula),
 (Γ ⊨m α) <-> (Γ ⊨ α).
 Proof.
   intros. split.
-  - apply bivaluation_matrix_imp1.
+  - apply matrix_bivaluation_imp.
   - intro. apply soundness_matrix. apply completeness_bivaluations. apply H.
 Qed.
