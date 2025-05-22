@@ -1,7 +1,8 @@
 From LFI1 Require Import Utils Language Syntax Semantics.
 From LFI1 Require Import Deduction_metatheorem Soundness.
 Require Import Coq.Program.Equality.
-From Stdlib Require Import Arith Constructive_sets.
+From Stdlib Require Import Arith Classical_sets Epsilon.
+From LFI1 Require Import Cardinality.
 
 (* From now on, we need to include the Classical_sets and
    Epsilon modules, which add the concepts needed to construct 
@@ -9,9 +10,6 @@ From Stdlib Require Import Arith Constructive_sets.
    the excluded middle and epsilon axioms, which result in 
    proof irrelevance.
 *)
-
-From Stdlib Require Import Classical_sets Epsilon.
-From LFI1 Require Import Cardinality.
 
 (* We then state a trivial fact about sets *)
 Proposition In_lem {U : Type} : forall (A : Ensemble U) (x : U),
