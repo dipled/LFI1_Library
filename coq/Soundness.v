@@ -142,7 +142,13 @@ Theorem soundness_matrix : forall (Γ : Ensemble Formula) (α : Formula),
 Proof.
   intros. induction H.
   - unfold matrixEntails. intros. apply H1 in H. apply H.
-  - destruct a; unfold matrixEntails; intros; simpl;
+  - 
+  (* Here we perform a case analysis on each axiom and show that they're indeed valid 
+     in the matrix semantic system. The repeat rewrite lines are applications of the homo-
+     morphism equalities in order to evalue the formula. This should be made automatic with
+     ltac in the future
+  *)  
+  destruct a; unfold matrixEntails; intros; simpl;
     try unfold valuation in H; try destruct_conjunction H;
     repeat rewrite L;
     repeat rewrite L0; 
