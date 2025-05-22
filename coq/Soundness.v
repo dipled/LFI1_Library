@@ -196,7 +196,8 @@ Fixpoint valuation_condition_1 (x : Formula) : MatrixDomain :=
  | a → b => (valuation_condition_1 a) →ₘ (valuation_condition_1 b)
  | ¬a => ¬ₘ(valuation_condition_1 a)
  | ∘a => ∘ₘ(valuation_condition_1 a)
- |_ => Zero end.
+ |_ => Zero 
+ end.
 
 Fixpoint valuation_condition_2 (x : Formula) : MatrixDomain :=
  match x with 
@@ -206,7 +207,8 @@ Fixpoint valuation_condition_2 (x : Formula) : MatrixDomain :=
  | a → b => (valuation_condition_2 a) →ₘ (valuation_condition_2 b)
  | ¬a => ¬ₘ(valuation_condition_2 a)
  | ∘a => ∘ₘ(valuation_condition_2 a)
- |_ => Zero end.
+ |_ => Zero 
+ end.
 
  Fixpoint valuation_condition_2' (x : Formula) : MatrixDomain :=
  match x with 
@@ -217,7 +219,8 @@ Fixpoint valuation_condition_2 (x : Formula) : MatrixDomain :=
  | a → b => (valuation_condition_2' a) →ₘ (valuation_condition_2' b)
  | ¬a => ¬ₘ(valuation_condition_2' a)
  | ∘a => ∘ₘ(valuation_condition_2' a)
- |_ => Zero end.
+ |_ => Zero 
+ end.
 
 Proposition lfi1_is_lfi :
 (exists (α β : Formula), ~([α] ∪ [¬α] ⊢ β)) /\
