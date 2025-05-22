@@ -48,7 +48,7 @@ Proof.
            apply H1.
     + apply H3 in H4. exfalso. apply H. apply H4.
   - intros. apply Premisse. apply H1.
-Qed. About strong_lem.
+Qed.
 
 (** Defining the valuation used in the completeness proof *)
 Definition completeness_valuation (Γ : Ensemble Formula) : 
