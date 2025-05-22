@@ -175,7 +175,7 @@ Proof.
     + apply H2.
 Qed.
 
-Theorem soundness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
+Corollary soundness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊢ α) -> (Γ ⊨ α).
 Proof.
   intros. apply bivaluation_matrix_imp1. apply soundness_matrix. apply H.
