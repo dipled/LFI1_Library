@@ -11,7 +11,7 @@ From Stdlib Require Import Arith Constructive_sets.
 *)
 
 From Stdlib Require Import Classical_sets Epsilon.
-From LFI1 Require Import Countability.
+From LFI1 Require Import Cardinality.
 
 (* We then state a trivial fact about sets *)
 Proposition In_lem {U : Type} : forall (A : Ensemble U) (x : U),
