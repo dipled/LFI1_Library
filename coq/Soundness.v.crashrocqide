@@ -115,15 +115,17 @@ bivaluation v ->
 ).
 Proof. 
   intros. exists (fun x => h_formula x v). intros. split. split.
-  - intros. unfold h_formula.  destruct (v ¬ φ).
-    + rewrite H0. reflexivity.
-    + rewrite H0. reflexivity.
-  - intros.
-    unfold h_formula in H0. destruct (v ¬ φ), (v φ). 
-    + simpl in H0. destruct H0.
-    + reflexivity.
-    + destruct H0.
-    + reflexivity.
+  - intros. pose proof (bivaluation_lem v ¬φ). unfold h_formula.
+    destruct H1.
+    + rewrite H0. rewrite H1. reflexivity.
+    + rewrite H0. rewrite H1. reflexivity.
+  - intros. pose proof (bivaluation_lem v ¬φ). pose proof (bivaluation_lem v φ).
+    unfold h_formula in H0. 
+    destruct H1, H2.
+    + apply H2.
+    + rewrite H1 in H0. rewrite H2 in H0. destruct H0.
+    + apply H2.
+    + rewrite H1 in H0. rewrite H2 in H0. destruct H0.
   - apply h_valuation. apply H.
 Qed.
 
