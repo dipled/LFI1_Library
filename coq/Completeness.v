@@ -16,7 +16,7 @@ Proof. intros. apply classic. Qed.
 
 (* Defining maximal nontrivial sets of formulae w.r.t a given formula *)
 Definition maximal_nontrivial (Γ : Ensemble Formula) (φ : Formula) : Prop :=
-  ~ Γ ⊢ φ /\ (forall (ψ : Formula), ~ψ ∈ Γ -> (Γ ∪ [ψ] ⊢ φ)).
+  ~ Γ ⊢ φ /\ (forall (ψ : Formula), ψ ∉ Γ -> (Γ ∪ [ψ] ⊢ φ)).
 
 (* Defining closed theories *)
 Definition closed_theory (Γ : Ensemble Formula) : Prop := forall φ : Formula, 
