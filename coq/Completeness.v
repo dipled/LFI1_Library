@@ -1,14 +1,12 @@
 From LFI1 Require Import Utils Language Syntax Semantics.
 From LFI1 Require Import Deduction_metatheorem Soundness.
 Require Import Coq.Program.Equality.
-From Stdlib Require Import Arith Classical_sets Epsilon.
+From Stdlib Require Import Arith Classical_sets IndefiniteDescription.
 From LFI1 Require Import Cardinality.
 
 (* From now on, we need to include the Classical_sets and
-   Epsilon modules, which add the concepts needed to construct 
-   the proof of completeness. These modules, however, include 
-   the excluded middle and epsilon axioms, which result in 
-   proof irrelevance.
+   IndefiniteDescription modules, which add the concepts needed to construct 
+   the proof of completeness.
 *)
 
 (* We then state a trivial fact about sets *)

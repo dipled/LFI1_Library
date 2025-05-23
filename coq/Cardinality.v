@@ -1,4 +1,4 @@
-From Stdlib Require Import Epsilon Classical_sets Lia Arith.
+From Stdlib Require Import IndefiniteDescription Classical_sets Lia Arith.
 Require Import Utils Language.
 
 Theorem strong_lem : forall P : Prop, {P} + {~P}.
@@ -11,7 +11,7 @@ Proof.
   - destruct H. destruct x.
     + left. apply y.
     + right. apply y.
-Qed. 
+Qed.
 
 Theorem le_lt_or_eq : forall n m, n <= m -> n < m \/ n = m.
 Proof.
