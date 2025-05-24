@@ -471,7 +471,7 @@ Proof.
   - destruct H. right. apply In_singleton.
 Qed.
 
-(** Delta is maximal nontrivial given a bijection between nat and Formula*)
+(** Delta is maximal nontrivial given a surjection from nat to Formula*)
 Fact Delta_maximal_nontrivial : forall (f : surjection nat Formula),
   maximal_nontrivial (Delta f) φ.
 Proof.
