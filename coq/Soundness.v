@@ -199,26 +199,26 @@ Fixpoint valuation_condition_1 (x : Formula) : MatrixDomain :=
  |_ => Zero 
  end.
 
-Fixpoint valuation_condition_2 (x : Formula) : MatrixDomain :=
+Fixpoint valuation_condition_2_left (x : Formula) : MatrixDomain :=
  match x with 
  |#0 => One
- | a ∧ b => (valuation_condition_2 a) ∧ₘ (valuation_condition_2 b)
- | a ∨ b => (valuation_condition_2 a) ∨ₘ (valuation_condition_2 b)
- | a → b => (valuation_condition_2 a) →ₘ (valuation_condition_2 b)
- | ¬a => ¬ₘ(valuation_condition_2 a)
- | ∘a => ∘ₘ(valuation_condition_2 a)
+ | a ∧ b => (valuation_condition_2_left a) ∧ₘ (valuation_condition_2_left b)
+ | a ∨ b => (valuation_condition_2_left a) ∨ₘ (valuation_condition_2_left b)
+ | a → b => (valuation_condition_2_left a) →ₘ (valuation_condition_2_left b)
+ | ¬a => ¬ₘ(valuation_condition_2_left a)
+ | ∘a => ∘ₘ(valuation_condition_2_left a)
  |_ => Zero 
  end.
 
- Fixpoint valuation_condition_2' (x : Formula) : MatrixDomain :=
+ Fixpoint valuation_condition_2_right (x : Formula) : MatrixDomain :=
  match x with 
  |#0 => Zero
  |¬#0 => One
- | a ∧ b => (valuation_condition_2' a) ∧ₘ (valuation_condition_2' b)
- | a ∨ b => (valuation_condition_2' a) ∨ₘ (valuation_condition_2' b)
- | a → b => (valuation_condition_2' a) →ₘ (valuation_condition_2' b)
- | ¬a => ¬ₘ(valuation_condition_2' a)
- | ∘a => ∘ₘ(valuation_condition_2' a)
+ | a ∧ b => (valuation_condition_2_right a) ∧ₘ (valuation_condition_2_right b)
+ | a ∨ b => (valuation_condition_2_right a) ∨ₘ (valuation_condition_2_right b)
+ | a → b => (valuation_condition_2_right a) →ₘ (valuation_condition_2_right b)
+ | ¬a => ¬ₘ(valuation_condition_2_right a)
+ | ∘a => ∘ₘ(valuation_condition_2_right a)
  |_ => Zero 
  end.
 
@@ -241,13 +241,13 @@ Proof.
     - intro. apply deduction_metatheorem in H.
       apply soundness_matrix in H.
       unfold matrixEntails in H. 
-      specialize (H valuation_condition_2). simpl in H. apply H.
+      specialize (H valuation_condition_2_left). simpl in H. apply H.
       + unfold valuation. try repeat split.
       + intros. inversion H0. simpl. reflexivity.
     - intro. apply deduction_metatheorem in H.
       apply soundness_matrix in H.
       unfold matrixEntails in H. 
-      specialize (H valuation_condition_2'). simpl in H. apply H.
+      specialize (H valuation_condition_2_right). simpl in H. apply H.
       + unfold valuation. try repeat split. unfold preserveNeg.
         intros. simpl. destruct φ; try destruct a; reflexivity.
       + intros. inversion H0. simpl. reflexivity.
