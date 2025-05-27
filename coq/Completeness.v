@@ -391,7 +391,7 @@ Proof.
 Qed.
 
 (** Δ ⊢ φ0 -> ∃n : nat, Γₙ ⊢ φ0 *)
-Fact Delta_f_i_Gamma_i_con :
+Fact Delta_Gamma_i_con :
   forall (f : nat -> Formula) (φ0 : Formula), 
 (Delta f) ⊢ φ0 -> (exists n : nat, (Gamma_i n f) ⊢ φ0).
 Proof.
