@@ -379,7 +379,7 @@ Proof.
 Qed.
 
 (** ~(Γᵢ ⊢ φ) for all i *)
-Fact Gamma_i_non_does_not_derive_phi :
+Fact Gamma_i_does_not_derive_phi :
 forall (i : nat) (f : nat -> Formula),
   ~((Gamma_i i f) ⊢ φ).
 Proof.
@@ -428,7 +428,7 @@ Fact Delta_does_not_derive_phi :
   forall (f : nat -> Formula), 
   ~ (Delta f) ⊢ φ.
 Proof.
-  intros. intro. pose proof (Gamma_i_non_does_not_derive_phi).
+  intros. intro. pose proof (Gamma_i_does_not_derive_phi).
   apply Delta_f_i_Gamma_i_con in H. destruct H.
   specialize (H0 x f).
   contradiction.
