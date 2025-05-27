@@ -1,7 +1,6 @@
 From LFI1 Require Import Utils Language Syntax Semantics.
 From LFI1 Require Import Deduction_metatheorem Soundness.
-Require Import Coq.Program.Equality.
-From Stdlib Require Import Arith Classical_sets IndefiniteDescription.
+From Stdlib Require Import Arith Classical_sets IndefiniteDescription Program.Equality.
 From LFI1 Require Import Cardinality.
 
 (* From now on, we need to include the Classical_sets and
@@ -324,7 +323,7 @@ Proof.
 Qed.
 
 (** Lindenbaum's lemma
-    Extend a given nontrivial set Γ w.r.t φ and build a maximal nontrivial set (Δ) w.r.t. φ
+    Extend a given set Γ (with ~(Γ ⊢ φ)) and build a maximal nontrivial set w.r.t. φ
     
     Γ₀ = Γ
 
@@ -337,7 +336,7 @@ Section Lindenbaum.
 Variable (Γ : Ensemble Formula)
          (φ : Formula).
 
-Hypothesis Gamma_nontrivial : ~Γ ⊢ φ.
+Hypothesis Gamma_does_not_derive_phi : ~Γ ⊢ φ.
 
 Fixpoint Gamma_i_fun 
  (i : nat) (f: nat -> Formula) : Ensemble Formula :=
@@ -419,7 +418,7 @@ Proof.
     apply Premisse. rewrite Gamma_i_fun_Gamma_i_eq. apply H.
   - exists 0. apply AxiomInstance.
   - 
-    specialize (IHdeduction1 Gamma_nontrivial f). specialize (IHdeduction2 Gamma_nontrivial f).
+    specialize (IHdeduction1 Gamma_does_not_derive_phi f). specialize (IHdeduction2 Gamma_does_not_derive_phi f).
     destruct IHdeduction1, IHdeduction2; try reflexivity.
     destruct (Nat.le_ge_cases x x0).
     + exists x0. pose proof (Gamma_i_m_included_Gamma_i_n f x x0).

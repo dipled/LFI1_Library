@@ -6,4 +6,4 @@
 ./Deduction_metatheorem.v
 ./Soundness.v
 ./Cardinality.v
-
+./Completeness.v
