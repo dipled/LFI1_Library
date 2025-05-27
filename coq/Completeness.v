@@ -379,7 +379,7 @@ Proof.
 Qed.
 
 (** ~(Γᵢ ⊢ φ) for all i *)
-Fact Gamma_i_non_trivial :
+Fact Gamma_i_non_does_not_derive_phi :
 forall (i : nat) (f : nat -> Formula),
   ~((Gamma_i i f) ⊢ φ).
 Proof.
@@ -424,11 +424,11 @@ Proof.
 Qed.
 
 (** ~(Δ ⊢ φ) *)
-Fact Delta_nvdash_phi : 
+Fact Delta_does_not_derive_phi : 
   forall (f : nat -> Formula), 
   ~ (Delta f) ⊢ φ.
 Proof.
-  intros. intro. pose proof (Gamma_i_non_trivial).
+  intros. intro. pose proof (Gamma_i_non_does_not_derive_phi).
   apply Delta_f_i_Gamma_i_con in H. destruct H.
   specialize (H0 x f).
   contradiction.
@@ -458,7 +458,7 @@ Fact Delta_maximal_nontrivial : forall (f : surjection nat Formula),
 Proof.
   intros. destruct f as [f su_bij]. simpl. 
   unfold function_surjective in su_bij. unfold maximal_nontrivial. split.
-  - apply Delta_nvdash_phi.
+  - apply Delta_does_not_derive_phi.
   - intros. pose proof (su_bij ψ). destruct H0.
     rewrite <- H0 in H. assert (forall n : nat, (f x) ∉ (Gamma_i n f));
     try (apply not_in_Delta_Gamma_i; apply H).
@@ -476,14 +476,14 @@ Qed.
 End Lindenbaum.
 
 (** For now, assume a surjection between nat and Formula *)
-Axiom formula_countable : surjection nat Formula.
+Axiom surjection_nat_formula : surjection nat Formula.
 
 Theorem completeness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊨ α) -> (Γ ⊢ α).
 Proof.
   intros. destruct (strong_lem (Γ ⊢ α)); try assumption.
   exfalso.
-  pose proof formula_countable as FC.
+  pose proof surjection_nat_formula as FC.
   pose proof (Delta_maximal_nontrivial Γ α n FC).
   pose proof (Delta_maximal_nontrivial Γ α n FC).
   destruct FC as [f]. simpl in H0, H1.
