@@ -429,7 +429,7 @@ Fact Delta_does_not_derive_phi :
   ~ (Delta f) ⊢ φ.
 Proof.
   intros. intro. pose proof (Gamma_i_does_not_derive_phi).
-  apply Delta_f_i_Gamma_i_con in H. destruct H.
+  apply Delta_Gamma_i_con in H. destruct H.
   specialize (H0 x f).
   contradiction.
 Qed.
