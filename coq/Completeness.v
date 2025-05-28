@@ -453,7 +453,7 @@ Proof.
 Qed.
 
 (** Δ is maximal nontrivial given a surjection from nat to Formula*)
-Fact Δ_maximal_nontrivial : forall (f : surjection nat Formula),
+Lemma Δ_maximal_nontrivial : forall (f : surjection nat Formula),
   maximal_nontrivial (Δ f) φ.
 Proof.
   intros. destruct f as [f su_bij]. simpl. 
