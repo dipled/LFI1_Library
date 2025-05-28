@@ -481,26 +481,25 @@ Axiom surjection_nat_formula : surjection nat Formula.
 Theorem completeness_bivaluations : forall (Γ : Ensemble Formula) (α : Formula), 
 (Γ ⊨ α) -> (Γ ⊢ α).
 Proof.
-  intros. destruct (strong_lem (Γ ⊢ α)); try assumption.
-  exfalso.
+  intros Γ α. apply contraposition. intros. intro.
   pose proof surjection_nat_formula as FC.
-  pose proof (Δ_maximal_nontrivial Γ α n FC).
-  pose proof (Δ_maximal_nontrivial Γ α n FC).
-  destruct FC as [f]. simpl in H0, H1.
-  destruct H0.
+  pose proof (Δ_maximal_nontrivial Γ α H FC).
+  pose proof (Δ_maximal_nontrivial Γ α H FC).
+  destruct FC as [f]. simpl in H1, H2.
+  destruct H1.
   assert (α ∉ (Δ Γ α f)). 
-  { intro. apply Premisse in H3. contradiction. }
+  { intro. apply Premisse in H4. contradiction. }
   pose proof (completeness_valuation_is_bivaluation (Δ Γ α f) α).
-  apply H4 in H1 as H5. assert (completeness_valuation (Δ Γ α f) α = ⊥).
+  apply H5 in H2 as H6. assert (completeness_valuation (Δ Γ α f) α = ⊥).
   { unfold completeness_valuation. destruct (strong_lem (α ∈ (Δ Γ α f))); auto; contradiction. }
-  unfold bivaluationEntails in H. specialize (H (completeness_valuation (Δ Γ α f))).
-  rewrite H6 in H. discriminate H.
-  + apply H5.
+  unfold bivaluationEntails in H0. specialize (H0 (completeness_valuation (Δ Γ α f))).
+  rewrite H7 in H0. discriminate H0.
+  + apply H6.
   + intros. unfold completeness_valuation. destruct (strong_lem (ψ ∈ (Δ Γ α f))).
     * reflexivity.
     * pose proof (not_in_Δ_Γᵢ Γ α ψ f).
-      assert (forall n : nat, ψ ∉ (Γᵢ Γ α n f)); try (apply H8; assumption).
-      specialize (H9 0). simpl in H9. contradiction.
+      assert (forall n : nat, ψ ∉ (Γᵢ Γ α n f)); try (apply H9; assumption).
+      specialize (H10 0). simpl in H10. contradiction.
 Qed.
   
 Corollary completeness_matrix : forall (Γ : Ensemble Formula) (α : Formula), 

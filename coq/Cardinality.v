@@ -13,6 +13,14 @@ Proof.
     + right. apply y.
 Qed.
 
+Theorem contraposition : forall A B : Prop, (A -> B) <-> (~B -> ~A).
+Proof.
+    intros. split.
+    - intros. intro. apply H0. apply H. apply H1.
+    - intros. pose proof (classic B). destruct H1; try assumption.
+      apply H in H1. contradiction.
+Qed.
+
 Theorem le_lt_or_eq : forall n m, n <= m -> n < m \/ n = m.
 Proof.
   induction 1; auto with arith.
