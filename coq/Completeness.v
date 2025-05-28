@@ -336,37 +336,37 @@ Section Lindenbaum.
 Variable (Γ : Ensemble Formula)
          (φ : Formula).
 
-Hypothesis Gamma_does_not_derive_phi : ~Γ ⊢ φ.
+Hypothesis Gamma_does_not_derive_φ : ~Γ ⊢ φ.
 
-Fixpoint Gamma_i 
+Fixpoint Γᵢ 
  (i : nat) (f: nat -> Formula) : Ensemble Formula :=
   match i with
   | O   => Γ
-  | S n => match (strong_lem (((Gamma_i n f) ∪ [f n]) ⊢ φ)) with
-           | left _  => (Gamma_i n f)
-           | right _ => (Gamma_i n f) ∪ [f n]
+  | S n => match (strong_lem (((Γᵢ n f) ∪ [f n]) ⊢ φ)) with
+           | left _  => (Γᵢ n f)
+           | right _ => (Γᵢ n f) ∪ [f n]
            end
   end.
 
-Definition Delta
+Definition Δ
  (f: nat -> Formula) : Ensemble Formula :=
-fun (ψ : Formula) => exists n : nat, ψ ∈ (Gamma_i n f).
+fun (ψ : Formula) => exists n : nat, ψ ∈ (Γᵢ n f).
 
 (** Γᵢ ⊆ ∆ *)
-Fact Gamma_i_included_Delta : 
+Fact Γᵢ_included_Δ : 
 forall (i : nat) (f : nat -> Formula),
-  (Gamma_i i f) ⊆ (Delta f).
+  (Γᵢ i f) ⊆ (Δ f).
 Proof.
   intros. unfold Included. intros.
   induction i.
-  - unfold Delta. exists 0. apply H.
-  - unfold Delta. exists (S i). apply H.
+  - unfold Δ. exists 0. apply H.
+  - unfold Δ. exists (S i). apply H.
 Qed.
 
 (** Γₘ ⊆ Γₙ , where m ≤ n *)
-Fact Gamma_i_m_included_Gamma_i_n : 
+Fact Γᵢ_m_included_Γᵢ_n : 
 forall (f : nat -> Formula) (m : nat) (n : nat), 
-m <= n -> (Gamma_i m f) ⊆ (Gamma_i n f).
+m <= n -> (Γᵢ m f) ⊆ (Γᵢ n f).
 Proof.
   intros. generalize dependent m. induction n.
   - intros. unfold Included. intros. inversion H. rewrite H1 in H0; apply H0.
@@ -379,9 +379,9 @@ Proof.
 Qed.
 
 (** ~(Γᵢ ⊢ φ) for all i *)
-Fact Gamma_i_does_not_derive_phi :
+Fact Γᵢ_does_not_derive_φ :
 forall (i : nat) (f : nat -> Formula),
-  ~((Gamma_i i f) ⊢ φ).
+  ~((Γᵢ i f) ⊢ φ).
 Proof.
   intros. intro. induction i.
   - simpl in H. contradiction.
@@ -391,83 +391,83 @@ Proof.
 Qed.
 
 (** Δ ⊢ φ0 -> ∃n : nat, Γₙ ⊢ φ0 *)
-Fact Delta_Gamma_i_con :
+Fact Δ_Γᵢ_con :
   forall (f : nat -> Formula) (φ0 : Formula), 
-(Delta f) ⊢ φ0 -> (exists n : nat, (Gamma_i n f) ⊢ φ0).
+(Δ f) ⊢ φ0 -> (exists n : nat, (Γᵢ n f) ⊢ φ0).
 Proof.
   intros. dependent induction H.
   - destruct H. exists x.
     apply Premisse. apply H.
   - exists 0. apply AxiomInstance.
   - 
-    specialize (IHdeduction1 Gamma_does_not_derive_phi f). specialize (IHdeduction2 Gamma_does_not_derive_phi f).
+    specialize (IHdeduction1 Gamma_does_not_derive_φ f). specialize (IHdeduction2 Gamma_does_not_derive_φ f).
     destruct IHdeduction1, IHdeduction2; try reflexivity.
     destruct (Nat.le_ge_cases x x0).
-    + exists x0. pose proof (Gamma_i_m_included_Gamma_i_n f x x0).
-      apply H4 in H3. pose proof (lfi1_monotonicity (Gamma_i x0 f) (Gamma_i x f) ).
+    + exists x0. pose proof (Γᵢ_m_included_Γᵢ_n f x x0).
+      apply H4 in H3. pose proof (lfi1_monotonicity (Γᵢ x0 f) (Γᵢ x f) ).
       specialize (H5 φ0 → ψ). 
-      assert (Gamma_i x f ⊢ φ0 → ψ /\ Gamma_i x f ⊆ Gamma_i x0 f).
+      assert (Γᵢ x f ⊢ φ0 → ψ /\ Γᵢ x f ⊆ Γᵢ x0 f).
       split. assumption.
       assumption.
-      apply H5 in H6. apply (MP (Gamma_i x0 f) φ0).
+      apply H5 in H6. apply (MP (Γᵢ x0 f) φ0).
       * apply H6.
       * apply H2.
-    + exists x. pose proof (Gamma_i_m_included_Gamma_i_n f x0 x).
-      apply H4 in H3. pose proof (lfi1_monotonicity (Gamma_i x f) (Gamma_i x0 f)).
+    + exists x. pose proof (Γᵢ_m_included_Γᵢ_n f x0 x).
+      apply H4 in H3. pose proof (lfi1_monotonicity (Γᵢ x f) (Γᵢ x0 f)).
       specialize (H5 φ0). 
-      assert (Gamma_i x0 f ⊢ φ0 /\ Gamma_i x0 f ⊆ Gamma_i x f).
+      assert (Γᵢ x0 f ⊢ φ0 /\ Γᵢ x0 f ⊆ Γᵢ x f).
       split. assumption.
       assumption.
-      apply H5 in H6. apply (MP (Gamma_i x f) φ0).
+      apply H5 in H6. apply (MP (Γᵢ x f) φ0).
       * apply H1.
       * apply H6.
 Qed.
 
 (** ~(Δ ⊢ φ) *)
-Fact Delta_does_not_derive_phi : 
+Fact Δ_does_not_derive_φ : 
   forall (f : nat -> Formula), 
-  ~ (Delta f) ⊢ φ.
+  ~ (Δ f) ⊢ φ.
 Proof.
-  intros. intro. pose proof (Gamma_i_does_not_derive_phi).
-  apply Delta_Gamma_i_con in H. destruct H.
+  intros. intro. pose proof (Γᵢ_does_not_derive_φ).
+  apply Δ_Γᵢ_con in H. destruct H.
   specialize (H0 x f).
   contradiction.
 Qed.
 
 (** ψ ∉ Δ -> ∀n : nat, ψ ∉ Γₙ *)
-Fact not_in_Delta_Gamma_i : forall (ψ : Formula) (f : nat -> Formula),
-  ψ ∉ (Delta f) -> forall n : nat, ψ ∉ (Gamma_i n f).
+Fact not_in_Δ_Γᵢ : forall (ψ : Formula) (f : nat -> Formula),
+  ψ ∉ (Δ f) -> forall n : nat, ψ ∉ (Γᵢ n f).
 Proof.
-  intros. intro. destruct H.
-  unfold Delta. exists n. apply H0.
+  intros. intro. apply H.
+  unfold Δ. exists n. apply H0.
 Qed.
 
 (** φᵢ ∉ Γ₍ᵢ₊₁₎ -> Γᵢ ∪ {φᵢ} ⊢ φ *)
-Fact not_in_Gamma_i_trivial : forall (f : nat -> Formula) (i : nat),
-  (f i) ∉ (Gamma_i (S i) f) -> (Gamma_i i f) ∪ [f i] ⊢ φ.
+Fact not_in_Γᵢ_derives_φ : forall (f : nat -> Formula) (i : nat),
+  (f i) ∉ (Γᵢ (S i) f) -> (Γᵢ i f) ∪ [f i] ⊢ φ.
 Proof.
   intros.
-  simpl. simpl in H. destruct (strong_lem (Gamma_i i f ∪ [f (i)] ⊢ φ)).
+  simpl. simpl in H. destruct (strong_lem (Γᵢ i f ∪ [f (i)] ⊢ φ)).
   - apply d.
   - destruct H. right. apply In_singleton.
 Qed.
 
-(** Delta is maximal nontrivial given a surjection from nat to Formula*)
-Fact Delta_maximal_nontrivial : forall (f : surjection nat Formula),
-  maximal_nontrivial (Delta f) φ.
+(** Δ is maximal nontrivial given a surjection from nat to Formula*)
+Fact Δ_maximal_nontrivial : forall (f : surjection nat Formula),
+  maximal_nontrivial (Δ f) φ.
 Proof.
   intros. destruct f as [f su_bij]. simpl. 
   unfold function_surjective in su_bij. unfold maximal_nontrivial. split.
-  - apply Delta_does_not_derive_phi.
+  - apply Δ_does_not_derive_φ.
   - intros. pose proof (su_bij ψ). destruct H0.
-    rewrite <- H0 in H. assert (forall n : nat, (f x) ∉ (Gamma_i n f));
-    try (apply not_in_Delta_Gamma_i; apply H).
-    specialize (H1 (S x)). apply not_in_Gamma_i_trivial in H1.
-    rewrite <- H0. pose proof (lfi1_monotonicity (Delta f ∪ [f x]) (Gamma_i x f ∪ [f x]) φ).
+    rewrite <- H0 in H. assert (forall n : nat, (f x) ∉ (Γᵢ n f));
+    try (apply not_in_Δ_Γᵢ; apply H).
+    specialize (H1 (S x)). apply not_in_Γᵢ_derives_φ in H1.
+    rewrite <- H0. pose proof (lfi1_monotonicity (Δ f ∪ [f x]) (Γᵢ x f ∪ [f x]) φ).
     apply H2. split.
     + apply H1.
     + unfold Included. intros. destruct H3.
-      * left. pose proof (Gamma_i_included_Delta x f).
+      * left. pose proof (Γᵢ_included_Δ x f).
         unfold Included in H4. apply H4.
         apply H3.
       * right. apply H3.
@@ -484,22 +484,22 @@ Proof.
   intros. destruct (strong_lem (Γ ⊢ α)); try assumption.
   exfalso.
   pose proof surjection_nat_formula as FC.
-  pose proof (Delta_maximal_nontrivial Γ α n FC).
-  pose proof (Delta_maximal_nontrivial Γ α n FC).
+  pose proof (Δ_maximal_nontrivial Γ α n FC).
+  pose proof (Δ_maximal_nontrivial Γ α n FC).
   destruct FC as [f]. simpl in H0, H1.
   destruct H0.
-  assert (α ∉ (Delta Γ α f)). 
+  assert (α ∉ (Δ Γ α f)). 
   { intro. apply Premisse in H3. contradiction. }
-  pose proof (completeness_valuation_is_bivaluation (Delta Γ α f) α).
-  apply H4 in H1 as H5. assert (completeness_valuation (Delta Γ α f) α = ⊥).
-  { unfold completeness_valuation. destruct (strong_lem (α ∈ (Delta Γ α f))); auto; contradiction. }
-  unfold bivaluationEntails in H. specialize (H (completeness_valuation (Delta Γ α f))).
+  pose proof (completeness_valuation_is_bivaluation (Δ Γ α f) α).
+  apply H4 in H1 as H5. assert (completeness_valuation (Δ Γ α f) α = ⊥).
+  { unfold completeness_valuation. destruct (strong_lem (α ∈ (Δ Γ α f))); auto; contradiction. }
+  unfold bivaluationEntails in H. specialize (H (completeness_valuation (Δ Γ α f))).
   rewrite H6 in H. discriminate H.
   + apply H5.
-  + intros. unfold completeness_valuation. destruct (strong_lem (ψ ∈ (Delta Γ α f))).
+  + intros. unfold completeness_valuation. destruct (strong_lem (ψ ∈ (Δ Γ α f))).
     * reflexivity.
-    * pose proof (not_in_Delta_Gamma_i Γ α ψ f).
-      assert (forall n : nat, ψ ∉ (Gamma_i Γ α n f)); try (apply H8; assumption).
+    * pose proof (not_in_Δ_Γᵢ Γ α ψ f).
+      assert (forall n : nat, ψ ∉ (Γᵢ Γ α n f)); try (apply H8; assumption).
       specialize (H9 0). simpl in H9. contradiction.
 Qed.
   
