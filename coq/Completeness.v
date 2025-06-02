@@ -390,10 +390,10 @@ Proof.
     + contradiction.
 Qed.
 
-(** Δ ⊢ φ0 -> ∃n : nat, Γₙ ⊢ φ0 *)
+(** Δ ⊢ ψ -> ∃n : nat, Γₙ ⊢ ψ *)
 Fact Δ_Γᵢ_con :
-  forall (f : nat -> Formula) (φ0 : Formula), 
-(Δ f) ⊢ φ0 -> (exists n : nat, (Γᵢ n f) ⊢ φ0).
+  forall (f : nat -> Formula) (δ : Formula), 
+(Δ f) ⊢ δ -> (exists n : nat, (Γᵢ n f) ⊢ δ).
 Proof.
   intros. dependent induction H.
   - destruct H. exists x.
