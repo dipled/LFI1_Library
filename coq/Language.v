@@ -1,4 +1,4 @@
-Require Import LFI1.Utils.
+From LFI1 Require Import Utils.
 From Stdlib Require Import Arith Constructive_sets.
 
 Definition Atom := nat.

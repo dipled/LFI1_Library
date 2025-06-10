@@ -1,4 +1,4 @@
-Require Import LFI1.Utils LFI1.Language LFI1.Syntax.
+From LFI1 Require Import Utils Language Deduction.
 From Stdlib Require Import Arith Constructive_sets.
 
 (* LFI1 is tarskian, i.e., it enjoys reflexivity, monotonicity

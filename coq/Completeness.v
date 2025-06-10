@@ -1,4 +1,4 @@
-From LFI1 Require Import Utils Language Syntax Semantics.
+From LFI1 Require Import Utils Language Deduction Semantics.
 From LFI1 Require Import Deduction_metatheorem Soundness.
 From Stdlib Require Import Arith Classical_sets IndefiniteDescription Program.Equality.
 From LFI1 Require Import Cardinality.

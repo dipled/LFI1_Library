@@ -1,4 +1,4 @@
-Require Import LFI1.Utils LFI1.Language.
+From LFI1 Require Import Utils Language.
 From Stdlib Require Import Arith Constructive_sets.
 
 (* Hilbert calculus: *)
