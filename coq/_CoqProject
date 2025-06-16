@@ -1,0 +1,9 @@
+-R . LFI1
+./Utils.v
+./Language.v
+./Semantics.v
+./Deduction.v
+./Deduction_metatheorem.v
+./Soundness.v
+./Cardinality.v
+./Completeness.v

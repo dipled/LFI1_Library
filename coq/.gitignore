@@ -1,0 +1,10 @@
+*.crashrocqide
+*.vo 
+*.vok 
+*.glob 
+*.vos
+*.aux
+*.d
+CoqMakefile
+CoqMakefile.d
+CoqMakefile.conf
