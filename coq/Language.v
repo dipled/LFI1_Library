@@ -41,5 +41,3 @@ Fixpoint atoms (φ : Formula) : Ensemble Formula :=
   | ¬α => atoms α
   | ∘α => atoms α
   end.
-
-Eval compute in atoms #0 → #1.
