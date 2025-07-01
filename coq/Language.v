@@ -31,3 +31,15 @@ Notation " ∘ x " :=
 
 Notation " # x " :=
 (Lit x) (at level 2, no associativity, x constr at level 1, format "# x").
+
+Fixpoint atoms (φ : Formula) : Ensemble Formula :=
+  match φ with
+  | #n => [#n]
+  | α → β => (atoms α) ∪ (atoms β)
+  | α ∧ β => (atoms α) ∪ (atoms β)
+  | α ∨ β => (atoms α) ∪ (atoms β)
+  | ¬α => atoms α
+  | ∘α => atoms α
+  end.
+
+Eval compute in atoms #0 → #1.
