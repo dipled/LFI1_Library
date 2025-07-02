@@ -2,7 +2,6 @@ From LFI1 Require Import Utils Language Deduction Semantics.
 From LFI1 Require Import Deduction_metatheorem Soundness.
 From Stdlib Require Import Arith Constructive_sets Image.
 From Coq Require Import Equality.
-From LFI1 Require Import Cardinality.
 
 Fact T1 : forall Γ φ, Γ ⊢ ∘φ → ∘¬φ.
 Proof.
@@ -68,7 +67,6 @@ Proof.
   assumption. assumption. assumption.
 Qed.
 
-
 Fact T4 : forall Γ φ ψ, Γ ⊢ ((∘ φ ∧ φ) ∧ (∘ ψ ∧ ψ)) → (∘(φ ∧ ψ) ∧ (φ ∧ ψ)).
 Proof.
   intros. apply deduction_metatheorem.
@@ -87,8 +85,26 @@ Proof.
   pose proof (AxiomInstance (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)]) (Ax10 ∘(φ ∧ ψ))). simpl in H5.
   pose proof (id (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)]) ∘(φ ∧ ψ)).
   assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ ¬∘(φ ∧ ψ) → ∘(φ ∧ ψ)).
-  apply -> deduction_metatheorem.
-
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ ¬∘(φ ∧ ψ) → (φ ∧ ψ) ∧ ¬((φ ∧ ψ))).
+  apply (AxiomInstance _ (ci _)). apply -> deduction_metatheorem. apply deduction_metatheorem in H7.
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ∪ [¬∘(φ ∧ ψ)] ⊢ ¬(φ ∧ ψ)). apply (MP _ (φ ∧ ψ ∧ ¬(φ ∧ ψ))).
+  apply (AxiomInstance _ (Ax5 _ _)). assumption. assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ∪ [¬∘(φ ∧ ψ)] ⊢ ¬φ ∨ ¬ ψ).
+  apply (MP _ ¬(φ ∧ ψ)). apply (AxiomInstance _ (negland1 _ _)). assumption. 
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ∪ [¬∘(φ ∧ ψ)] ⊢ ¬φ → ∘(φ ∧ ψ)). apply (MP _ φ).
+  apply (MP _ ∘φ). apply (AxiomInstance _ (bc1 _ _)). apply (lfi1_monotonicity _ (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)])).
+  split. assumption. left. assumption. apply (lfi1_monotonicity _ (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)])). split.
+  assumption. left. assumption.
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ∪ [¬∘(φ ∧ ψ)] ⊢ ¬ψ → ∘(φ ∧ ψ)). apply (MP _ ψ).
+  apply (MP _ ∘ψ). apply (AxiomInstance _ (bc1 _ _)). apply (lfi1_monotonicity _ (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)])).
+  split. assumption. left. assumption. apply (lfi1_monotonicity _ (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)])). split.
+  assumption. left. assumption. apply (MP _ ¬φ ∨ ¬ψ). apply (MP _ ¬ψ → ∘(φ ∧ ψ)). apply (MP _ ¬φ → ∘(φ ∧ ψ)).
+  apply (AxiomInstance _ (Ax8 _ _ _)). assumption. assumption. assumption.
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ ∘(φ ∧ ψ)). apply (MP _ ∘(φ ∧ ψ) ∨ ¬∘(φ ∧ ψ)). 
+  apply (MP _ ¬∘(φ ∧ ψ) → ∘(φ ∧ ψ)). apply (MP _ ∘(φ ∧ ψ) → ∘(φ ∧ ψ)). apply (AxiomInstance _ (Ax8 _ _ _)).
+  assumption. assumption. assumption. assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ (φ ∧ ψ)).
+  apply (MP _ ψ). apply (MP _ φ). apply (AxiomInstance _ (Ax3 _ _)). assumption. assumption.
+  apply (MP _ (φ ∧ ψ)). apply (MP _ ∘(φ ∧ ψ)). apply (AxiomInstance _ (Ax3 _ _)).
+  assumption. assumption.
 Qed.
 
 Arguments Im {U} {V}.
