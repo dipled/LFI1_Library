@@ -98,7 +98,15 @@ Proof.
       apply T1. assumption. apply (MP _ ¬f). apply (MP _ ∘¬f).
       apply (AxiomInstance _ (Ax3 _ _)). assumption. assumption.
     + apply (MP _ ¬∘f). apply T2. assumption.
-    +
-
+    + assert (Im (atoms f) (kalmar_function v) ⊢ ∘f).
+      apply (MP _ ∘f ∧ f). apply (AxiomInstance _ (Ax4 _ _)). assumption.
+      assert (Im (atoms f) (kalmar_function v) ⊢ f).
+      apply (MP _ ∘f ∧ f). apply(AxiomInstance _ (Ax5 _ _)). assumption.
+      assert (Im (atoms f) (kalmar_function v) ⊢ ¬¬f). apply (MP _ f).
+      apply (AxiomInstance _ (ce _)). assumption. apply (MP _ ¬¬f).
+      apply (MP _ ∘¬f). apply (AxiomInstance _ (Ax3 _ _)).
+      apply (MP _ ∘f). apply T1. apply H. apply H1.
+  -
+      
 End Kalmar_like.
 
