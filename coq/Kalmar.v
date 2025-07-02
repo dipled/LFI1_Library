@@ -4,7 +4,7 @@ From Stdlib Require Import Arith Constructive_sets Image.
 From Coq Require Import Equality.
 From LFI1 Require Import Cardinality.
 
-Fact t1 : forall Γ φ, Γ ⊢ ∘φ → ∘¬φ.
+Fact T1 : forall Γ φ, Γ ⊢ ∘φ → ∘¬φ.
 Proof.
   intros. apply deduction_metatheorem.
   pose proof (id (Γ ∪ [∘φ]) ∘¬φ).
