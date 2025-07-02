@@ -69,6 +69,28 @@ Proof.
 Qed.
 
 
+Fact T4 : forall Γ φ ψ, Γ ⊢ ((∘ φ ∧ φ) ∧ (∘ ψ ∧ ψ)) → (∘(φ ∧ ψ) ∧ (φ ∧ ψ)).
+Proof.
+  intros. apply deduction_metatheorem.
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ ∘φ ∧ φ). apply (MP _ ∘φ ∧ φ ∧ (∘ψ ∧ ψ)).
+  apply (AxiomInstance _ (Ax4 _ _)). apply Premisse. right. reflexivity.
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ ∘ψ ∧ ψ). apply (MP _ ∘φ ∧ φ ∧ (∘ψ ∧ ψ)).
+  apply (AxiomInstance _ (Ax5 _ _)). apply Premisse. right. reflexivity.
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ ∘φ). apply (MP _ ∘φ ∧ φ).
+  apply (AxiomInstance _ (Ax4 _ _)). assumption.
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ φ). apply (MP _ ∘φ ∧ φ).
+  apply (AxiomInstance _ (Ax5 _ _)). assumption.
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ ∘ψ). apply (MP _ ∘ψ ∧ ψ).
+  apply (AxiomInstance _ (Ax4 _ _)). assumption.
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ ψ). apply (MP _ ∘ψ ∧ ψ).
+  apply (AxiomInstance _ (Ax5 _ _)). assumption.
+  pose proof (AxiomInstance (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)]) (Ax10 ∘(φ ∧ ψ))). simpl in H5.
+  pose proof (id (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)]) ∘(φ ∧ ψ)).
+  assert (Γ ∪ [∘φ ∧ φ ∧ (∘ψ ∧ ψ)] ⊢ ¬∘(φ ∧ ψ) → ∘(φ ∧ ψ)).
+  apply -> deduction_metatheorem.
+
+Qed.
+
 Arguments Im {U} {V}.
 
 Definition kalmar_function (v : Formula -> MatrixDomain) (φ : Formula):=
