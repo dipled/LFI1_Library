@@ -32,9 +32,6 @@ Notation " ∘ x " :=
 Notation " # x " :=
 (Lit x) (at level 2, no associativity, x constr at level 1, format "# x").
 
-Notation " • x " := 
-(Neg Consistency x) (at level 5, right associativity, format "• x").
-
 Fixpoint atoms (φ : Formula) : Ensemble Formula :=
   match φ with
   | #n => [#n]
