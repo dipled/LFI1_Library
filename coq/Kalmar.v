@@ -199,6 +199,11 @@ Proof.
   apply (AxiomInstance _ (Ax8 _ _ _)). assumption. assumption.
 Qed.
 
+Fact T6 : forall Γ φ ψ, Γ ⊢ ((∘φ ∧ ¬φ) ∧ (∘ψ ∧ ¬ψ)) → (∘(φ ∨ ψ) ∧ ¬(φ ∨ ψ)).
+Proof.
+
+Qed.
+
 Fact T10 : forall Γ φ ψ, Γ ⊢ ((¬∘φ ∧ ¬∘ψ) → (¬∘(φ ∧ ψ) ∧ ¬∘(φ ∨ ψ) ∧ ¬∘(φ → ψ))).
 Proof.
   intros. apply deduction_metatheorem. 
