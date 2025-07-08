@@ -269,6 +269,56 @@ Proof.
   apply (AxiomInstance _ (Ax6 _ _)). assumption. 
 Qed.
 
+Fact T8 : forall Γ φ ψ, Γ ⊢ ((∘φ ∧ ¬φ) ∨ (∘ψ ∧ ψ)) → (∘(φ → ψ) ∧ (φ → ψ)).
+Proof.
+  intros. apply deduction_metatheorem. apply (MP _ (φ → ψ)). apply (MP _ ∘(φ → ψ)).
+  apply (AxiomInstance _ (Ax3 _ _)). apply (MP _ (∘(φ → ψ) ∨ ¬∘(φ → ψ))).
+  apply (MP _ ¬∘(φ → ψ) → ∘(φ → ψ)). apply (MP _ ∘(φ → ψ) → ∘(φ → ψ)).
+  apply (AxiomInstance _ (Ax8 _ _ _)). apply id.
+  apply -> deduction_metatheorem. assert (Γ ∪ [∘φ ∧ ¬φ ∨ (∘ψ ∧ ψ)] ∪ [¬∘(φ → ψ)] ⊢ ¬(φ → ψ)).
+  apply (MP _ ((φ → ψ) ∧ ¬(φ → ψ))). apply (AxiomInstance _ (Ax5 _ _)).
+  apply (MP _ ¬∘(φ → ψ)). apply (AxiomInstance _ (ci _)). apply Premisse. right.
+  reflexivity. assert (Γ ∪ [∘φ ∧ ¬φ ∨ (∘ψ ∧ ψ)] ∪ [¬∘(φ → ψ)] ⊢ (φ ∧ ¬ψ)).
+  apply (MP _ ¬(φ → ψ)). apply (AxiomInstance _ (negto1 _ _)). assumption.
+  assert (Γ ∪ [∘φ ∧ ¬φ ∨ (∘ψ ∧ ψ)] ∪ [¬∘(φ → ψ)] ⊢ φ). apply (MP _ φ ∧ ¬ψ).
+  apply (AxiomInstance _ (Ax4 _ _)). assumption. assert (Γ ∪ [∘φ ∧ ¬φ ∨ (∘ψ ∧ ψ)] ∪ [¬∘(φ → ψ)] ⊢ ¬ψ).
+  apply (MP _ φ ∧ ¬ψ). apply (AxiomInstance _ (Ax5 _ _)). assumption.
+  apply (MP _ ∘φ ∧ ¬φ ∨ ∘ψ ∧ ψ). apply (MP _ ∘ψ ∧ ψ → ∘(φ → ψ)). apply (MP _ ∘φ ∧ ¬φ → ∘(φ → ψ)).
+  apply (AxiomInstance _ (Ax8 _ _ _)). 
+  apply -> deduction_metatheorem.
+  assert (Γ ∪ [∘φ ∧ ¬φ ∨ (∘ψ ∧ ψ)] ∪ [¬∘(φ → ψ)] ∪ [∘φ ∧ ¬φ]  ⊢ ∘φ).
+  apply (MP _ ∘φ ∧ ¬φ). apply (AxiomInstance _ (Ax4 _ _)). apply Premisse. right.
+  reflexivity.
+  assert (Γ ∪ [∘φ ∧ ¬φ ∨ (∘ψ ∧ ψ)] ∪ [¬∘(φ → ψ)] ∪ [∘φ ∧ ¬φ]  ⊢ ¬φ).
+  apply (MP _ ∘φ ∧ ¬φ). apply (AxiomInstance _ (Ax5 _ _)). apply Premisse. right.
+  reflexivity. apply (MP _ ¬φ). apply (MP _ φ). apply (MP _ ∘φ). apply (AxiomInstance _ (bc1 _ _)).
+  assumption. apply (lfi1_monotonicity _ (Γ ∪ [∘φ ∧ ¬φ ∨ ∘ψ ∧ ψ] ∪ [¬∘(φ → ψ)])). split.
+  assumption. left. assumption. assumption.
+  apply -> deduction_metatheorem.
+  assert (Γ ∪ [∘φ ∧ ¬φ ∨ (∘ψ ∧ ψ)] ∪ [¬∘(φ → ψ)] ∪ [∘ψ ∧ ψ]  ⊢ ∘ψ).
+  apply (MP _ ∘ψ ∧ ψ). apply (AxiomInstance _ (Ax4 _ _)). apply Premisse. right.
+  reflexivity.
+  assert (Γ ∪ [∘φ ∧ ¬φ ∨ (∘ψ ∧ ψ)] ∪ [¬∘(φ → ψ)] ∪ [∘ψ ∧ ψ]  ⊢ ψ).
+  apply (MP _ ∘ψ ∧ ψ). apply (AxiomInstance _ (Ax5 _ _)). apply Premisse. right.
+  reflexivity. apply (MP _ ¬ψ). apply (MP _ ψ). apply (MP _ ∘ψ). apply (AxiomInstance _ (bc1 _ _)).
+  assumption. assumption. apply (lfi1_monotonicity _ (Γ ∪ [∘φ ∧ ¬φ ∨ ∘ψ ∧ ψ] ∪ [¬∘(φ → ψ)])). split.
+  assumption. left. assumption. apply Premisse. left. right. reflexivity.
+  apply (AxiomInstance _ (Ax10 _)). apply -> deduction_metatheorem.
+  apply (MP _ ∘φ ∧ ¬φ ∨ ∘ψ ∧ ψ). apply (MP _ ∘ψ ∧ ψ → ψ). apply (MP _ ∘φ ∧ ¬φ → ψ).
+  apply (AxiomInstance _ (Ax8 _ _ _)). 
+  apply -> deduction_metatheorem. assert (Γ ∪ [∘φ ∧ ¬φ ∨ ∘ψ ∧ ψ] ∪ [φ] ∪ [∘φ ∧ ¬φ]  ⊢ ∘φ).
+  apply (MP _ ∘φ ∧ ¬φ). apply (AxiomInstance _ (Ax4 _ _)). apply Premisse. right.
+  reflexivity.
+  assert (Γ ∪ [∘φ ∧ ¬φ ∨ ∘ψ ∧ ψ] ∪ [φ] ∪ [∘φ ∧ ¬φ]  ⊢ ¬φ).
+  apply (MP _ ∘φ ∧ ¬φ). apply (AxiomInstance _ (Ax5 _ _)). apply Premisse. right.
+  reflexivity. apply (MP _ ¬φ). apply (MP _ φ). apply (MP _ ∘φ). apply (AxiomInstance _ (bc1 _ _)).
+  assumption. apply Premisse. left. right. reflexivity.
+  assumption.
+  apply -> deduction_metatheorem.
+  apply (MP _ ∘ψ ∧ ψ). apply (AxiomInstance _ (Ax5 _ _)). apply Premisse. right.
+  reflexivity. apply Premisse. left. right. reflexivity.
+Qed.
+
 Fact T10 : forall Γ φ ψ, Γ ⊢ ((¬∘φ ∧ ¬∘ψ) → (¬∘(φ ∧ ψ) ∧ ¬∘(φ ∨ ψ) ∧ ¬∘(φ → ψ))).
 Proof.
   intros. apply deduction_metatheorem. 
