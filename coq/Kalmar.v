@@ -552,6 +552,24 @@ Proof.
     + assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ (∘f1 ∧ ¬f1) ∨ (∘f2 ∧ ¬f2)).
       apply (MP _ (∘f1 ∧ ¬f1)). apply (AxiomInstance _ (Ax6 _ _)). assumption.
       apply (MP _ ∘f1 ∧ ¬f1 ∨ ∘f2 ∧ ¬f2). apply T5. assumption.
+  - destruct_conjunction v_is_valuation. simpl. unfold preserveOr in L.
+    specialize (L f1 f2).
+    assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ kalmar_function v f1).
+    apply (lfi1_monotonicity _ (Im (atoms f1) (kalmar_function v))).
+    split. assumption. unfold Included. intros. destruct H. apply Im_intro with (x := x). left. 
+    assumption. assumption. 
+    assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ kalmar_function v f2).
+    apply (lfi1_monotonicity _ (Im (atoms f2) (kalmar_function v))).
+    split. assumption. unfold Included. intros. destruct H0. 
+    apply Im_intro with (x := x). right. assumption. assumption.
+    unfold kalmar_function at 2.
+    unfold kalmar_function at 2 in H. unfold kalmar_function at 2 in H0.
+    clear IHf1. clear IHf2.
+    destruct (v f1 ∨ f2), (v f1), (v f2); try discriminate L.
+    + apply (MP _ (∘f1 ∧ f1) ∧ (∘f2 ∧ f2)). apply T7.
+      apply (MP _ ∘f2 ∧ f2). apply (MP _ ∘f1 ∧ f1). apply (AxiomInstance _ (Ax3 _ _)).
+      assumption. assumption.
+    + 
   
 End Kalmar_like.
 
