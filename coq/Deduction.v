@@ -54,5 +54,5 @@ Inductive deduction : Ensemble Formula -> Formula -> Prop :=
   | AxiomInstance : forall (Γ : Ensemble Formula) (a : Ax), deduction Γ (instantiate a)
   | MP : forall (Γ : Ensemble Formula) (φ ψ : Formula), (deduction Γ (φ → ψ)) -> 
     (deduction Γ φ) -> deduction Γ ψ.
-
+Notation " ⊢ φ " := (deduction ∅ φ) (at level 50, no associativity).
 Notation " Γ ⊢ φ " := (deduction Γ φ) (at level 50, no associativity).

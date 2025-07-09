@@ -51,26 +51,30 @@ Proof.
   assumption. assumption. 
 Qed.
 
-Fact T3 : forall Γ φ, Γ ⊢ ∘¬∘φ.
+Fact T3 : forall Γ φ, Γ ⊢ ∘∘φ.
 Proof.
-  intros. pose proof (AxiomInstance Γ (Ax10 ∘¬∘φ)). simpl in H.
-  pose proof (id Γ ∘¬∘φ).
-  assert (Γ ⊢ ¬∘¬∘φ → ∘¬∘φ).
-  apply deduction_metatheorem. assert (Γ ∪ [¬∘¬∘φ] ⊢ ¬∘φ ∧ ¬¬∘φ).
-  apply (MP _ ¬∘¬∘φ). apply (AxiomInstance _ (ci _)). apply Premisse. right. reflexivity.
-  assert (Γ ∪ [¬∘¬∘φ] ⊢ ¬∘φ). apply (MP _ ¬∘φ ∧ ¬¬∘φ). apply (AxiomInstance _ (Ax4 _ _)).
-  assumption. assert (Γ ∪ [¬∘¬∘φ] ⊢ ¬¬∘φ). apply (MP _ ¬∘φ ∧ ¬¬∘φ).
-  apply (AxiomInstance _ (Ax5 _ _)). assumption. assert (Γ ∪ [¬∘¬∘φ] ⊢ ∘φ).
-  apply (MP _ ¬¬∘φ). apply (AxiomInstance _ (cf _)). assumption.
-  assert (Γ ∪ [¬∘¬∘φ] ⊢ φ ∧ ¬φ). apply (MP _ ¬∘φ).
-  apply (AxiomInstance _ (ci _)). assumption. assert (Γ ∪ [¬∘¬∘φ] ⊢ φ).
-  apply (MP _ φ ∧ ¬φ). apply (AxiomInstance _ (Ax4 _ _)). assumption.
-  assert (Γ ∪ [¬∘¬∘φ] ⊢ ¬φ).
-  apply (MP _ φ ∧ ¬φ). apply (AxiomInstance _ (Ax5 _ _)). assumption.
-  apply (MP _ ¬φ). apply (MP _ φ). apply (MP _ ∘φ). apply (AxiomInstance _ (bc1 _ _)).
-  assumption. assumption. assumption. apply (MP _ ∘¬∘φ ∨ ¬∘¬∘φ).
-  apply (MP _ ¬∘¬∘φ → ∘¬∘φ). apply (MP _ ∘¬∘φ → ∘¬∘φ). apply (AxiomInstance _ (Ax8 _ _ _)).
-  assumption. assumption. assumption.
+  intros. pose proof (AxiomInstance Γ (Ax10 ∘∘φ)). simpl in H.
+  pose proof (id Γ ∘∘φ).
+  assert (Γ ⊢ ¬∘∘φ → ∘∘φ).
+  apply deduction_metatheorem. assert (Γ ∪ [¬∘∘φ] ⊢ ∘φ).
+  apply (MP _ ∘φ ∧ ¬∘φ). apply (AxiomInstance _ (Ax4 _ _)).
+  apply deduction_metatheorem. apply (AxiomInstance _ (ci _)).
+  assert (Γ ⊢ ¬∘∘φ → ∘∘φ).
+  apply deduction_metatheorem. assert (Γ ∪ [¬∘∘φ] ⊢ ¬∘φ).
+  apply (MP _ ∘φ ∧ ¬∘φ). apply (AxiomInstance _ (Ax5 _ _)).
+  apply deduction_metatheorem. apply (AxiomInstance _ (ci _)).
+  assert (Γ ∪ [¬∘∘φ] ⊢ φ).
+  apply (MP _ φ ∧ ¬φ). apply (AxiomInstance _ (Ax4 _ _)).
+  apply (MP _ ¬∘φ). apply (AxiomInstance _ (ci _)). assumption.
+  assert (Γ ∪ [¬∘∘φ] ⊢ ¬φ).
+  apply (MP _ φ ∧ ¬φ). apply (AxiomInstance _ (Ax5 _ _)).
+  apply (MP _ ¬∘φ). apply (AxiomInstance _ (ci _)). assumption.
+  apply (MP _ ¬φ). apply (MP _ φ). apply (MP _ ∘φ).
+  apply (AxiomInstance _ (bc1 _ _)). assumption. assumption. assumption.
+  apply deduction_metatheorem. assumption.
+  apply (MP _ ∘∘φ ∨ ¬∘∘φ). apply (MP _ ¬∘∘φ → ∘∘φ). apply (MP _ ∘∘φ → ∘∘φ).
+  apply (AxiomInstance _ (Ax8 _ _ _)). assumption. assumption. 
+  apply (AxiomInstance _ (Ax10 _)).
 Qed.
 
 Fact T4 : forall Γ φ ψ, Γ ⊢ ((∘φ ∧ φ) ∧ (∘ψ ∧ ψ)) → (∘(φ ∧ ψ) ∧ (φ ∧ ψ)).
@@ -319,6 +323,43 @@ Proof.
   reflexivity. apply Premisse. left. right. reflexivity.
 Qed.
 
+Fact T9 : forall Γ φ ψ, Γ ⊢ ((¬∘φ ∨ (∘φ ∧ φ)) ∧ (∘ψ ∧ ¬ψ)) → (∘(φ → ψ) ∧ ¬(φ → ψ)).
+Proof.
+  intros. apply deduction_metatheorem. apply (MP _ ¬(φ → ψ)). apply (MP _ ∘(φ → ψ)).
+  apply (AxiomInstance _ (Ax3 _ _)). apply (MP _ ∘(φ → ψ) ∨ ¬∘(φ → ψ)).
+  apply (MP _ ¬∘(φ → ψ) → ∘(φ → ψ)). apply (MP _ ∘(φ → ψ) → ∘(φ → ψ)).
+  apply (AxiomInstance _ (Ax8 _ _ _)). apply id. apply -> deduction_metatheorem.
+  assert (Γ ∪ [(¬∘φ ∨ ∘φ ∧ φ) ∧ (∘ψ ∧ ¬ψ)] ∪ [¬∘(φ → ψ)] ⊢ (φ → ψ)). 
+  apply (MP _ (φ → ψ) ∧ ¬(φ → ψ)). apply (AxiomInstance _ (Ax4 _ _)). apply (MP _ ¬∘(φ → ψ)).
+  apply (AxiomInstance _ (ci _)). apply Premisse. right. reflexivity.
+  assert (Γ ∪ [(¬∘φ ∨ ∘φ ∧ φ) ∧ (∘ψ ∧ ¬ψ)] ∪ [¬∘(φ → ψ)] ⊢ ¬(φ → ψ)). 
+  apply (MP _ (φ → ψ) ∧ ¬(φ → ψ)). apply (AxiomInstance _ (Ax5 _ _)). apply (MP _ ¬∘(φ → ψ)).
+  apply (AxiomInstance _ (ci _)). apply Premisse. right. reflexivity.
+  assert (Γ ∪ [(¬∘φ ∨ ∘φ ∧ φ) ∧ (∘ψ ∧ ¬ψ)] ∪ [¬∘(φ → ψ)] ⊢ φ). apply (MP _ φ ∧ ¬ψ).
+  apply (AxiomInstance _ (Ax4 _ _)). apply (MP _ ¬(φ → ψ)).
+  apply (AxiomInstance _ (negto1 _ _)). assumption.
+  assert (Γ ∪ [(¬∘φ ∨ ∘φ ∧ φ) ∧ (∘ψ ∧ ¬ψ)] ∪ [¬∘(φ → ψ)] ⊢ ψ). apply (MP _ φ). assumption.
+  assumption. apply (MP _ ¬ψ). apply (MP _ ψ). apply (MP _ ∘ψ).
+  apply (AxiomInstance _ (bc1 _ _)). apply (MP _ ∘ψ ∧ ¬ψ). apply (AxiomInstance _ (Ax4 _ _)).
+  apply (MP _ (¬∘φ ∨ ∘φ ∧ φ) ∧ (∘ψ ∧ ¬ψ)). apply (AxiomInstance _ (Ax5 _ _)).
+  apply Premisse. left. right. reflexivity. assumption.
+  apply (MP _ ∘ψ ∧ ¬ψ). apply (AxiomInstance _ (Ax5 _ _)).
+  apply (MP _ (¬∘φ ∨ ∘φ ∧ φ) ∧ (∘ψ ∧ ¬ψ)). apply (AxiomInstance _ (Ax5 _ _)).
+  apply Premisse. left. right. reflexivity. apply (AxiomInstance _ (Ax10 _)).
+  apply (MP _ φ ∧ ¬ψ). apply (AxiomInstance _ (negto2 _ _)).
+  apply (MP _ ¬ψ). apply (MP _ φ). apply (AxiomInstance _ (Ax3 _ _)).
+  apply (MP _ ¬∘φ ∨ ∘φ ∧ φ). apply (MP _ ∘φ ∧ φ → φ).
+  apply (MP _ ¬∘φ → φ). apply (AxiomInstance _ (Ax8 _ _ _)).
+  apply -> deduction_metatheorem. apply (MP _ φ ∧ ¬φ).
+  apply (AxiomInstance _ (Ax4 _ _)). apply <- deduction_metatheorem.
+  apply (AxiomInstance _ (ci _)). apply (AxiomInstance _ (Ax5 _ _)).
+  apply (MP _ (¬∘φ ∨ ∘φ ∧ φ) ∧ (∘ψ ∧ ¬ψ)). apply (AxiomInstance _ (Ax4 _ _)).
+  apply Premisse. right. reflexivity.
+  apply (MP _ (∘ψ ∧ ¬ψ)). apply (AxiomInstance _ (Ax5 _ _)).
+  apply (MP _ (¬∘φ ∨ ∘φ ∧ φ) ∧ (∘ψ ∧ ¬ψ)). apply (AxiomInstance _ (Ax5 _ _)).
+  apply Premisse. right. reflexivity.
+Qed.
+
 Fact T10 : forall Γ φ ψ, Γ ⊢ ((¬∘φ ∧ ¬∘ψ) → (¬∘(φ ∧ ψ) ∧ ¬∘(φ ∨ ψ) ∧ ¬∘(φ → ψ))).
 Proof.
   intros. apply deduction_metatheorem. 
@@ -327,16 +368,20 @@ Proof.
   assert (Γ ∪ [¬∘φ ∧ ¬∘ψ] ⊢ ¬∘ψ).
   apply (MP _ ¬∘φ ∧ ¬∘ψ). apply (AxiomInstance _ (Ax5 _ _)). apply Premisse. right. reflexivity.
   assert (Γ ∪ [¬∘φ ∧ ¬∘ψ] ⊢ φ).
-  apply (MP _ φ ∧ ¬φ). apply (AxiomInstance _ (Ax4 _ _)). apply (MP _ ¬∘φ). apply (AxiomInstance _ (ci _)).
+  apply (MP _ φ ∧ ¬φ). apply (AxiomInstance _ (Ax4 _ _)). 
+  apply (MP _ ¬∘φ). apply (AxiomInstance _ (ci _)).
   assumption.
   assert (Γ ∪ [¬∘φ ∧ ¬∘ψ] ⊢ ¬φ).
-  apply (MP _ φ ∧ ¬φ). apply (AxiomInstance _ (Ax5 _ _)). apply (MP _ ¬∘φ). apply (AxiomInstance _ (ci _)).
+  apply (MP _ φ ∧ ¬φ). apply (AxiomInstance _ (Ax5 _ _)). 
+  apply (MP _ ¬∘φ). apply (AxiomInstance _ (ci _)).
   assumption.
   assert (Γ ∪ [¬∘φ ∧ ¬∘ψ] ⊢ ψ).
-  apply (MP _ ψ ∧ ¬ψ). apply (AxiomInstance _ (Ax4 _ _)). apply (MP _ ¬∘ψ). apply (AxiomInstance _ (ci _)).
+  apply (MP _ ψ ∧ ¬ψ). apply (AxiomInstance _ (Ax4 _ _)). 
+  apply (MP _ ¬∘ψ). apply (AxiomInstance _ (ci _)).
   assumption.
   assert (Γ ∪ [¬∘φ ∧ ¬∘ψ] ⊢ ¬ψ).
-  apply (MP _ ψ ∧ ¬ψ). apply (AxiomInstance _ (Ax5 _ _)). apply (MP _ ¬∘ψ). apply (AxiomInstance _ (ci _)).
+  apply (MP _ ψ ∧ ¬ψ). apply (AxiomInstance _ (Ax5 _ _)). 
+  apply (MP _ ¬∘ψ). apply (AxiomInstance _ (ci _)).
   assumption.
   assert (Γ ∪ [¬∘φ ∧ ¬∘ψ] ⊢ ¬∘(φ ∧ ψ)).
   {
@@ -432,8 +477,8 @@ Proof.
   unfold Δᵥ. unfold valuation in v_is_valuation. induction φ.
   - simpl. apply Premisse. apply Im_intro with (#a); reflexivity.
   - destruct_conjunction v_is_valuation. simpl. unfold preserveNeg in L2. 
-  specialize (L2 f). unfold kalmar_function at 2. unfold kalmar_function at 2 in IHf. 
-  destruct (v ¬f); destruct (v f); try discriminate L2.
+    specialize (L2 f). unfold kalmar_function at 2. unfold kalmar_function at 2 in IHf. 
+    destruct (v ¬f); destruct (v f); try discriminate L2.
     + assert (Im (atoms f) (kalmar_function v) ⊢ ∘f). apply (MP _ ∘f ∧ ¬f).
       apply (AxiomInstance _ (Ax4 _ _)). assumption.
       assert (Im (atoms f) (kalmar_function v) ⊢ ¬f). apply (MP _ ∘f ∧ ¬f).
@@ -676,6 +721,145 @@ Proof.
       apply (MP _ ¬∘(f1 ∧ f2) ∧ ¬∘(f1 ∨ f2) ∧ ¬∘(f1 → f2)).
       apply (AxiomInstance _ (Ax4 _ _)). apply (MP _ ¬∘f1 ∧ ¬∘f2).
       apply T10. assumption.
-    +
+    + assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ f1 ∧ ¬f1).
+      apply (MP _ ¬∘f1). apply (AxiomInstance _ (ci _)). assumption.
+      assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ ¬f1 ∧ ¬f2).
+      apply (MP _ ¬f2). apply (MP _ ¬f1). apply (AxiomInstance _ (Ax3 _ _)).
+      apply (MP _ f1 ∧ ¬f1). apply (AxiomInstance _ (Ax5 _ _)).
+      assumption.
+      apply (MP _ ∘f2 ∧ ¬f2). apply (AxiomInstance _ (Ax5 _ _)).
+      assumption.
+      assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ ¬(f1 ∨ f2)).
+      apply (MP _ ¬f1 ∧ ¬f2). apply (AxiomInstance _ (neglor2 _ _)).
+      assumption.
+      apply (MP _ ∘(f1 ∨ f2) ∨ ¬∘(f1 ∨ f2)). apply (MP _ ¬∘(f1 ∨ f2) → ¬∘(f1 ∨ f2)).
+      apply (MP _ ∘(f1 ∨ f2) → ¬∘(f1 ∨ f2)). apply (AxiomInstance _ (Ax8 _ _ _)).
+      apply -> deduction_metatheorem.
+      apply (MP _ ¬(f1 ∨ f2)). apply (MP _ (f1 ∨ f2)). apply (MP _ ∘(f1 ∨ f2)).
+      apply (AxiomInstance _ (bc1 _ _)). apply Premisse. right. reflexivity.
+      apply (MP _ f1). apply (AxiomInstance _ (Ax6 _ _)).
+      apply (lfi1_monotonicity _ (Im (atoms f1 ∪ atoms f2) (kalmar_function v))).
+      split. apply (MP _ f1 ∧ ¬f1). apply (AxiomInstance _ (Ax4 _ _)). assumption.
+      left. assumption.
+      apply (lfi1_monotonicity _ (Im (atoms f1 ∪ atoms f2) (kalmar_function v))).
+      split. assumption. left. assumption. apply id. apply (AxiomInstance _ (Ax10 _)).
+    + assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ f2 ∧ ¬f2).
+      apply (MP _ ¬∘f2). apply (AxiomInstance _ (ci _)). assumption.
+      assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ ¬f1 ∧ ¬f2).
+      apply (MP _ ¬f2). apply (MP _ ¬f1). apply (AxiomInstance _ (Ax3 _ _)).
+      apply (MP _ ∘f1 ∧ ¬f1). apply (AxiomInstance _ (Ax5 _ _)).
+      assumption.
+      apply (MP _ f2 ∧ ¬f2). apply (AxiomInstance _ (Ax5 _ _)).
+      assumption.
+      assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ ¬(f1 ∨ f2)).
+      apply (MP _ ¬f1 ∧ ¬f2). apply (AxiomInstance _ (neglor2 _ _)).
+      assumption.
+      apply (MP _ ∘(f1 ∨ f2) ∨ ¬∘(f1 ∨ f2)). apply (MP _ ¬∘(f1 ∨ f2) → ¬∘(f1 ∨ f2)).
+      apply (MP _ ∘(f1 ∨ f2) → ¬∘(f1 ∨ f2)). apply (AxiomInstance _ (Ax8 _ _ _)).
+      apply -> deduction_metatheorem.
+      apply (MP _ ¬(f1 ∨ f2)). apply (MP _ (f1 ∨ f2)). apply (MP _ ∘(f1 ∨ f2)).
+      apply (AxiomInstance _ (bc1 _ _)). apply Premisse. right. reflexivity.
+      apply (MP _ f2). apply (AxiomInstance _ (Ax7 _ _)).
+      apply (lfi1_monotonicity _ (Im (atoms f1 ∪ atoms f2) (kalmar_function v))).
+      split. apply (MP _ f2 ∧ ¬f2). apply (AxiomInstance _ (Ax4 _ _)). assumption.
+      left. assumption.
+      apply (lfi1_monotonicity _ (Im (atoms f1 ∪ atoms f2) (kalmar_function v))).
+      split. assumption. left. assumption. apply id. apply (AxiomInstance _ (Ax10 _)).
+    + apply (MP _ ∘f1 ∧ ¬f1 ∧ (∘f2 ∧ ¬f2)). apply T6.
+      apply (MP _ ∘f2 ∧ ¬f2). apply (MP _ ∘f1 ∧ ¬f1). apply (AxiomInstance _ (Ax3 _ _)).
+      assumption. assumption.
+  - destruct_conjunction v_is_valuation. simpl. unfold preserveTo in L0.
+    specialize (L0 f1 f2).
+    assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ kalmar_function v f1).
+    apply (lfi1_monotonicity _ (Im (atoms f1) (kalmar_function v))).
+    split. assumption. unfold Included. intros. destruct H. apply Im_intro with (x := x). left. 
+    assumption. assumption. 
+    assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ⊢ kalmar_function v f2).
+    apply (lfi1_monotonicity _ (Im (atoms f2) (kalmar_function v))).
+    split. assumption. unfold Included. intros. destruct H0. 
+    apply Im_intro with (x := x). right. assumption. assumption.
+    unfold kalmar_function at 2.
+    unfold kalmar_function at 2 in H. unfold kalmar_function at 2 in H0.
+    clear IHf1. clear IHf2.
+    destruct (v f1 → f2), (v f1), (v f2); try discriminate L0.
+    + apply (MP _ ∘f1 ∧ ¬f1 ∨ ∘f2 ∧ f2). apply T8.
+      apply (MP _ ∘f2 ∧ f2). apply (AxiomInstance _ (Ax7 _ _)). assumption.
+    + apply (MP _ ∘f1 ∧ ¬f1 ∨ ∘f2 ∧ f2). apply T8.
+      apply (MP _ ∘f2 ∧ f2). apply (AxiomInstance _ (Ax7 _ _)). assumption.
+    + apply (MP _ ∘f1 ∧ ¬f1 ∨ ∘f2 ∧ f2). apply T8.
+      apply (MP _ ∘f2 ∧ f2). apply (AxiomInstance _ (Ax7 _ _)). assumption.
+    + apply (MP _ ∘f1 ∧ ¬f1 ∨ ∘f2 ∧ f2). apply T8.
+      apply (MP _ ∘f1 ∧ ¬f1). apply (AxiomInstance _ (Ax6 _ _)). assumption.
+    + apply (MP _ ∘f1 ∧ ¬f1 ∨ ∘f2 ∧ f2). apply T8.
+      apply (MP _ ∘f1 ∧ ¬f1). apply (AxiomInstance _ (Ax6 _ _)). assumption.
+    + apply (MP _ ∘(f1 → f2) ∨ ¬∘(f1 → f2)). apply (MP _ ¬∘(f1 → f2) → ¬∘(f1 → f2)).
+      apply (MP _ ∘(f1 → f2) → ¬∘(f1 → f2)). apply (AxiomInstance _ (Ax8 _ _ _)).
+      apply -> deduction_metatheorem.
+      assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ∪ [∘(f1 → f2)] ⊢ (f1 → f2)).
+      apply -> deduction_metatheorem. 
+      apply (lfi1_monotonicity _ (Im (atoms f1 ∪ atoms f2) (kalmar_function v))).
+      split. apply (MP _ f2 ∧ ¬f2). apply (AxiomInstance _ (Ax4 _ _)).
+      apply (MP _ ¬∘f2). apply (AxiomInstance _ (ci _)). assumption.
+      left. left. assumption.
+      assert (Im (atoms f1 ∪ atoms f2) (kalmar_function v) ∪ [∘(f1 → f2)] ⊢ ¬(f1 → f2)).
+      apply (MP _ f1 ∧ ¬f2). apply (AxiomInstance _ (negto2 _ _)).
+      apply (MP _ ¬f2). apply (MP _ f1). apply (AxiomInstance _ (Ax3 _ _)).
+      apply (MP _ ∘f1 ∧ f1). apply (AxiomInstance _ (Ax5 _ _)).
+      apply (lfi1_monotonicity _ (Im (atoms f1 ∪ atoms f2) (kalmar_function v))).
+      split. assumption. left. assumption.
+      apply (MP _ f2 ∧ ¬f2). apply (AxiomInstance _ (Ax5 _ _)).
+      apply (MP _ ¬∘f2). apply (AxiomInstance _ (ci _)). 
+      apply (lfi1_monotonicity _ (Im (atoms f1 ∪ atoms f2) (kalmar_function v))).
+      split. assumption. left. assumption.
+      apply (MP _ ¬(f1 → f2)). apply (MP _ (f1 → f2)). apply (MP _ ∘(f1 → f2)).
+      apply (AxiomInstance _ (bc1 _ _)). apply Premisse. right. reflexivity. 
+      assumption. assumption. apply id. apply (AxiomInstance _ (Ax10 _)).
+    + apply (MP _ ¬∘(f1 ∧ f2) ∧ ¬∘(f1 ∨ f2) ∧ ¬∘(f1 → f2)).
+      apply (AxiomInstance _ (Ax5 _ _)). apply (MP _ ¬∘f1 ∧ ¬∘f2).
+      apply T10. apply (MP _ ¬∘f2). apply (MP _ ¬∘f1).
+      apply (AxiomInstance _ (Ax3 _ _)). assumption. assumption.
+    + apply (MP _ ((¬∘f1 ∨ (∘f1 ∧ f1)) ∧ (∘f2 ∧ ¬f2))). apply T9.
+      apply (MP _ (∘f2 ∧ ¬f2)). apply (MP _ (¬∘f1 ∨ ∘f1 ∧ f1)).
+      apply (AxiomInstance _ (Ax3 _ _ )). apply (MP _ ∘f1 ∧ f1).
+      apply (AxiomInstance _ (Ax7 _ _)). assumption. assumption.
+    + apply (MP _ ((¬∘f1 ∨ (∘f1 ∧ f1)) ∧ (∘f2 ∧ ¬f2))). apply T9.
+      apply (MP _ (∘f2 ∧ ¬f2)). apply (MP _ (¬∘f1 ∨ ∘f1 ∧ f1)).
+      apply (AxiomInstance _ (Ax3 _ _ )). apply (MP _ ¬∘f1).
+      apply (AxiomInstance _ (Ax6 _ _)). assumption. assumption.
+  - destruct_conjunction v_is_valuation. simpl. unfold preserveCirc in R0. 
+    specialize (R0 f). unfold kalmar_function at 2. unfold kalmar_function at 2 in IHf. 
+    destruct (v ∘f); destruct (v f); try discriminate R0.
+    + apply (MP _ ∘f). apply (MP _ ∘∘f). apply (AxiomInstance _ (Ax3 _ _)).
+      apply T3. apply (MP _ ∘f ∧ f). apply (AxiomInstance _ (Ax4 _ _)). assumption.
+    + apply (MP _ ∘f). apply (MP _ ∘∘f). apply (AxiomInstance _ (Ax3 _ _)).
+      apply T3. apply (MP _ ∘f ∧ ¬f). apply (AxiomInstance _ (Ax4 _ _)). assumption.
+    + apply (MP _ ¬∘f). apply (MP _ ∘∘f). apply (AxiomInstance _ (Ax3 _ _)).
+      apply T3. assumption.
+Qed.
+
+Lemma completeness_aux : ⊨m φ -> Δᵥ ⊢ φ.
+Proof.
+  intros. pose proof kalmar.
+  unfold kalmar_function in H0.
+  unfold matrixEntails in H. specialize (H v).
+  apply H in v_is_valuation as H1.
+  destruct (v φ).
+  - apply (MP _ ∘φ ∧ φ). apply (AxiomInstance _ (Ax5 _ _)).
+    assumption.
+  - apply (MP _ φ ∧ ¬φ). apply (AxiomInstance _ (Ax4 _ _)).
+    apply (MP _ ¬∘φ). apply (AxiomInstance _ (ci _)).
+    assumption.
+  - destruct H1.
+  - intros. destruct H1.
+Qed.
+
+Theorem weak_completeness : ⊨m φ -> ⊢ φ.
+Proof.
+  intros. apply completeness_aux in H.
+  unfold Δᵥ in H. unfold atoms in H.
+  induction φ.
+  - unfold kalmar_function in H.
+
+
 End Kalmar_like.
 

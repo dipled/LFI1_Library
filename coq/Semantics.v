@@ -97,6 +97,7 @@ valuation v ->
     ψ ∈ Γ -> designatedValue (v ψ)) -> 
       designatedValue (v φ).
 
+Notation " ⊨m φ " := (matrixEntails ∅ φ) (at level 50, no associativity).
 Notation " Γ ⊨m φ " := (matrixEntails Γ φ) (at level 50, no associativity).
 
 (* Bivaluation semantics *)
@@ -153,6 +154,7 @@ bivaluation v ->
     ψ ∈ Γ -> (v ψ) = ⊤) -> 
       (v φ) = ⊤.
 
+Notation " ⊨ φ " := (bivaluationEntails ∅ φ) (at level 50, no associativity).
 Notation " Γ ⊨ φ " := (bivaluationEntails Γ φ) (at level 50, no associativity).
 
 
