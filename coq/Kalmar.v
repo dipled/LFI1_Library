@@ -866,13 +866,10 @@ Proof.
   - destruct H1.
   - intros. destruct H1.
 Qed.
-
-Theorem weak_completeness : ⊨m φ -> ⊢ φ.
-Proof.
-  intros. apply completeness_aux in H.
-  unfold Δᵥ in H. 
-    
-
-
 End Kalmar_like.
 
+
+Theorem weak_completeness : forall φ, ⊨m φ -> ⊢ φ.
+Proof.
+  intros. 
+    
